@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deck Editor — ClarkSoft</title>
+    <link rel="stylesheet" href="master_irrigator_presentation_hmi.css?v=1">
+</head>
+<body data-theme="quality_irrigation">
+    <header class="header">
+        <div class="header-left">
+            <div class="header-title">Deck Editor</div>
+        </div>
+        <div class="header-right">
+            <a class="help-button" href="master_irrigator_presentation_hmi.html">Back to presentation</a>
+        </div>
+    </header>
+    <main class="page settings-shell">
+        <section class="panel-card">
+            <h2>Deck JSON</h2>
+            <p>Paste or edit your deck JSON before pushing it into the presentation.</p>
+            <textarea class="deck-editor-input" rows="14" spellcheck="false" placeholder="Paste deck JSON here..."></textarea>
+            <div class="deck-editor-actions" style="margin-top: 16px;">
+                <button class="deck-editor-button primary" type="button" onclick="alert('Deck loading is managed through the presentation view.')">Load deck</button>
+                <button class="deck-editor-button" type="button" onclick="alert('Deck export is handled in the presentation view.')">Download deck</button>
+            </div>
+        </section>
+        <section class="panel-card">
+            <h2>Quick links</h2>
+            <p class="panel-text panel-text-muted">Open settings and version tools in new tabs.</p>
+            <div class="settings-row">
+                <a class="deck-editor-button" href="settings.html">Settings</a>
+                <a class="deck-editor-button" href="version_manager.html">Version manager</a>
+                <a class="deck-editor-button" href="hmi_data_tools.html">Data tools</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

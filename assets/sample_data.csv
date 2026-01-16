@@ -1,0 +1,5 @@
+site_id,date,ndvi,ndmi,notes
+north_pivot,2026-01-02,0.62,0.38,Stable
+north_pivot,2026-01-03,0.59,0.35,Watch moisture
+south_pivot,2026-01-02,0.71,0.41,Healthy
+south_pivot,2026-01-03,0.68,0.39,Check nozzle

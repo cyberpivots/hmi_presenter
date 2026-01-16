@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Version Manager — ClarkSoft</title>
+    <link rel="stylesheet" href="master_irrigator_presentation_hmi.css?v=1">
+</head>
+<body data-theme="quality_irrigation">
+    <header class="header">
+        <div class="header-left">
+            <div class="header-title">Presentation Version Manager</div>
+        </div>
+        <div class="header-right">
+            <a class="help-button" href="master_irrigator_presentation_hmi.html">Back to presentation</a>
+        </div>
+    </header>
+    <main class="page settings-shell">
+        <section class="panel-card">
+            <h2>Create version</h2>
+            <label class="panel-text">Version label<input class="deck-editor-input" type="text" placeholder="Enter version label"></label>
+            <label class="panel-text" style="margin-top: 8px; display:block;">Notes<textarea class="deck-editor-input" rows="4" placeholder="Optional notes"></textarea></label>
+            <div style="margin-top: 12px;">
+                <button class="deck-editor-button primary" type="button" onclick="alert('Version creation is handled through the main UI.')">Create version</button>
+            </div>
+        </section>
+        <section class="panel-card">
+            <h2>Existing versions</h2>
+            <p class="panel-text">Versions are synced from the presentation workspace. Use the main UI to refresh the list.</p>
+        </section>
+        <section class="panel-card">
+            <h2>Quick links</h2>
+            <p class="panel-text panel-text-muted">Open related tools in new tabs.</p>
+            <div class="settings-row">
+                <a class="deck-editor-button" href="settings.html">Settings</a>
+                <a class="deck-editor-button" href="deck_editor.html">Deck editor</a>
+                <a class="deck-editor-button" href="hmi_data_tools.html">Data tools</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1792" height="1024" viewBox="0 0 1792 1024">
+  <defs>
+    <style>
+      .title { font: 600 40px Arial, sans-serif; fill: #0D4B78; }
+      .label { font: 600 22px Arial, sans-serif; fill: #0D4B78; }
+      .small { font: 500 18px Arial, sans-serif; fill: #2B5C7A; }
+      .ring { stroke: #0D4B78; stroke-width: 3; fill: none; }
+      .ring-soft { stroke: #9BB8D3; stroke-width: 2; fill: none; }
+      .sector { fill: #E6F3FF; stroke: #C7D9EB; stroke-width: 2; }
+      .sensor { fill: #2DBE8C; stroke: #0D4B78; stroke-width: 2; }
+      .line { stroke: #0D4B78; stroke-width: 2; }
+      .panel { fill: #FFFFFF; stroke: #C7D9EB; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="100%" height="100%" fill="#F8FBFF" />
+  <text x="80" y="90" class="title">Pivot Sensor Layout (Concept)</text>
+
+  <circle cx="896" cy="560" r="310" class="sector" />
+  <circle cx="896" cy="560" r="260" class="ring" />
+  <circle cx="896" cy="560" r="200" class="ring-soft" />
+  <circle cx="896" cy="560" r="140" class="ring-soft" />
+  <circle cx="896" cy="560" r="80" class="ring" />
+
+  <line x1="896" y1="250" x2="896" y2="870" class="line" />
+  <line x1="586" y1="560" x2="1206" y2="560" class="line" />
+  <line x1="686" y1="360" x2="1106" y2="760" class="line" />
+  <line x1="1106" y1="360" x2="686" y2="760" class="line" />
+
+  <circle cx="896" cy="560" r="10" class="sensor" />
+  <circle cx="896" cy="300" r="10" class="sensor" />
+  <circle cx="896" cy="820" r="10" class="sensor" />
+  <circle cx="640" cy="560" r="10" class="sensor" />
+  <circle cx="1152" cy="560" r="10" class="sensor" />
+  <circle cx="740" cy="420" r="10" class="sensor" />
+  <circle cx="1052" cy="700" r="10" class="sensor" />
+  <circle cx="740" cy="700" r="10" class="sensor" />
+  <circle cx="1052" cy="420" r="10" class="sensor" />
+
+  <rect x="120" y="260" width="300" height="120" rx="14" class="panel" />
+  <text x="150" y="305" class="label">Pressure + Flow</text>
+  <text x="150" y="335" class="small">Tower and end gun nodes</text>
+  <line x1="420" y1="320" x2="620" y2="420" class="line" />
+
+  <rect x="120" y="420" width="300" height="120" rx="14" class="panel" />
+  <text x="150" y="465" class="label">IRT + NDVI</text>
+  <text x="150" y="495" class="small">Stress sensing arc</text>
+  <line x1="420" y1="480" x2="700" y2="560" class="line" />
+
+  <rect x="120" y="580" width="300" height="120" rx="14" class="panel" />
+  <text x="150" y="625" class="label">Weather Node</text>
+  <text x="150" y="655" class="small">Wind + humidity</text>
+  <line x1="420" y1="640" x2="740" y2="700" class="line" />
+
+  <rect x="1370" y="300" width="300" height="120" rx="14" class="panel" />
+  <text x="1400" y="345" class="label">Soil Sensors</text>
+  <text x="1400" y="375" class="small">Moisture + temp</text>
+  <line x1="1370" y1="360" x2="1180" y2="420" class="line" />
+
+  <rect x="1370" y="470" width="300" height="120" rx="14" class="panel" />
+  <text x="1400" y="515" class="label">GPS + Speed</text>
+  <text x="1400" y="545" class="small">Center point</text>
+  <line x1="1370" y1="530" x2="906" y2="560" class="line" />
+
+  <rect x="1370" y="640" width="300" height="120" rx="14" class="panel" />
+  <text x="1400" y="685" class="label">Calibration Checks</text>
+  <text x="1400" y="715" class="small">Spot coverage gaps</text>
+  <line x1="1370" y1="700" x2="1180" y2="700" class="line" />
+</svg>

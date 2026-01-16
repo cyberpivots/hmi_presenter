@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Calendar grid with session timeline blocks">
+  <defs>
+    <linearGradient id="agendaGradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0b5fa5" />
+      <stop offset="100%" stop-color="#0d83c9" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="700" fill="#f5f8fb" />
+  <rect x="60" y="60" width="1080" height="110" rx="18" fill="url(#agendaGradient)" />
+  <text x="100" y="125" font-family="Verdana, Arial, sans-serif" font-size="42" fill="#ffffff" font-weight="700">Session Syllabus</text>
+  <text x="100" y="175" font-family="Verdana, Arial, sans-serif" font-size="20" fill="#e8f3ff">40-minute agenda cadence</text>
+
+  <rect x="60" y="200" width="1080" height="420" rx="20" fill="#ffffff" stroke="#d7e6f4" stroke-width="3" />
+
+  <g stroke="#e1edf7" stroke-width="2">
+    <line x1="60" y1="290" x2="1140" y2="290" />
+    <line x1="60" y1="380" x2="1140" y2="380" />
+    <line x1="60" y1="470" x2="1140" y2="470" />
+    <line x1="60" y1="560" x2="1140" y2="560" />
+
+    <line x1="240" y1="200" x2="240" y2="620" />
+    <line x1="420" y1="200" x2="420" y2="620" />
+    <line x1="600" y1="200" x2="600" y2="620" />
+    <line x1="780" y1="200" x2="780" y2="620" />
+    <line x1="960" y1="200" x2="960" y2="620" />
+  </g>
+
+  <g font-family="Verdana, Arial, sans-serif" font-size="18" fill="#6b7c90">
+    <text x="110" y="255">Section 1</text>
+    <text x="290" y="255">Section 2</text>
+    <text x="470" y="255">Section 3</text>
+    <text x="650" y="255">Section 4</text>
+    <text x="830" y="255">Wrap</text>
+  </g>
+
+  <rect x="110" y="320" width="140" height="70" rx="12" fill="#cfe8ff" />
+  <rect x="290" y="320" width="220" height="70" rx="12" fill="#b9e3f6" />
+  <rect x="530" y="320" width="260" height="70" rx="12" fill="#c7f0e9" />
+  <rect x="810" y="320" width="200" height="70" rx="12" fill="#f9e6c7" />
+  <rect x="1030" y="320" width="90" height="70" rx="12" fill="#f2d0d7" />
+
+  <g font-family="Verdana, Arial, sans-serif" font-size="16" fill="#2d3a4a" font-weight="600">
+    <text x="130" y="360">Context</text>
+    <text x="320" y="360">Signals</text>
+    <text x="560" y="360">Decisions</text>
+    <text x="835" y="360">Questions</text>
+    <text x="1040" y="360">Close</text>
+  </g>
+
+  <g font-family="Verdana, Arial, sans-serif" font-size="14" fill="#6b7c90">
+    <text x="130" y="400">0-5 min</text>
+    <text x="320" y="400">5-20 min</text>
+    <text x="560" y="400">20-35 min</text>
+    <text x="835" y="400">35-40 min</text>
+    <text x="1040" y="400">40 min</text>
+  </g>
+</svg>

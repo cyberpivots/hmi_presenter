@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="AI data fusion diagram">
+  <defs>
+    <style>
+      .title { font: 700 24px "Source Sans 3", Arial, sans-serif; fill: #002D62; }
+      .label { font: 600 16px "Source Sans 3", Arial, sans-serif; fill: #0B1B2D; }
+      .sub { font: 400 12px "Source Sans 3", Arial, sans-serif; fill: #4B5563; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#0093D0" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF" />
+
+  <text class="title" x="32" y="44">AI Data Fusion (Concept)</text>
+
+  <rect x="60" y="140" width="220" height="80" rx="14" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="label" x="110" y="190">Weather</text>
+
+  <rect x="60" y="240" width="220" height="80" rx="14" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="label" x="130" y="290">Soil</text>
+
+  <rect x="60" y="340" width="220" height="80" rx="14" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="label" x="88" y="390">Pivot sensors</text>
+
+  <rect x="360" y="210" width="240" height="120" rx="16" fill="#E1F3EE" stroke="#2BBF95" stroke-width="2" />
+  <text class="label" x="420" y="270">AI model</text>
+  <text class="sub" x="405" y="295">Fusion + inference</text>
+
+  <rect x="700" y="240" width="200" height="80" rx="14" fill="#F7FAFC" stroke="#A29061" stroke-width="2" />
+  <text class="label" x="730" y="290">Recommendation</text>
+
+  <line x1="280" y1="180" x2="360" y2="250" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+  <line x1="280" y1="280" x2="360" y2="270" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+  <line x1="280" y1="380" x2="360" y2="290" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+  <line x1="600" y1="270" x2="700" y2="280" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+</svg>

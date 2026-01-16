@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ClarkSoft Center Pivot Tools (Dev)</title>
+  <style>
+    :root {
+      color-scheme: only light;
+      --ink: #1b1d19;
+      --earth: #3a3f33;
+      --mist: #f4f5f0;
+      --sage: #8aa384;
+      --sky: #8db6c5;
+      --river: #3b6c78;
+      --gold: #c8a04d;
+      --sand: #ede2c8;
+      --accent: #6f8f7a;
+      --card: #ffffff;
+      --shadow: 0 18px 40px rgba(20, 30, 20, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 10%, #f2f5ea 0%, #e5efe1 35%, #d8e4e6 65%, #f7f5ef 100%);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px clamp(16px, 3vw, 40px) 48px;
+      background-image:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 45%),
+        repeating-linear-gradient(0deg, rgba(120, 140, 120, 0.08), rgba(120, 140, 120, 0.08) 1px, transparent 1px, transparent 18px);
+    }
+
+    header {
+      display: grid;
+      gap: 8px;
+      max-width: 720px;
+    }
+
+    .brand {
+      font-family: "Optima", "Gill Sans", "Trebuchet MS", sans-serif;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: var(--river);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: var(--earth);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 1rem;
+      color: #4e5b52;
+      max-width: 620px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(70, 90, 70, 0.08);
+      display: grid;
+      gap: 16px;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--earth);
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: #405048;
+    }
+
+    input, textarea {
+      border: 1px solid rgba(70, 90, 70, 0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      font-family: "Optima", "Gill Sans", "Trebuchet MS", sans-serif;
+      background: #fbfcf8;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .output-grid {
+      display: grid;
+      gap: 8px;
+      background: linear-gradient(135deg, #f7f4ea, #f0f6f0);
+      padding: 14px;
+      border-radius: 12px;
+    }
+
+    .output-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .output-row span {
+      color: #516055;
+    }
+
+    .map-card {
+      grid-column: 1 / -1;
+    }
+
+    .map-wrapper {
+      width: 100%;
+      border-radius: 16px;
+      background: #f8fbfb;
+      border: 1px solid rgba(70, 90, 70, 0.15);
+      padding: 12px;
+    }
+
+    svg {
+      width: 100%;
+      height: 360px;
+      display: block;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f7faf6, #e9f0ee);
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: #46554d;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .dot.circle { background: var(--river); }
+    .dot.tower { background: var(--sage); }
+    .dot.radius { background: var(--gold); }
+
+    .footer {
+      font-size: 0.85rem;
+      color: #55635b;
+      max-width: 860px;
+    }
+
+    @media (max-width: 720px) {
+      svg {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">ClarkSoft</div>
+      <h1>Center Pivot Quick Tools</h1>
+      <p class="subtitle">
+        Dev-only HMI for quick calculations, layout planning, and a lightweight mapping preview.
+      </p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Quick Calculations</h2>
+        <div class="field-grid">
+          <label>
+            Pivot radius (ft)
+            <input id="radius-ft" type="number" step="0.1" placeholder="1320" />
+          </label>
+          <label>
+            Flow (gpm)
+            <input id="flow-gpm" type="number" step="0.1" placeholder="800" />
+          </label>
+          <label>
+            Rotation time (hours)
+            <input id="rotation-hours" type="number" step="0.1" placeholder="24" />
+          </label>
+        </div>
+        <div class="output-grid" id="calc-output"></div>
+      </div>
+
+      <div class="card">
+        <h2>Layout Inputs</h2>
+        <div class="field-grid">
+          <label>
+            Spans list (ft, comma separated)
+            <textarea id="spans-ft" placeholder="140, 140, 140, 140"></textarea>
+          </label>
+          <label>
+            Overhang (ft)
+            <input id="overhang-ft" type="number" step="0.1" placeholder="10" />
+          </label>
+          <label>
+            Nozzle spacing (ft)
+            <input id="spacing-ft" type="number" step="0.1" placeholder="5" />
+          </label>
+        </div>
+        <div class="output-grid" id="layout-output"></div>
+      </div>
+
+      <div class="card map-card">
+        <h2>Mapping Preview</h2>
+        <div class="map-wrapper">
+          <svg id="map-preview" viewBox="-1500 -1500 3000 3000" aria-label="Pivot map preview">
+            <defs>
+              <pattern id="grid" width="200" height="200" patternUnits="userSpaceOnUse">
+                <path d="M 200 0 L 0 0 0 200" fill="none" stroke="#d6e1d9" stroke-width="1" />
+              </pattern>
+            </defs>
+            <rect x="-5000" y="-5000" width="10000" height="10000" fill="url(#grid)" />
+            <g id="map-content"></g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span><span class="dot circle"></span> Pivot circle</span>
+          <span><span class="dot radius"></span> Radius line</span>
+          <span><span class="dot tower"></span> Tower positions</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">
+      Notes: conversions are derived from USGS unit factors. This page is for development only.
+    </p>
+  </div>
+
+  <script>
+    const radiusInput = document.getElementById('radius-ft');
+    const flowInput = document.getElementById('flow-gpm');
+    const hoursInput = document.getElementById('rotation-hours');
+    const spansInput = document.getElementById('spans-ft');
+    const overhangInput = document.getElementById('overhang-ft');
+    const spacingInput = document.getElementById('spacing-ft');
+    const calcOutput = document.getElementById('calc-output');
+    const layoutOutput = document.getElementById('layout-output');
+    const mapContent = document.getElementById('map-content');
+    const mapSvg = document.getElementById('map-preview');
+
+    const SQ_FOOT_TO_SQ_METER = 0.09290;
+    const ACRE_TO_SQ_METER = 4047.0;
+    const CUBIC_FOOT_TO_CUBIC_METER = 0.02832;
+    const GALLON_TO_CUBIC_METER = 0.003785;
+    const INCHES_PER_FOOT = 12.0;
+
+    const ACRE_TO_SQ_FOOT = ACRE_TO_SQ_METER / SQ_FOOT_TO_SQ_METER;
+    const CUBIC_FOOT_TO_GALLON = CUBIC_FOOT_TO_CUBIC_METER / GALLON_TO_CUBIC_METER;
+
+    function parseNumber(value) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function parseSpanList(value) {
+      return value
+        .split(',')
+        .map((chunk) => parseNumber(chunk.trim()))
+        .filter((num) => num > 0);
+    }
+
+    function formatRow(label, value, unit) {
+      const display = value === null ? '--' : value;
+      return `<div class="output-row"><span>${label}</span><strong>${display}${unit}</strong></div>`;
+    }
+
+    function updateOutputs() {
+      const spans = parseSpanList(spansInput.value);
+      const overhang = parseNumber(overhangInput.value);
+      const radiusInputValue = parseNumber(radiusInput.value);
+      const radius = radiusInputValue > 0 ? radiusInputValue : (spans.reduce((a, b) => a + b, 0) + overhang);
+
+      const flow = parseNumber(flowInput.value);
+      const hours = parseNumber(hoursInput.value);
+      const spacing = parseNumber(spacingInput.value);
+
+      const areaSqft = radius > 0 ? Math.PI * radius * radius : 0;
+      const areaAcres = areaSqft / ACRE_TO_SQ_FOOT;
+      const circumference = radius > 0 ? 2 * Math.PI * radius : 0;
+      const speed = hours > 0 ? circumference / hours : 0;
+
+      const volumeGallons = flow > 0 && hours > 0 ? flow * 60 * hours : 0;
+      const volumeCubicFeet = volumeGallons > 0 ? volumeGallons / CUBIC_FOOT_TO_GALLON : 0;
+      const depthIn = areaSqft > 0 ? (volumeCubicFeet / areaSqft) * INCHES_PER_FOOT : 0;
+
+      calcOutput.innerHTML = [
+        formatRow('Radius', radius > 0 ? radius.toFixed(2) : null, ' ft'),
+        formatRow('Area', radius > 0 ? areaSqft.toFixed(1) : null, ' sqft'),
+        formatRow('Area', radius > 0 ? areaAcres.toFixed(3) : null, ' acres'),
+        formatRow('Circumference', radius > 0 ? circumference.toFixed(2) : null, ' ft'),
+        formatRow('Outer speed', hours > 0 ? speed.toFixed(2) : null, ' ft/hr'),
+        formatRow('Applied depth', volumeGallons > 0 ? depthIn.toFixed(3) : null, ' in'),
+      ].join('');
+
+      const towerPositions = spans.reduce((list, span, index) => {
+        const last = list.length ? list[list.length - 1] : 0;
+        list.push(last + span);
+        return list;
+      }, []);
+
+      const nozzleCount = spacing > 0 && radius > 0 ? Math.floor(radius / spacing) + 1 : 0;
+
+      layoutOutput.innerHTML = [
+        formatRow('Span count', spans.length ? spans.length : null, ''),
+        formatRow('Overhang', overhang ? overhang.toFixed(2) : null, ' ft'),
+        formatRow('Tower count', towerPositions.length ? towerPositions.length : null, ''),
+        formatRow('Nozzle count', nozzleCount > 0 ? nozzleCount : null, ''),
+      ].join('');
+
+      drawMap(radius, towerPositions);
+    }
+
+    function drawMap(radius, towerPositions) {
+      mapContent.innerHTML = '';
+      const viewRadius = radius > 0 ? radius * 1.15 : 1000;
+      mapSvg.setAttribute('viewBox', `${-viewRadius} ${-viewRadius} ${viewRadius * 2} ${viewRadius * 2}`);
+
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', '0');
+      circle.setAttribute('cy', '0');
+      circle.setAttribute('r', radius > 0 ? radius : 1);
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', '#3b6c78');
+      circle.setAttribute('stroke-width', '4');
+      mapContent.appendChild(circle);
+
+      const radiusLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      radiusLine.setAttribute('x1', '0');
+      radiusLine.setAttribute('y1', '0');
+      radiusLine.setAttribute('x2', radius > 0 ? radius : 1);
+      radiusLine.setAttribute('y2', '0');
+      radiusLine.setAttribute('stroke', '#c8a04d');
+      radiusLine.setAttribute('stroke-width', '3');
+      mapContent.appendChild(radiusLine);
+
+      towerPositions.forEach((pos) => {
+        const tower = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        tower.setAttribute('cx', pos);
+        tower.setAttribute('cy', 0);
+        tower.setAttribute('r', Math.max(viewRadius * 0.01, 8));
+        tower.setAttribute('fill', '#8aa384');
+        tower.setAttribute('stroke', '#4b6a57');
+        tower.setAttribute('stroke-width', '2');
+        mapContent.appendChild(tower);
+      });
+    }
+
+    [radiusInput, flowInput, hoursInput, spansInput, overhangInput, spacingInput].forEach((el) => {
+      el.addEventListener('input', updateOutputs);
+    });
+
+    updateOutputs();
+  </script>
+</body>
+</html>

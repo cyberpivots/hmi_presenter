@@ -1,0 +1,239 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap");
+
+:root {
+    --qi-font-display: "Oswald", "Source Sans 3", sans-serif;
+    --qi-font-body: "Source Sans 3", sans-serif;
+    --qi-navy: #002D62;
+    --qi-blue: #0093D0;
+    --qi-blue-soft: #3F6189;
+    --qi-gold: #A29061;
+    --qi-ink: #0B1B2D;
+    --qi-ink-muted: #42566A;
+    --qi-bg: #FFFFFF;
+    --qi-bg-soft: #F7FAFC;
+    --qi-border: #D5DEE6;
+    --qi-border-strong: #BFC9D4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--qi-font-body);
+    background: var(--qi-bg);
+    color: var(--qi-ink);
+}
+
+.page {
+    min-height: 100vh;
+}
+
+.accent-bar {
+    height: 8px;
+    background: linear-gradient(90deg, var(--qi-blue) 0%, #0077AB 50%, var(--qi-navy) 100%);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--qi-border);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.header img {
+    height: 36px;
+    background: #FFFFFF;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 45, 98, 0.2);
+}
+
+.header .title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--qi-navy);
+    font-family: var(--qi-font-display);
+}
+
+.print-button {
+    border: 0;
+    background: var(--qi-navy);
+    color: #FFFFFF;
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--qi-font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.section {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--qi-border);
+}
+
+.section h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    color: var(--qi-navy);
+    font-family: var(--qi-font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.section h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    color: var(--qi-blue-soft);
+    font-family: var(--qi-font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.section p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--qi-ink-muted);
+}
+
+.meta {
+    border-bottom: 0;
+}
+
+.meta p {
+    font-size: 12px;
+    color: var(--qi-ink-muted);
+    margin: 0 0 4px 0;
+}
+
+.meta p:last-child {
+    margin-bottom: 0;
+}
+
+.swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.swatch {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--qi-border);
+    border-radius: 8px;
+    background: #FFFFFF;
+}
+
+.swatch-chip {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #999999;
+    background: var(--swatch);
+}
+
+.swatch-name {
+    font-size: 13px;
+    color: var(--qi-ink);
+}
+
+.swatch-hex {
+    font-size: 12px;
+    color: var(--qi-ink-muted);
+}
+
+.type-sample {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    background: var(--qi-bg-soft);
+    border-radius: 8px;
+    border: 1px solid var(--qi-border);
+    border-left: 4px solid var(--qi-blue);
+}
+
+.type-head {
+    font-size: 20px;
+    color: var(--qi-navy);
+    font-family: var(--qi-font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.type-body {
+    font-size: 14px;
+    color: var(--qi-ink-muted);
+}
+
+.type-caption {
+    font-size: 12px;
+    color: var(--qi-ink-muted);
+}
+
+.notes {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--qi-ink-muted);
+}
+
+.local_server_help {
+    background: var(--qi-bg-soft);
+    border-radius: 8px;
+    border: 1px solid var(--qi-border);
+}
+
+.local_server_help p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--qi-ink-muted);
+}
+
+.local_server_help a {
+    color: var(--qi-blue);
+}
+
+.footer {
+    padding: 16px 24px 28px 24px;
+    font-size: 12px;
+    color: var(--qi-ink-muted);
+}
+
+@media print {
+    body {
+        color: #000000;
+    }
+
+    .page {
+        min-height: auto;
+    }
+
+    .accent-bar {
+        background: #000000;
+    }
+
+    .section {
+        border-bottom: 1px solid #CCCCCC;
+    }
+
+    .swatch-chip {
+        border-color: #666666;
+    }
+
+    .print-button {
+        display: none;
+    }
+
+    .local_server_help {
+        display: none;
+    }
+}

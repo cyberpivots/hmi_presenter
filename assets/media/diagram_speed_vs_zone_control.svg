@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Speed control versus zone control diagram">
+  <defs>
+    <style>
+      .title { font: 700 24px "Source Sans 3", Arial, sans-serif; fill: #002D62; }
+      .label { font: 600 16px "Source Sans 3", Arial, sans-serif; fill: #0B1B2D; }
+      .sub { font: 400 12px "Source Sans 3", Arial, sans-serif; fill: #4B5563; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF" />
+
+  <text class="title" x="32" y="44">Speed Control vs Zone Control (Concept)</text>
+
+  <rect x="40" y="90" width="400" height="400" rx="18" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="label" x="64" y="130">Speed control</text>
+  <circle cx="240" cy="280" r="120" fill="#FFFFFF" stroke="#002D62" stroke-width="3" />
+  <line x1="240" y1="280" x2="330" y2="240" stroke="#A29061" stroke-width="6" />
+  <circle cx="240" cy="280" r="6" fill="#002D62" />
+  <text class="sub" x="160" y="430">Single rate, speed changes only</text>
+
+  <rect x="520" y="90" width="400" height="400" rx="18" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="label" x="544" y="130">Zone control</text>
+  <rect x="590" y="190" width="80" height="250" rx="10" fill="#BFD9EA" stroke="#002D62" stroke-width="1" />
+  <rect x="680" y="190" width="80" height="250" rx="10" fill="#8EC0E0" stroke="#002D62" stroke-width="1" />
+  <rect x="770" y="190" width="80" height="250" rx="10" fill="#5BA6D4" stroke="#002D62" stroke-width="1" />
+  <text class="sub" x="600" y="470">Three zones, different rates</text>
+</svg>

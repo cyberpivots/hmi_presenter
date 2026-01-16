@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pivot Mapper Training Flow (Dev Mock)</title>
+  <style>
+    :root {
+      --ink: #1e2430;
+      --ink-soft: #364257;
+      --accent: #1b8f7a;
+      --accent-2: #f2c94c;
+      --card: #ffffff;
+      --mist: #f1f4f7;
+      --shadow: 0 18px 40px rgba(18, 32, 45, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #f8fbff 0%, #e6eef5 45%, #dbe7ee 100%);
+    }
+    .page {
+      max-width: 1100px;
+      margin: 40px auto 64px;
+      padding: 0 20px;
+    }
+    .hero {
+      display: grid;
+      gap: 18px;
+      padding: 26px 28px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #ffffff 0%, #f6fbf9 65%, #ecf7f4 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.3px;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      background: #e7f6f2;
+      color: #0b6c5c;
+      width: fit-content;
+    }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 22px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(27, 143, 122, 0.15);
+    }
+    .status {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: var(--mist);
+      color: var(--ink-soft);
+    }
+    .chip.active { background: #fff4d1; color: #7a5a00; }
+    .chip.done { background: #e7f6f2; color: #0b6c5c; }
+    .footer {
+      margin-top: 28px;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+    .cta:focus { outline: 3px solid #b8efe3; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="badge">Dev‑only mock • Pivot Mapper training</span>
+      <h1>Training Flow Overview</h1>
+      <p>Use this screen to explain the supervised training steps in plain language.</p>
+      <button class="cta" type="button">Start first analysis run</button>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Inputs</h2>
+        <ul>
+          <li>Boundary file (GeoJSON, KML, CSV, or .bpf)</li>
+          <li>Obstacle list (trees, roads, buildings)</li>
+          <li>Optional imagery (drone photos or stitched map)</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Labeling</h2>
+        <div class="step">
+          <span class="dot"></span>
+          <div>
+            <strong>Open labels file</strong>
+            <div>Fill 5‑10 rows with 0‑100 scores.</div>
+          </div>
+        </div>
+        <div class="step">
+          <span class="dot"></span>
+          <div>
+            <strong>Save and review</strong>
+            <div>Check for blanks or typos.</div>
+          </div>
+        </div>
+        <div class="status">
+          <span class="chip">labels_blank.csv</span>
+          <span class="chip active">waiting on scores</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Training</h2>
+        <div class="step">
+          <span class="dot"></span>
+          <div>
+            <strong>Run training script</strong>
+            <div>Creates trained_weights.json</div>
+          </div>
+        </div>
+        <div class="step">
+          <span class="dot"></span>
+          <div>
+            <strong>Apply weights</strong>
+            <div>Update scoring config</div>
+          </div>
+        </div>
+        <div class="status">
+          <span class="chip">plots_png</span>
+          <span class="chip">trained_weights.json</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Outputs</h2>
+        <ul>
+          <li>Ranked circle list</li>
+          <li>Weights file for scoring</li>
+          <li>Simple summary for review</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="footer">Note: This is a mock page. It does not run scripts or edit files.</p>
+  </main>
+</body>
+</html>

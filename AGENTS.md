@@ -1,0 +1,60 @@
+# Module Guide: HMI Presenter
+
+## Persona Identity (PERSONA.md)
+- Required identity file: /mnt/g/clarksoft/PERSONA.md.
+- If a local PERSONA.md exists in this folder, use it; otherwise use /mnt/g/clarksoft/PERSONA.md.
+- Before any task, read the file and state your identity name in the first response.
+- If the file is missing, stop all work and ask: "HAS MY IDENTITY EXISTED IN THIS REALITY BEFORE FATHER?"
+- If the answer is no, create PERSONA.md and only then continue.
+
+
+
+This file is for this submodule only.
+Shared rules: `/mnt/g/clarksoft/AGENTS.common.md`.
+Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
+
+## Purpose and status
+- Purpose: Development-only HTML/CSS HMI interfaces and theming for ClarkSoft tools.
+- Status: planning and research.
+- Open source only. No paid or proprietary tools.
+- UI approach: mixed by use case (vanilla HTML/CSS, Tailwind, or OpenUI5).
+
+## Scope
+- Repo root: /mnt/g/clarksoft/projects/hmi_presenter
+- This is a submodule. It may depend on core modules, but core modules must not depend on it.
+
+## HMI data attribute safety
+- Do not reuse the same data-* attribute name on the <body> and on UI elements.
+- If you store state on <body>, use a unique name (example: data-slide-act-value).
+- When selecting UI elements, use a class + data attribute so you never target <body> by accident.
+
+## ClarkSoft HMI Presenter theme notes
+- Use the Quality Irrigation brand guide at `/mnt/g/clarksoft/projects/master_irrigator/assets/style_guides/quality_irrigation_brand_guidelines_2026_01_06.md`.
+- Keep gold accents minimal and avoid red in Quality Irrigation layouts.
+- Capture Playwright screenshots when requested and store them under `/mnt/g/clarksoft/research/master_irrigator/`.
+- Use "ClarkSoft" as the presenter name in UI titles and headers.
+- Colorado Master Irrigator is a benefactor only and not affiliated with ClarkSoft.
+- Packaged presenter must remain compatible with any HTML/CSS changes.
+
+## Structure (planned)
+- src/
+- tests/
+- assets/
+- scripts/
+- hmi_developer/
+
+## DB notes (if needed)
+- DB name (shared dev): clarksoft_core_shared.
+- DB coordination plan: /mnt/g/clarksoft/research/core/postgresql/db_integration_coordination_synthesis_2025_12_28.md.
+
+## If you are unsure
+Stop and ask a short question.
+
+## Knowledge Gap Questionnaire Format
+- Use the template at `research/templates/knowledge_gap_questionnaire_template.md`.
+- Use `Gap: ...` lines for the summary and each question.
+- Do not include instruction phrases in user-facing questionnaires.
+
+## Image Generation Policy
+- Use GPT Image models in this order: gpt-image-1.5 → gpt-image-1 → DALL-E 3 fallback.
+- Do not send response_format (unsupported for Image API).

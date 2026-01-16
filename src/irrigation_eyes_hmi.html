@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Irrigation Eyes HMI (Dev)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="irrigation_eyes_hmi.css" />
+</head>
+<body data-theme="quality_irrigation">
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand_mark"></div>
+        <div>
+          <p class="brand_title">Irrigation Eyes</p>
+          <p class="brand_subtitle">Imagery Analysis HMI</p>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="Primary">
+        <button class="tab_button is_active" data-tab="analysis">Imagery</button>
+        <button class="tab_button" data-tab="library">Scene Library</button>
+        <button class="tab_button" data-tab="operations">Operations</button>
+      </nav>
+      <div class="topbar_meta">
+        <p class="meta_label">Source</p>
+        <p class="meta_value" id="meta_source">mock</p>
+      </div>
+      <div class="topbar_actions">
+        <button class="help_button" id="help_button" type="button">Local server help</button>
+        <a class="help_button" href="hmi_data_tools.html">Data tools</a>
+      </div>
+    </header>
+
+    <nav class="menu-bar" aria-label="Irrigation Eyes menu">
+      <details class="menu" name="hmi-menu">
+        <summary>File</summary>
+        <div class="menu-panel" role="group" aria-label="File">
+          <button class="menu-item" type="button" data-menu-action="file-open-tools">Open data tools</button>
+          <button class="menu-item" type="button" data-menu-action="file-open-hmi">Open presentation HMI</button>
+        </div>
+      </details>
+      <details class="menu" name="hmi-menu">
+        <summary>Edit</summary>
+        <div class="menu-panel" role="group" aria-label="Edit">
+          <button class="menu-item" type="button" data-menu-action="edit-reset-view">Reset view</button>
+        </div>
+      </details>
+      <details class="menu" name="hmi-menu">
+        <summary>View</summary>
+        <div class="menu-panel" role="group" aria-label="View">
+          <button class="menu-item" type="button" data-menu-action="view-theme-light">Theme: Light</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-dark">Theme: Dark</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-blues_green">Theme: Blues/Green</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-quality_irrigation">Theme: Quality Irrigation</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-futuristic">Theme: Futuristic</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-soil_field">Theme: Soil/Field</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-night_ops">Theme: Night Ops</button>
+          <button class="menu-item" type="button" data-menu-action="view-theme-high_contrast">Theme: High Contrast</button>
+        </div>
+      </details>
+      <details class="menu" name="hmi-menu">
+        <summary>Help</summary>
+        <div class="menu-panel" role="group" aria-label="Help">
+          <button class="menu-item" type="button" data-menu-action="help-open">Local server help</button>
+          <button class="menu-item" type="button" data-menu-action="help-tools">Open data tools</button>
+        </div>
+      </details>
+    </nav>
+
+    <main class="content">
+      <section id="analysis" class="panel is_active">
+        <div class="analysis_layout">
+          <div class="analysis_column">
+            <article class="card" style="--delay: 0ms">
+              <h3>Active Scene</h3>
+              <div class="meta_list" id="scene_meta"></div>
+            </article>
+            <article class="card" style="--delay: 60ms">
+              <h3>Index Overview</h3>
+              <div class="index_toggles">
+                <button class="toggle_button is_active" data-index="ndvi">NDVI</button>
+                <button class="toggle_button" data-index="ndmi">NDMI</button>
+              </div>
+              <div class="stat_row">
+                <div>
+                  <p class="stat_label">Mean</p>
+                  <p class="stat_value" id="active_index_mean">--</p>
+                </div>
+                <div>
+                  <p class="stat_label">Range</p>
+                  <p class="stat_value" id="active_index_range">--</p>
+                </div>
+              </div>
+              <p class="stat_hint" id="active_index_note">--</p>
+            </article>
+            <article class="card" style="--delay: 120ms">
+              <h3>Processing Steps</h3>
+              <div class="step_list" id="processing_steps"></div>
+            </article>
+          </div>
+
+          <div class="analysis_column analysis_center">
+            <article class="card imagery_canvas" style="--delay: 180ms">
+              <div class="canvas_header">
+                <div>
+                  <p class="stat_label">Imagery Preview</p>
+                  <p class="stat_value" id="canvas_index_label">NDVI</p>
+                </div>
+                <div class="pill" id="canvas_scene_id">--</div>
+              </div>
+              <div class="canvas_body">
+                <div class="canvas_grid">
+                  <div class="canvas_tile">RGB</div>
+                  <div class="canvas_tile">Index</div>
+                  <div class="canvas_tile">Classification</div>
+                </div>
+              </div>
+              <div class="canvas_footer">
+                <p class="stat_hint" id="canvas_note">Preview tiles are placeholders for dev UI.</p>
+              </div>
+            </article>
+
+            <div class="grid grid_two">
+              <article class="card" style="--delay: 240ms">
+                <h3>Histogram</h3>
+                <div class="histogram" id="index_histogram"></div>
+                <p class="stat_hint" id="histogram_range">--</p>
+              </article>
+              <article class="card" style="--delay: 300ms">
+                <h3>Quality Checks</h3>
+                <div class="quality_list" id="quality_checks"></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="analysis_column">
+            <article class="card" style="--delay: 360ms">
+              <h3>Index Stats</h3>
+              <div class="stat_block">
+                <p class="stat_label">NDVI</p>
+                <p class="stat_value" id="ndvi_mean">--</p>
+                <p class="stat_hint" id="ndvi_range">--</p>
+              </div>
+              <div class="stat_block">
+                <p class="stat_label">NDMI</p>
+                <p class="stat_value" id="ndmi_mean">--</p>
+                <p class="stat_hint" id="ndmi_range">--</p>
+              </div>
+            </article>
+            <article class="card" style="--delay: 420ms">
+              <h3>Exports</h3>
+              <div class="export_list" id="export_list"></div>
+            </article>
+            <article class="card" style="--delay: 480ms">
+              <h3>Analysis Notes</h3>
+              <p class="muted" id="analysis_notes">--</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="library" class="panel">
+        <div class="grid grid_wide">
+          <article class="card" style="--delay: 0ms">
+            <h3>Scene Library</h3>
+            <div class="scene_list" id="scene_list"></div>
+          </article>
+          <article class="card" style="--delay: 60ms">
+            <h3>Scene Artifacts</h3>
+            <div class="artifact_list" id="artifact_list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="operations" class="panel">
+        <div class="grid">
+          <article class="card" style="--delay: 0ms">
+            <h3>Telemetry Snapshot</h3>
+            <div class="telemetry">
+              <p><span>Status</span><strong id="telemetry_status">--</strong></p>
+              <p><span>Lat</span><strong id="telemetry_lat">--</strong></p>
+              <p><span>Lon</span><strong id="telemetry_lon">--</strong></p>
+              <p><span>Alt</span><strong id="telemetry_alt">--</strong></p>
+              <p><span>Battery</span><strong id="telemetry_batt">--</strong></p>
+            </div>
+          </article>
+          <article class="card" style="--delay: 60ms">
+            <h3>Weather Snapshot</h3>
+            <div class="weather">
+              <div class="weather_now">
+                <p class="stat_value" id="weather_condition">--</p>
+                <p class="stat_hint">Humidity <span id="weather_humidity">--</span> • Wind <span id="weather_wind">--</span></p>
+                <p class="stat_hint">Rain chance <span id="weather_rain">--</span></p>
+              </div>
+              <div class="weather_forecast" id="weather_forecast"></div>
+            </div>
+          </article>
+          <article class="card" style="--delay: 120ms">
+            <h3>Water Use</h3>
+            <p class="stat_value" id="water_today">--</p>
+            <p class="stat_hint">Liters today</p>
+          </article>
+          <article class="card" style="--delay: 180ms">
+            <h3>Irrigation Valves</h3>
+            <div class="valve_list" id="valve_list"></div>
+          </article>
+          <article class="card" style="--delay: 240ms">
+            <h3>Flight Schedules</h3>
+            <div id="flight_schedules"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="help_dialog" id="help_dialog">
+    <div class="help_title">Local server help</div>
+    <p class="help_text">This page loads mock data. Use a local server so the data can load.</p>
+    <ol class="help_list">
+      <li>Open WSL and go to: /mnt/g/clarksoft/projects/hmi_presenter</li>
+      <li>Run: python3 -m http.server 8000</li>
+      <li>Open: http://localhost:8000/src/irrigation_eyes_hmi.html</li>
+      <li>Keep the WSL window open while you work.</li>
+    </ol>
+    <p class="help_text">If you see many "--" values, refresh after the server is running.</p>
+    <button class="help_close" id="help_close" type="button">Close</button>
+  </dialog>
+
+  <script src="irrigation_eyes_hmi.js"></script>
+</body>
+</html>

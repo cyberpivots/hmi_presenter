@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Valley Dealer Console HMI (Concept - Ember)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="valley_dealer_console_hmi.css" />
+  </head>
+  <body data-vd-console="true" data-theme="ember">
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand__mark">
+            <span>VD</span>
+          </div>
+          <div class="brand__text">
+            <p class="eyebrow">Valley Dealer Operations</p>
+            <h1>Console HMI</h1>
+            <p class="sub">Service + Parts + Scheduling command view</p>
+          </div>
+        </div>
+        <div class="topbar__status">
+          <div class="status-pill">
+            <span class="dot live"></span>
+            Live Sync Ready
+          </div>
+          <div class="status-pill muted">DB: clarksoft_valley_dealer</div>
+          <div class="status-pill muted">Shift: AM</div>
+          <div class="status-pill muted">Module: Ops</div>
+        </div>
+      </header>
+
+      <section class="command-strip">
+        <div class="command-card">
+          <p class="label">Open Work Orders</p>
+          <strong>18</strong>
+          <span class="trend">+3 today</span>
+        </div>
+        <div class="command-card">
+          <p class="label">Parts Backorder</p>
+          <strong>6</strong>
+          <span class="trend warning">priority</span>
+        </div>
+        <div class="command-card">
+          <p class="label">Techs In Field</p>
+          <strong>7</strong>
+          <span class="trend">on route</span>
+        </div>
+        <div class="command-card">
+          <p class="label">Appointments</p>
+          <strong>12</strong>
+          <span class="trend">today</span>
+        </div>
+      </section>
+
+      <div class="layout">
+        <aside class="rail">
+          <div class="rail__section">
+            <p class="rail__title">Primary</p>
+            <button class="rail__button is-active">Ops Brief</button>
+            <button class="rail__button">Service Board</button>
+            <button class="rail__button">Parts Flow</button>
+            <button class="rail__button">Schedules</button>
+          </div>
+          <div class="rail__section">
+            <p class="rail__title">Support</p>
+            <button class="rail__button">Customers</button>
+            <button class="rail__button">Inventory</button>
+            <button class="rail__button">Vendors</button>
+            <button class="rail__button">Reports</button>
+          </div>
+          <div class="rail__section">
+            <p class="rail__title">Tools</p>
+            <button class="rail__button">Export</button>
+            <button class="rail__button">Quick Notes</button>
+            <button class="rail__button">Escalations</button>
+          </div>
+        </aside>
+
+        <main class="grid">
+          <section class="panel board panel--primary" style="--delay: 0s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Service Board</p>
+                <h2>Work order flow (primary)</h2>
+              </div>
+              <button class="ghost">Open board</button>
+            </div>
+            <div class="board__grid">
+              <div class="board__col">
+                <p>Intake</p>
+                <div class="ticket">WO-1142 · Pivot alignment</div>
+                <div class="ticket">WO-1144 · Leak check</div>
+              </div>
+              <div class="board__col">
+                <p>Active</p>
+                <div class="ticket">WO-1137 · Gearbox swap</div>
+                <div class="ticket">WO-1139 · Control panel reset</div>
+              </div>
+              <div class="board__col">
+                <p>Awaiting Parts</p>
+                <div class="ticket warn">WO-1128 · Pump relay</div>
+              </div>
+              <div class="board__col">
+                <p>Complete</p>
+                <div class="ticket done">WO-1121 · Tower inspection</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel stage" style="--delay: 0.08s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Ops Brief</p>
+                <h2>Service + Parts command canvas</h2>
+              </div>
+              <div class="panel__actions">
+                <button class="ghost">Refresh snapshot</button>
+                <button class="solid">Focus mode</button>
+              </div>
+            </div>
+            <div class="stage__body">
+              <div class="stage__viewport">
+                <div class="stage__overlay">
+                  <div class="stage__chip">Priority Lane</div>
+                  <div class="stage__chip muted">24 hr view</div>
+                </div>
+                <div class="stage__content">
+                  <div>
+                    <h3>Priority sequence</h3>
+                    <ul>
+                      <li>Confirm pivot downtime calls (WO-1124, WO-1140).</li>
+                      <li>Stage parts kits for today’s installs.</li>
+                      <li>Review tech route ETAs at 10:30 AM.</li>
+                    </ul>
+                  </div>
+                  <div class="stage__focus">
+                    <h4>Customer Focus</h4>
+                    <p>Load equipment history and SLA coverage when a work order is selected.</p>
+                    <button class="ghost">Open snapshot</button>
+                  </div>
+                </div>
+              </div>
+              <div class="stage__rail">
+                <div class="rail-card">
+                  <p class="rail-card__title">Next up</p>
+                  <p class="rail-card__body">Parts fulfillment queue + supplier ETA tracker.</p>
+                </div>
+                <div class="rail-card accent">
+                  <p class="rail-card__title">Alert</p>
+                  <p class="rail-card__body">Two pumps flagged by vibration sensor report.</p>
+                  <span class="rail-card__tag">Dispatch</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel schedule" style="--delay: 0.16s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Scheduling</p>
+                <h2>Today’s coverage</h2>
+              </div>
+              <button class="ghost">View calendar</button>
+            </div>
+            <div class="schedule__grid">
+              <div class="schedule__card">
+                <p class="label">Techs available</p>
+                <strong>9</strong>
+                <span class="muted">2 on standby</span>
+              </div>
+              <div class="schedule__card">
+                <p class="label">Next dispatch</p>
+                <strong>11:15 AM</strong>
+                <span class="muted">Site: Tucker Farms</span>
+              </div>
+              <div class="schedule__card">
+                <p class="label">Late window</p>
+                <strong>3:30 PM</strong>
+                <span class="muted">Weather watch</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel parts" style="--delay: 0.24s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Parts Flow</p>
+                <h2>Inventory motion</h2>
+              </div>
+              <button class="ghost">Open parts hub</button>
+            </div>
+            <div class="parts__grid">
+              <div class="parts__card">
+                <p class="label">Critical stock</p>
+                <strong>9 items</strong>
+                <ul>
+                  <li>Sprinkler nozzle kit</li>
+                  <li>Gearbox seals</li>
+                  <li>Pivot control relays</li>
+                </ul>
+              </div>
+              <div class="parts__card accent">
+                <p class="label">Inbound</p>
+                <strong>5 shipments</strong>
+                <span class="muted">ETA next 48 hrs</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel alerts" style="--delay: 0.32s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Alerts</p>
+                <h2>Risk watch</h2>
+              </div>
+              <button class="ghost">Escalate</button>
+            </div>
+            <div class="alerts__list">
+              <div class="alert">SLA risk: 3 work orders over 72 hours.</div>
+              <div class="alert">Parts lead time exceeds 10 days for pivot sensors.</div>
+              <div class="alert">Two warranty claims awaiting approval.</div>
+            </div>
+          </section>
+
+          <section class="panel metrics" style="--delay: 0.4s">
+            <div class="panel__header">
+              <div>
+                <p class="panel__eyebrow">Metrics</p>
+                <h2>Ops health</h2>
+              </div>
+              <button class="ghost">Export</button>
+            </div>
+            <div class="metrics__grid">
+              <div class="metric">
+                <p>Avg response</p>
+                <strong>2.4 hrs</strong>
+              </div>
+              <div class="metric">
+                <p>First-time fix</p>
+                <strong>84%</strong>
+              </div>
+              <div class="metric">
+                <p>Parts fill rate</p>
+                <strong>91%</strong>
+              </div>
+              <div class="metric">
+                <p>Invoices pending</p>
+                <strong>14</strong>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

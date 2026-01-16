@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quality Irrigation Print Preview</title>
+    <link rel="stylesheet" href="quality_irrigation_theme_preview_print.css">
+</head>
+<body>
+    <div class="page">
+        <div class="accent-bar"></div>
+        <header class="header">
+            <img src="/assets/quality_irrigation_logo.png" alt="Quality Irrigation logo">
+            <div class="title">Print Friendly Preview</div>
+            <button class="print-button" id="print-button" type="button">Print</button>
+        </header>
+
+        <section class="section">
+            <h1>Quality Irrigation Theme</h1>
+            <p>Draft print preview based on the 2026-01-06 brand guide.</p>
+        </section>
+
+        <section class="section">
+            <h2>Core Colors (Brand Guide)</h2>
+            <div class="swatches">
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #002D62;"></span>
+                    <div>
+                        <div class="swatch-name">Primary Navy</div>
+                        <div class="swatch-hex">#002D62</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #0093D0;"></span>
+                    <div>
+                        <div class="swatch-name">Valley Blue Accent</div>
+                        <div class="swatch-hex">#0093D0</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #A29061;"></span>
+                    <div>
+                        <div class="swatch-name">Gold Accent</div>
+                        <div class="swatch-hex">#A29061</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #F7FAFC;"></span>
+                    <div>
+                        <div class="swatch-name">Mist</div>
+                        <div class="swatch-hex">#F7FAFC</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #FFFFFF;"></span>
+                    <div>
+                        <div class="swatch-name">Background</div>
+                        <div class="swatch-hex">#FFFFFF</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #D5DEE6;"></span>
+                    <div>
+                        <div class="swatch-name">Border</div>
+                        <div class="swatch-hex">#D5DEE6</div>
+                    </div>
+                </div>
+                <div class="swatch">
+                    <span class="swatch-chip" style="--swatch: #0B1B2D;"></span>
+                    <div>
+                        <div class="swatch-name">Ink</div>
+                        <div class="swatch-hex">#0B1B2D</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Typography Sample</h2>
+            <div class="type-sample">
+                <div class="type-head">Heading Sample</div>
+                <div class="type-body">Body text sample for paragraphs and descriptions.</div>
+                <div class="type-caption">Caption text for notes and metadata.</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Usage Notes</h2>
+            <ul class="notes">
+                <li>Use navy for headers and section anchors.</li>
+                <li>Use Valley blue for calls to action and links.</li>
+                <li>Use gold sparingly for small accents.</li>
+                <li>Keep layouts simple for clean printing.</li>
+            </ul>
+        </section>
+
+        <section class="section local_server_help">
+            <h2>Local server help</h2>
+            <p>Use a local server so the page loads the same way each time.</p>
+            <ol class="notes">
+                <li>Open WSL and go to: /mnt/g/clarksoft/projects/hmi_presenter</li>
+                <li>Run: python3 -m http.server 8000</li>
+                <li>Open: http://localhost:8000/src/quality_irrigation_theme_preview_print.html</li>
+                <li>Keep the WSL window open while you work.</li>
+            </ol>
+            <p>Open data tools: <a href="hmi_data_tools.html">hmi_data_tools.html</a></p>
+        </section>
+
+        <section class="section meta">
+            <p>Last updated: 2026-01-06</p>
+            <p>Logo file: /assets/quality_irrigation_logo.png (local copy)</p>
+        </section>
+
+        <footer class="footer">Draft preview. Use with the internal brand guide only.</footer>
+    </div>
+    <script>
+        const printButton = document.getElementById("print-button");
+        if (printButton) {
+            printButton.addEventListener("click", () => {
+                window.print();
+            });
+        }
+    </script>
+</body>
+</html>

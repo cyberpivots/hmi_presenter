@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Img Generator HMI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0d12;
+      --panel: #141722;
+      --panel-2: #0f111a;
+      --accent: #23d18b;
+      --accent-2: #f5b63a;
+      --text: #f7f7fb;
+      --muted: #a7adbb;
+      --stroke: #24283a;
+      --danger: #ff6b6b;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --pad: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #222741 0%, #0b0d14 55%) fixed;
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px clamp(16px, 4vw, 48px);
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 360px) minmax(320px, 1fr) minmax(280px, 360px);
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .assistant-card img {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--stroke);
+      object-fit: cover;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(35, 209, 139, 0.1);
+      border: 1px solid rgba(35, 209, 139, 0.4);
+      font-size: 0.8rem;
+    }
+
+    .panel-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .panel {
+      background: linear-gradient(145deg, rgba(35, 36, 58, 0.7), rgba(15, 17, 26, 0.9));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      box-shadow: var(--shadow);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--panel-2);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .tab-button.active {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(35, 209, 139, 0.35);
+    }
+
+    .form-section {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-section.active {
+      display: flex;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--stroke);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .inline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .helper {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .warning {
+      color: var(--accent-2);
+      font-size: 0.85rem;
+    }
+
+    .danger {
+      color: var(--danger);
+      font-size: 0.85rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button.action {
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--accent);
+      color: #08140e;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button.action.secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--stroke);
+    }
+
+    button.action:active {
+      transform: translateY(1px);
+    }
+
+    .output {
+      font-family: "Source Code Pro", "Courier New", monospace;
+      font-size: 0.85rem;
+      background: #0a0c12;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--stroke);
+      padding: 16px;
+      min-height: 220px;
+      white-space: pre-wrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--stroke);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .dots span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .dots span:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .footer {
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div class="status-badge">
+        <span>Dev-only control panel</span>
+        <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      </div>
+      <h1>Img Generator HMI</h1>
+      <p>Create image and video jobs for the img_generator pipeline. This UI can send requests to a local backend and show job logs.</p>
+    </div>
+
+        <div class="layout">
+      <div class="panel">
+        <div class="tabs" role="tablist">
+          <button class="tab-button active" data-tab="image" type="button">Image Job</button>
+          <button class="tab-button" data-tab="video" type="button">Video Job</button>
+        </div>
+
+        <form class="form-section active" id="image-form">
+          <div>
+            <label for="image-prompt">Prompt</label>
+            <textarea id="image-prompt" placeholder="Describe the image to generate..."></textarea>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-model">Model</label>
+              <select id="image-model">
+                <option value="gpt-image-1">gpt-image-1</option>
+                <option value="gpt-image-1-mini">gpt-image-1-mini</option>
+                <option value="gpt-image-1.5">gpt-image-1.5</option>
+                <option value="dall-e-3">dall-e-3</option>
+                <option value="dall-e-2">dall-e-2</option>
+              </select>
+            </div>
+            <div>
+              <label for="image-size">Size</label>
+              <select id="image-size"></select>
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-quality">Quality</label>
+              <select id="image-quality">
+                <option value="auto">auto</option>
+                <option value="high">high</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
+                <option value="hd">hd (dall-e-3)</option>
+                <option value="standard">standard</option>
+              </select>
+            </div>
+            <div>
+              <label for="image-n">Count (n)</label>
+              <input id="image-n" type="number" min="1" max="10" value="1" />
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-mode">Mode</label>
+              <select id="image-mode">
+                <option value="api">api</option>
+                <option value="script_pending">script_pending</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-output-format">Output format</label>
+              <select id="image-output-format">
+                <option value="png">png</option>
+                <option value="jpeg">jpeg</option>
+                <option value="webp">webp</option>
+              </select>
+            </div>
+            <div>
+              <label for="image-output-compression">Output compression</label>
+              <input id="image-output-compression" type="number" min="0" max="100" value="100" />
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-response-format">Response format</label>
+              <select id="image-response-format">
+                <option value="url">url (dall-e only)</option>
+                <option value="b64_json">b64_json</option>
+              </select>
+            </div>
+            <div>
+              <label for="image-moderation">Moderation</label>
+              <select id="image-moderation">
+                <option value="auto">auto</option>
+                <option value="low">low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="image-background">Background</label>
+              <select id="image-background">
+                <option value="auto">auto</option>
+                <option value="transparent">transparent</option>
+                <option value="opaque">opaque</option>
+              </select>
+            </div>
+            <div>
+              <label for="image-style">Style (dall-e-3 only)</label>
+              <select id="image-style">
+                <option value="vivid">vivid</option>
+                <option value="natural">natural</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="image-user">End-user ID (optional)</label>
+            <input id="image-user" placeholder="user-1234" />
+          </div>
+
+          <div class="helper" id="image-helper"></div>
+        </form>
+
+        <form class="form-section" id="video-form">
+          <div>
+            <label for="video-prompt">Prompt</label>
+            <textarea id="video-prompt" placeholder="Describe the video to generate..."></textarea>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="video-model">Model</label>
+              <select id="video-model">
+                <option value="sora-2">sora-2</option>
+                <option value="sora-2-pro">sora-2-pro</option>
+              </select>
+            </div>
+            <div>
+              <label for="video-size">Size</label>
+              <select id="video-size">
+                <option value="720x1280">720x1280</option>
+                <option value="1280x720">1280x720</option>
+                <option value="1024x1792">1024x1792</option>
+                <option value="1792x1024">1792x1024</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="inline">
+            <div>
+              <label for="video-seconds">Seconds</label>
+              <select id="video-seconds">
+                <option value="4">4</option>
+                <option value="8">8</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            <div>
+              <label for="video-input-reference">Input reference (image URL)</label>
+              <input id="video-input-reference" placeholder="https://..." />
+            </div>
+          </div>
+
+          <div class="helper">Video assets include video, thumbnail, and spritesheet variants.</div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top: 0">Payload Preview</h2>
+        <div class="helper">Use Generate to build JSON. Submit is disabled until a backend is wired.</div>
+        <div class="cta-row" style="margin: 12px 0 16px 0;">
+          <button class="action" id="generate-btn" type="button">Generate payload</button>
+          <button class="action secondary" id="copy-btn" type="button">Copy JSON</button>
+          <button class="action secondary" id="submit-btn" type="button" disabled>Submit (disabled)</button>
+        </div>
+        <div class="output" id="payload-output">No payload yet.</div>
+        <div class="warning" id="payload-warning" style="margin-top: 12px;"></div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top: 0">Mindy_MindEye assistant</h2>
+        <p class="helper">Photoreal field engineer with Valley 8000 pivot. Generates 16:9 hero + 1:1 thumb.</p>
+        <div class="assistant-card" style="display: grid; gap: 12px;">
+          <img id="mindy-thumb" src="/assets/img_assets/mindy/latest_thumb.png" alt="Mindy thumb" onerror="this.style.display='none'" />
+          <div class="inline">
+            <div>
+              <label for="mindy-prompt">Prompt override</label>
+              <textarea id="mindy-prompt" placeholder="Describe Mindy_MindEye...">Photoreal portrait of Mindy_MindEye, field engineer at a Valley 8000 center pivot, golden-hour farm background, professional and approachable, Quality Irrigation brand colors</textarea>
+            </div>
+          </div>
+          <div class="cta-row">
+            <button class="action" id="mindy-generate" type="button">Generate Mindy</button>
+            <button class="action secondary" id="mindy-vision" type="button">Vision QA</button>
+            <button class="action secondary" id="mindy-refresh" type="button">Refresh</button>
+          </div>
+          <div class="output" id="mindy-output">No Mindy status yet.</div>
+        </div>
+    </div>
+
+    </div>
+    <div class="panel">
+      <h2 style="margin-top: 0">Backend Draft</h2>
+      <p class="helper">Fill in a backend endpoint. The HMI will draft a fetch request for your server (not OpenAI directly).</p>
+      <div class="inline">
+        <div>
+          <label for="backend-url">Backend URL</label>
+          <input id="backend-url" value="http://127.0.0.1:52102/api/hmi/image" />
+        </div>
+        <div>
+          <label for="backend-method">Method</label>
+          <select id="backend-method">
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+          </select>
+        </div>
+        <div>
+          <label for="backend-timeout">Timeout (ms)</label>
+          <input id="backend-timeout" type="number" min="1000" value="60000" />
+        </div>
+      </div>
+      <div class="inline">
+        <div>
+          <label for="backend-job-type">Job type</label>
+          <select id="backend-job-type">
+            <option value="image">image</option>
+            <option value="video">video</option>
+          </select>
+        </div>
+        <div>
+          <label for="backend-note">Notes (optional)</label>
+          <input id="backend-note" placeholder="Queue tags, run ID, or operator notes..." />
+        </div>
+        <div>
+          <label for="backend-save-db">Save response to DB</label>
+          <select id="backend-save-db">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        </div>
+      </div>
+      <div class="helper" id="backend-helper"></div>
+      <div class="cta-row" style="margin-top: 12px;">
+          <button class="action secondary" id="build-request-btn" type="button">Build backend request</button>
+          <button class="action secondary" id="copy-request-btn" type="button">Copy request</button>
+          <button class="action" id="send-request-btn" type="button">Send to backend</button>
+      </div>
+      <div class="output" id="backend-output">No backend request yet.</div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top: 0">Job Status Polling</h2>
+      <p class="helper">Provide a backend status endpoint to check a video job by ID.</p>
+      <div class="inline">
+        <div>
+          <label for="status-url">Status URL</label>
+          <input id="status-url" placeholder="http://127.0.0.1:5055/api/jobs/status" />
+        </div>
+        <div>
+          <label for="status-method">Method</label>
+          <select id="status-method">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+          </select>
+        </div>
+        <div>
+          <label for="status-timeout">Timeout (ms)</label>
+          <input id="status-timeout" type="number" min="1000" value="30000" />
+        </div>
+      </div>
+      <div class="inline">
+        <div>
+          <label for="status-video-id">Video ID</label>
+          <input id="status-video-id" placeholder="video_123" />
+        </div>
+        <div>
+          <label for="status-job-type">Job type</label>
+          <select id="status-job-type">
+            <option value="video">video</option>
+            <option value="image">image</option>
+          </select>
+        </div>
+      </div>
+      <div class="helper" id="status-helper">For GET, the HMI sends ?video_id=... For POST, it sends JSON.</div>
+      <div class="cta-row" style="margin-top: 12px;">
+        <button class="action secondary" id="poll-status-btn" type="button">Poll status</button>
+        <button class="action secondary" id="copy-status-btn" type="button">Copy response</button>
+      </div>
+      <div class="output" id="status-output">No status yet.</div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top: 0">Post-process (local)</h2>
+      <p class="helper">Register a local post-process task (resize, compress, watermark). This creates a log entry.</p>
+      <div class="inline">
+        <div>
+          <label for="postprocess-source">Source path</label>
+          <input id="postprocess-source" placeholder="/mnt/g/clarksoft/projects/img_generator/assets/..." />
+        </div>
+        <div>
+          <label for="postprocess-action">Action</label>
+          <select id="postprocess-action">
+            <option value="resize">resize</option>
+            <option value="compress">compress</option>
+            <option value="watermark">watermark</option>
+          </select>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top: 12px;">
+        <button class="action secondary" id="postprocess-send" type="button">Create post-process job</button>
+        <button class="action secondary" id="postprocess-copy" type="button">Copy response</button>
+      </div>
+      <div class="output" id="postprocess-output">No post-process job yet.</div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top: 0">Job history</h2>
+      <p class="helper">Recent image, video, and audio jobs created via the HMI.</p>
+      <div class="cta-row">
+        <button class="action secondary" id="jobs-refresh" type="button">Refresh jobs</button>
+      </div>
+      <div class="output" id="jobs-output">No jobs loaded.</div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top: 0">Audio Magic (voice cloning)</h2>
+      <p class="helper">Uses local audio_magic CLI. Keep it local and dev-only.</p>
+      <div class="inline">
+        <div>
+          <label for="audio-text">Text</label>
+          <textarea id="audio-text" placeholder="Text for speech or voice clone"></textarea>
+        </div>
+      </div>
+      <div class="inline">
+        <div>
+          <label for="audio-provider">Provider</label>
+          <select id="audio-provider">
+            <option value="bark">bark</option>
+            <option value="openvoice">openvoice</option>
+            <option value="rvc">rvc</option>
+            <option value="stable-audio">stable-audio</option>
+          </select>
+        </div>
+        <div>
+          <label for="audio-mode">Mode</label>
+          <select id="audio-mode">
+            <option value="script">script</option>
+            <option value="script_pending">script_pending</option>
+          </select>
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="action" id="audio-send" type="button">Generate audio</button>
+        <button class="action secondary" id="audio-copy" type="button">Copy response</button>
+      </div>
+      <div class="output" id="audio-output">No audio yet.</div>
+    </div>
+
+    <div class="footer">Tip: This HMI is for local development only. It does not call the OpenAI API.</div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-button');
+    const sections = document.querySelectorAll('.form-section');
+    const imageModel = document.getElementById('image-model');
+    const imageSize = document.getElementById('image-size');
+    const imageHelper = document.getElementById('image-helper');
+    const payloadOutput = document.getElementById('payload-output');
+    const payloadWarning = document.getElementById('payload-warning');
+    const backendOutput = document.getElementById('backend-output');
+    const backendHelper = document.getElementById('backend-helper');
+    const statusOutput = document.getElementById('status-output');
+    const statusHelper = document.getElementById('status-helper');
+    const backendUrlInput = document.getElementById('backend-url');
+    const mindyOutput = document.getElementById('mindy-output');
+    const mindyThumb = document.getElementById('mindy-thumb');
+    const audioOutput = document.getElementById('audio-output');
+    const postprocessOutput = document.getElementById('postprocess-output');
+    const jobsOutput = document.getElementById('jobs-output');
+    
+
+    const sizeOptions = {
+      'gpt': ['auto', '1024x1024', '1536x1024', '1024x1536', '1792x1024', '1024x1792'],
+      'dall-e-2': ['256x256', '512x512', '1024x1024'],
+      'dall-e-3': ['1024x1024', '1792x1024', '1024x1792'],
+    };
+
+    function setActiveTab(tabName) {
+      tabs.forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.tab === tabName);
+      });
+      sections.forEach((section) => {
+        section.classList.toggle('active', section.id.startsWith(tabName));
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => setActiveTab(tab.dataset.tab));
+    });
+
+    function refreshImageSizes() {
+      const model = imageModel.value;
+      let list = sizeOptions.gpt;
+      if (model === 'dall-e-2') list = sizeOptions['dall-e-2'];
+      if (model === 'dall-e-3') list = sizeOptions['dall-e-3'];
+
+      imageSize.innerHTML = '';
+      list.forEach((size) => {
+        const opt = document.createElement('option');
+        opt.value = size;
+        opt.textContent = size;
+        imageSize.appendChild(opt);
+      });
+
+      const notes = [];
+      if (model === 'dall-e-3') {
+        notes.push('Note: dall-e-3 supports n=1 only.');
+      }
+      if (model.startsWith('gpt-image')) {
+        notes.push('Note: GPT image models return base64, not URL.');
+      }
+      imageHelper.textContent = notes.join(' ');
+    }
+
+    imageModel.addEventListener('change', refreshImageSizes);
+    refreshImageSizes();
+
+    function buildImagePayload() {
+      const payload = {
+        prompt: document.getElementById('image-prompt').value.trim(),
+        model: imageModel.value,
+        n: Number(document.getElementById('image-n').value),
+        quality: document.getElementById('image-quality').value,
+        mode: document.getElementById('image-mode').value,
+        response_format: document.getElementById('image-response-format').value,
+        output_format: document.getElementById('image-output-format').value,
+        output_compression: Number(document.getElementById('image-output-compression').value),
+        size: imageSize.value,
+        moderation: document.getElementById('image-moderation').value,
+        background: document.getElementById('image-background').value,
+        style: document.getElementById('image-style').value,
+      };
+
+      const userValue = document.getElementById('image-user').value.trim();
+      if (userValue) payload.user = userValue;
+
+      return payload;
+    }
+
+    function buildVideoPayload() {
+      const payload = {
+        prompt: document.getElementById('video-prompt').value.trim(),
+        model: document.getElementById('video-model').value,
+        seconds: document.getElementById('video-seconds').value,
+        size: document.getElementById('video-size').value,
+      };
+
+      const inputRef = document.getElementById('video-input-reference').value.trim();
+      if (inputRef) payload.input_reference = inputRef;
+
+      return payload;
+    }
+
+    function buildHmiImagePayload() {
+      const payload = buildImagePayload();
+      return {
+        prompt: payload.prompt,
+        model: payload.model,
+        size: payload.size,
+        quality: payload.quality,
+        n: payload.n,
+        mode: payload.mode,
+      };
+    }
+
+    function buildPayload() {
+      payloadWarning.textContent = '';
+      const isImage = document.querySelector('.tab-button.active').dataset.tab === 'image';
+      const payload = isImage ? buildImagePayload() : buildVideoPayload();
+
+      if (!payload.prompt) {
+        payloadWarning.textContent = 'Add a prompt before generating payload.';
+      }
+
+      payloadOutput.textContent = JSON.stringify(payload, null, 2);
+    }
+
+    document.getElementById('generate-btn').addEventListener('click', buildPayload);
+
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      const text = payloadOutput.textContent.trim();
+      if (!text || text === 'No payload yet.') {
+        payloadWarning.textContent = 'Generate a payload first.';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        payloadWarning.textContent = 'Copied to clipboard.';
+      } catch (err) {
+        payloadWarning.textContent = 'Clipboard access blocked by the browser.';
+      }
+    });
+
+    function buildBackendRequest() {
+      const endpoint = document.getElementById('backend-url').value.trim();
+      const method = document.getElementById('backend-method').value;
+      const timeoutMs = Number(document.getElementById('backend-timeout').value);
+      const jobType = document.getElementById('backend-job-type').value;
+      const note = document.getElementById('backend-note').value.trim();
+      const saveToDb = document.getElementById('backend-save-db').value === 'true';
+      const payloadText = payloadOutput.textContent.trim();
+
+      if (!endpoint) {
+        backendHelper.textContent = 'Add a backend URL before building the request.';
+        return;
+      }
+
+      let payload = null;
+      if (payloadText && payloadText !== 'No payload yet.') {
+        try {
+          payload = JSON.parse(payloadText);
+        } catch (err) {
+          backendHelper.textContent = 'Payload JSON is invalid. Regenerate the payload first.';
+          return;
+        }
+      }
+
+      const isHmiImage = endpoint.includes('/api/hmi/image');
+      const isHmiVideo = endpoint.includes('/api/hmi/video');
+      let requestBody = null;
+      if (isHmiImage) {
+        requestBody = buildHmiImagePayload();
+      } else if (isHmiVideo) {
+        requestBody = buildVideoPayload();
+      } else {
+        requestBody = {
+          job_type: jobType,
+          payload: payload,
+          note: note || null,
+          save_to_db: saveToDb,
+          timeout_ms: Number.isFinite(timeoutMs) ? timeoutMs : 60000,
+        };
+      }
+
+      const requestDraft = [
+        'fetch("' + endpoint + '", {',
+        '  method: "' + method + '",',
+        '  headers: { "Content-Type": "application/json" },',
+        '  body: JSON.stringify(' + JSON.stringify(requestBody, null, 2) + ')',
+        '});',
+      ].join('\\n');
+
+      backendOutput.textContent = requestDraft;
+      backendHelper.textContent = 'Draft request built for your backend. The backend should add OpenAI auth.';
+    }
+
+    document.getElementById('build-request-btn').addEventListener('click', buildBackendRequest);
+
+    document.getElementById('copy-request-btn').addEventListener('click', async () => {
+      const text = backendOutput.textContent.trim();
+      if (!text || text === 'No backend request yet.') {
+        backendHelper.textContent = 'Build the request first.';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        backendHelper.textContent = 'Request copied to clipboard.';
+      } catch (err) {
+        backendHelper.textContent = 'Clipboard access blocked by the browser.';
+      }
+    });
+
+    async function sendBackendRequest() {
+      const endpoint = document.getElementById('backend-url').value.trim();
+      const method = document.getElementById('backend-method').value;
+      const timeoutMs = Number(document.getElementById('backend-timeout').value) || 60000;
+      const jobType = document.getElementById('backend-job-type').value;
+      const note = document.getElementById('backend-note').value.trim();
+      const saveToDb = document.getElementById('backend-save-db').value === 'true';
+      const payloadText = payloadOutput.textContent.trim();
+
+      if (!endpoint) {
+        backendHelper.textContent = 'Add a backend URL before sending.';
+        return;
+      }
+
+      if (!payloadText || payloadText === 'No payload yet.') {
+        backendHelper.textContent = 'Generate a payload before sending.';
+        return;
+      }
+
+      let payload = null;
+      try {
+        payload = JSON.parse(payloadText);
+      } catch (err) {
+        backendHelper.textContent = 'Payload JSON is invalid. Regenerate the payload first.';
+        return;
+      }
+
+      const isHmiImage = endpoint.includes('/api/hmi/image');
+      const isHmiVideo = endpoint.includes('/api/hmi/video');
+      let body = null;
+      if (isHmiImage) {
+        body = buildHmiImagePayload();
+      } else if (isHmiVideo) {
+        body = buildVideoPayload();
+      } else {
+        body = {
+          job_type: jobType,
+          payload: payload,
+          note: note || null,
+          save_to_db: saveToDb,
+          timeout_ms: timeoutMs,
+        };
+      }
+
+      backendHelper.textContent = 'Sending request to backend...';
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const response = await fetch(endpoint, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
+        clearTimeout(timer);
+        const text = await response.text();
+        backendOutput.textContent = text || '(empty response)';
+        backendHelper.textContent = response.ok ? 'Backend response received.' : 'Backend error received.';
+      } catch (err) {
+        clearTimeout(timer);
+        backendHelper.textContent = 'Request failed. Check backend server status.';
+      }
+    }
+
+    document.getElementById('send-request-btn').addEventListener('click', sendBackendRequest);
+
+    async function pollStatus() {
+      const endpoint = document.getElementById('status-url').value.trim();
+      const method = document.getElementById('status-method').value;
+      const timeoutMs = Number(document.getElementById('status-timeout').value) || 30000;
+      const videoId = document.getElementById('status-video-id').value.trim();
+      const jobType = document.getElementById('status-job-type').value;
+
+      if (!endpoint) {
+        statusHelper.textContent = 'Add a status URL before polling.';
+        return;
+      }
+      if (!videoId) {
+        statusHelper.textContent = 'Add a video ID before polling.';
+        return;
+      }
+
+      statusHelper.textContent = 'Polling backend status...';
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        let response = null;
+        if (method === 'GET') {
+          const url = new URL(endpoint);
+          url.searchParams.set('video_id', videoId);
+          url.searchParams.set('job_type', jobType);
+          response = await fetch(url.toString(), {
+            method: 'GET',
+            signal: controller.signal,
+          });
+        } else {
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ video_id: videoId, job_type: jobType }),
+            signal: controller.signal,
+          });
+        }
+
+        clearTimeout(timer);
+        const text = await response.text();
+        statusOutput.textContent = text || '(empty response)';
+        statusHelper.textContent = response.ok ? 'Status received.' : 'Backend returned an error.';
+      } catch (err) {
+        clearTimeout(timer);
+        statusHelper.textContent = 'Status request failed. Check backend server status.';
+      }
+    }
+
+    document.getElementById('poll-status-btn').addEventListener('click', pollStatus);
+    document.getElementById('copy-status-btn').addEventListener('click', async () => {
+      const text = statusOutput.textContent.trim();
+      if (!text || text === 'No status yet.') {
+        statusHelper.textContent = 'Poll status first.';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        statusHelper.textContent = 'Status copied to clipboard.';
+      } catch (err) {
+        statusHelper.textContent = 'Clipboard access blocked by the browser.';
+      }
+    });
+
+    async function refreshJobs() {
+      try {
+        const res = await fetch('/api/hmi/jobs');
+        const data = await res.json();
+        jobsOutput.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        jobsOutput.textContent = 'Job history error.';
+      }
+    }
+
+    document.getElementById('jobs-refresh').addEventListener('click', refreshJobs);
+
+    document.getElementById('postprocess-send').addEventListener('click', async () => {
+      const body = {
+        source_path: document.getElementById('postprocess-source').value.trim(),
+        action: document.getElementById('postprocess-action').value,
+        mode: 'script_pending',
+      };
+      postprocessOutput.textContent = 'Sending...';
+      try {
+        const res = await fetch('/api/hmi/postprocess', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        postprocessOutput.textContent = await res.text();
+        refreshJobs();
+      } catch (err) {
+        postprocessOutput.textContent = 'Post-process request failed.';
+      }
+    });
+
+    document.getElementById('postprocess-copy').addEventListener('click', async () => {
+      const text = postprocessOutput.textContent.trim();
+      if (!text || text === 'No post-process job yet.') return;
+      await navigator.clipboard.writeText(text);
+    });
+
+    async function refreshMindy() {
+      try {
+        const res = await fetch('/api/mindy/status');
+        const data = await res.json();
+        const latest = data.latest || {};
+        const qa = data.qa || {};
+        if (latest.thumb) {
+          mindyThumb.src = `/assets/img_assets/mindy/${latest.thumb}`;
+          mindyThumb.style.display = 'block';
+        }
+        mindyOutput.textContent = JSON.stringify({ latest, qa }, null, 2);
+      } catch (err) {
+        mindyOutput.textContent = 'Mindy status error.';
+      }
+    }
+
+    document.getElementById('mindy-refresh').addEventListener('click', refreshMindy);
+    document.getElementById('mindy-generate').addEventListener('click', async () => {
+      const prompt = document.getElementById('mindy-prompt').value.trim();
+      mindyOutput.textContent = 'Generating...';
+      const res = await fetch('/api/mindy/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      mindyOutput.textContent = await res.text();
+      refreshMindy();
+    });
+    document.getElementById('mindy-vision').addEventListener('click', async () => {
+      mindyOutput.textContent = 'Running vision QA...';
+      const res = await fetch('/api/mindy/vision', { method: 'POST' });
+      mindyOutput.textContent = await res.text();
+      refreshMindy();
+    });
+
+    document.getElementById('audio-send').addEventListener('click', async () => {
+      const body = {
+        text: document.getElementById('audio-text').value.trim(),
+        provider: document.getElementById('audio-provider').value,
+        mode: document.getElementById('audio-mode').value,
+      };
+      audioOutput.textContent = 'Sending...';
+      const audioEndpoint = backendUrlInput ? backendUrlInput.value.trim().replace('/api/hmi/image', '/api/hmi/audio').replace('/api/hmi/video', '/api/hmi/audio') : '/api/hmi/audio';
+      const res = await fetch(audioEndpoint || '/api/hmi/audio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      audioOutput.textContent = await res.text();
+    });
+    document.getElementById('audio-copy').addEventListener('click', async () => {
+      const text = audioOutput.textContent.trim();
+      if (!text || text === 'No audio yet.') return;
+      await navigator.clipboard.writeText(text);
+    });
+
+    refreshMindy();
+    refreshJobs();
+  </script>
+</body>
+</html>

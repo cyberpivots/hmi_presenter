@@ -1,0 +1,476 @@
+{
+  "meta": {
+    "source": "mixed_mock_data",
+    "updated_at": "2026-01-05T01:20:55Z",
+    "notes": "Imagery analysis uses a Landsat 8 L1 sample window (TOA reflectance without sun angle correction). Operations data is synthetic."
+  },
+  "telemetry": {
+    "status": "ok",
+    "lat": 40.1234,
+    "lon": -120.5678,
+    "alt": 120.5,
+    "groundspeed": 12.3,
+    "airspeed": 13.1,
+    "battery": 78,
+    "heading": 212,
+    "mode": "AUTO"
+  },
+  "ndvi_summary": {
+    "mean": -0.036659,
+    "min": -0.126782,
+    "max": 0.015634,
+    "stress_ratio": null,
+    "note": "Computed from Landsat 8 L1 sample window using MTL reflectance scaling."
+  },
+  "ndmi_summary": {
+    "mean": 0.3597,
+    "min": 0.167383,
+    "max": 0.734999,
+    "stress_ratio": null,
+    "note": "Computed from Landsat 8 L1 sample window using MTL reflectance scaling."
+  },
+  "flight_schedules": [
+    {
+      "schedule_id": "sched-001",
+      "interval_days": 2,
+      "time_local": "06:30",
+      "manual_override": false
+    },
+    {
+      "schedule_id": "sched-002",
+      "interval_days": 7,
+      "time_local": "18:10",
+      "manual_override": true
+    }
+  ],
+  "water_consumption_daily": [
+    {
+      "date": "2026-01-02",
+      "liters": 8600
+    },
+    {
+      "date": "2026-01-03",
+      "liters": 9100
+    },
+    {
+      "date": "2026-01-04",
+      "liters": 8700
+    }
+  ],
+  "weather": {
+    "current": {
+      "humidity_percent": 43,
+      "wind_speed_kph": 18,
+      "rain_probability_percent": 10,
+      "condition": "Clear"
+    },
+    "forecast_next_3_days": [
+      {
+        "day": "Tue",
+        "high_c": 28,
+        "low_c": 14,
+        "rain_probability_percent": 5
+      },
+      {
+        "day": "Wed",
+        "high_c": 26,
+        "low_c": 13,
+        "rain_probability_percent": 15
+      },
+      {
+        "day": "Thu",
+        "high_c": 25,
+        "low_c": 12,
+        "rain_probability_percent": 20
+      }
+    ]
+  },
+  "field_stress_map": {
+    "legend": [
+      {
+        "label": "Well irrigated",
+        "color": "#2f9e44"
+      },
+      {
+        "label": "Moderate stress",
+        "color": "#f0b429"
+      },
+      {
+        "label": "Critical stress",
+        "color": "#d64545"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "A1",
+        "level": "well"
+      },
+      {
+        "id": "A2",
+        "level": "moderate"
+      },
+      {
+        "id": "A3",
+        "level": "critical"
+      },
+      {
+        "id": "B1",
+        "level": "well"
+      },
+      {
+        "id": "B2",
+        "level": "moderate"
+      },
+      {
+        "id": "B3",
+        "level": "well"
+      }
+    ]
+  },
+  "row_index_stats": [
+    {
+      "row_label": "1",
+      "ndvi_min": 0.29289472,
+      "ndvi_max": 0.90524304,
+      "ndvi_avg": 0.7761028,
+      "ndvi_median": 0.81946087
+    },
+    {
+      "row_label": "2",
+      "ndvi_min": 0.2996484,
+      "ndvi_max": 0.89841557,
+      "ndvi_avg": 0.76965517,
+      "ndvi_median": 0.811888
+    },
+    {
+      "row_label": "3",
+      "ndvi_min": 0.30208635,
+      "ndvi_max": 0.9079444,
+      "ndvi_avg": 0.7959645,
+      "ndvi_median": 0.8337045
+    },
+    {
+      "row_label": "4",
+      "ndvi_min": 0.28437713,
+      "ndvi_max": 0.90067923,
+      "ndvi_avg": 0.7774858,
+      "ndvi_median": 0.82110584
+    },
+    {
+      "row_label": "5",
+      "ndvi_min": 0.26026008,
+      "ndvi_max": 0.91584474,
+      "ndvi_avg": 0.81076807,
+      "ndvi_median": 0.8452939
+    },
+    {
+      "row_label": "6",
+      "ndvi_min": 0.28605533,
+      "ndvi_max": 0.9114588,
+      "ndvi_avg": 0.805762,
+      "ndvi_median": 0.8463879
+    },
+    {
+      "row_label": "7",
+      "ndvi_min": 0.29004312,
+      "ndvi_max": 0.9203377,
+      "ndvi_avg": 0.832236,
+      "ndvi_median": 0.86308485
+    },
+    {
+      "row_label": "8",
+      "ndvi_min": 0.24210446,
+      "ndvi_max": 0.9184454,
+      "ndvi_avg": 0.833681,
+      "ndvi_median": 0.86768883
+    },
+    {
+      "row_label": "9",
+      "ndvi_min": 0.29137403,
+      "ndvi_max": 0.9222457,
+      "ndvi_avg": 0.81438804,
+      "ndvi_median": 0.857017
+    },
+    {
+      "row_label": "10",
+      "ndvi_min": 0.2877915,
+      "ndvi_max": 0.9181584,
+      "ndvi_avg": 0.82462823,
+      "ndvi_median": 0.85859984
+    },
+    {
+      "row_label": "11",
+      "ndvi_min": 0.30919117,
+      "ndvi_max": 0.9283281,
+      "ndvi_avg": 0.837097,
+      "ndvi_median": 0.86348444
+    },
+    {
+      "row_label": "12",
+      "ndvi_min": 0.30898502,
+      "ndvi_max": 0.9225553,
+      "ndvi_avg": 0.84565705,
+      "ndvi_median": 0.8681373
+    }
+  ],
+  "irrigation_status": {
+    "timestamp": "2026-01-04T17:10:00Z",
+    "valves": {
+      "parcel-1": {
+        "is_open": false,
+        "last_opened_at": "2026-01-04T06:31:00Z",
+        "last_closed_at": "2026-01-04T06:41:00Z"
+      },
+      "parcel-2": {
+        "is_open": true,
+        "last_opened_at": "2026-01-04T06:45:00Z",
+        "last_closed_at": null
+      },
+      "parcel-3": {
+        "is_open": false,
+        "last_opened_at": "2026-01-03T18:20:00Z",
+        "last_closed_at": "2026-01-03T18:28:00Z"
+      }
+    }
+  },
+  "manual_irrigation": {
+    "parcel_id": "parcel-2",
+    "liters": 120,
+    "duration_seconds": 720
+  },
+  "imagery_analysis": {
+    "active_scene_id": "LC80010022016230LGN01",
+    "scene_library": [
+      {
+        "scene_id": "LC80010022016230LGN01",
+        "spacecraft_id": "LANDSAT_8",
+        "sensor_id": "OLI_TIRS",
+        "product_id": "LC08_L1GT_001002_20160817_20170322_01_T2",
+        "date_acquired": "2016-08-17",
+        "scene_center_time": "14:07:40.5219570Z",
+        "wrs_path": "1",
+        "wrs_row": "2",
+        "cloud_cover": "53.74",
+        "sun_elevation": "22.03174321",
+        "sample_window_px": 512,
+        "bands": [
+          {
+            "name": "red",
+            "band": "B4"
+          },
+          {
+            "name": "nir",
+            "band": "B5"
+          },
+          {
+            "name": "swir",
+            "band": "B6"
+          }
+        ],
+        "artifacts": {
+          "red_window": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_red_window.tif",
+          "nir_window": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_nir_window.tif",
+          "swir_window": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_swir_window.tif",
+          "ndvi_window": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndvi_window.tif",
+          "ndmi_window": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndmi_window.tif",
+          "summary_json": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndvi_ndmi_summary.json"
+        },
+        "indices": {
+          "ndvi": {
+            "count": 262144,
+            "min": -0.12678169542385595,
+            "max": 0.015634306134603863,
+            "mean": -0.036658983264422663,
+            "median": -0.03595791407223561,
+            "std": 0.012511898844258787
+          },
+          "ndmi": {
+            "count": 262144,
+            "min": 0.16738275066708877,
+            "max": 0.7349987754102375,
+            "mean": 0.35970039947501464,
+            "median": 0.3532746484657042,
+            "std": 0.05746538754622961
+          }
+        }
+      }
+    ],
+    "index_overview": {
+      "ndvi": {
+        "count": 262144,
+        "min": -0.12678169542385595,
+        "max": 0.015634306134603863,
+        "mean": -0.036658983264422663,
+        "median": -0.03595791407223561,
+        "std": 0.012511898844258787
+      },
+      "ndmi": {
+        "count": 262144,
+        "min": 0.16738275066708877,
+        "max": 0.7349987754102375,
+        "mean": 0.35970039947501464,
+        "median": 0.3532746484657042,
+        "std": 0.05746538754622961
+      }
+    },
+    "histograms": {
+      "ndvi": {
+        "bin_edges": [
+          -1.0,
+          -0.8333,
+          -0.6667,
+          -0.5,
+          -0.3333,
+          -0.1667,
+          0.0,
+          0.1667,
+          0.3333,
+          0.5,
+          0.6667,
+          0.8333,
+          1.0
+        ],
+        "bin_midpoints": [
+          -0.9167,
+          -0.75,
+          -0.5833,
+          -0.4167,
+          -0.25,
+          -0.0833,
+          0.0833,
+          0.25,
+          0.4167,
+          0.5833,
+          0.75,
+          0.9167
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          261392,
+          752,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ndmi": {
+        "bin_edges": [
+          -1.0,
+          -0.8333,
+          -0.6667,
+          -0.5,
+          -0.3333,
+          -0.1667,
+          0.0,
+          0.1667,
+          0.3333,
+          0.5,
+          0.6667,
+          0.8333,
+          1.0
+        ],
+        "bin_midpoints": [
+          -0.9167,
+          -0.75,
+          -0.5833,
+          -0.4167,
+          -0.25,
+          -0.0833,
+          0.0833,
+          0.25,
+          0.4167,
+          0.5833,
+          0.75,
+          0.9167
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          87855,
+          168793,
+          5430,
+          66,
+          0
+        ]
+      }
+    },
+    "quality_checks": [
+      {
+        "check": "cloud_cover",
+        "status": "info",
+        "value": "53.74",
+        "note": "From MTL CLOUD_COVER field."
+      },
+      {
+        "check": "sun_elevation",
+        "status": "info",
+        "value": "22.03174321",
+        "note": "From MTL SUN_ELEVATION field."
+      },
+      {
+        "check": "reflectance_scaling",
+        "status": "complete",
+        "value": "REFLECTANCE_MULT/ADD from MTL",
+        "note": "Used for TOA reflectance without sun angle correction."
+      }
+    ],
+    "processing_steps": [
+      {
+        "step": "Ingest window",
+        "status": "complete",
+        "duration_s": null
+      },
+      {
+        "step": "Reflectance scaling",
+        "status": "complete",
+        "duration_s": null
+      },
+      {
+        "step": "NDVI compute",
+        "status": "complete",
+        "duration_s": null
+      },
+      {
+        "step": "NDMI compute",
+        "status": "complete",
+        "duration_s": null
+      },
+      {
+        "step": "Histogram build",
+        "status": "complete",
+        "duration_s": null
+      }
+    ],
+    "exports": [
+      {
+        "label": "NDVI window",
+        "format": "GeoTIFF",
+        "path": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndvi_window.tif",
+        "status": "ready"
+      },
+      {
+        "label": "NDMI window",
+        "format": "GeoTIFF",
+        "path": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndmi_window.tif",
+        "status": "ready"
+      },
+      {
+        "label": "Summary JSON",
+        "format": "JSON",
+        "path": "/mnt/g/clarksoft/projects/irrigation_eyes/assets/fixtures/cv_samples/landsat_swir/LC08_L1GT_001002_20160817_20170322_01_T2_ndvi_ndmi_summary.json",
+        "status": "ready"
+      }
+    ]
+  }
+}

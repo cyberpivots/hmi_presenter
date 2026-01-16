@@ -1,0 +1,8 @@
+{
+    "theme": "quality_irrigation",
+    "reduced_motion": false,
+    "content_density": "standard",
+    "view": "fullscreen",
+    "deck": "ai_pivot_data_stack",
+    "slide": 10
+}

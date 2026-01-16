@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1792" height="1024" viewBox="0 0 1792 1024">
+  <defs>
+    <style>
+      .title { font: 600 40px Arial, sans-serif; fill: #0D4B78; }
+      .label { font: 600 24px Arial, sans-serif; fill: #0D4B78; }
+      .small { font: 500 18px Arial, sans-serif; fill: #2B5C7A; }
+      .panel { fill: #FFFFFF; stroke: #C7D9EB; stroke-width: 2; }
+      .panel-soft { fill: #F1F7FF; stroke: #C7D9EB; stroke-width: 2; }
+      .bar { fill: #1E88E5; }
+      .bar-soft { fill: #76B7E8; }
+      .line { stroke: #1E88E5; stroke-width: 3; fill: none; }
+      .grid { stroke: #D6E4F2; stroke-width: 1; }
+      .map { fill: #E6F3FF; stroke: #0D4B78; stroke-width: 2; }
+      .dot { fill: #2DBE8C; }
+      .accent { fill: #2DBE8C; }
+    </style>
+  </defs>
+  <rect width="100%" height="100%" fill="#F8FBFF" />
+  <text x="80" y="90" class="title">Quick Stats Dashboard (Concept)</text>
+
+  <rect x="80" y="140" width="360" height="300" rx="16" class="panel" />
+  <text x="110" y="185" class="label">Irrigated Acres</text>
+  <text x="110" y="215" class="small">Top states by share</text>
+  <rect x="110" y="250" width="280" height="18" class="bar" />
+  <rect x="110" y="285" width="240" height="18" class="bar-soft" />
+  <rect x="110" y="320" width="210" height="18" class="bar" />
+  <rect x="110" y="355" width="180" height="18" class="bar-soft" />
+
+  <rect x="80" y="460" width="360" height="250" rx="16" class="panel" />
+  <text x="110" y="505" class="label">Survey Coverage</text>
+  <text x="110" y="535" class="small">Example percent split</text>
+  <circle cx="200" cy="610" r="70" fill="#E6F3FF" stroke="#0D4B78" stroke-width="2" />
+  <path d="M200 610 L200 540 A70 70 0 0 1 258 642 Z" fill="#1E88E5" />
+  <circle cx="200" cy="610" r="36" fill="#FFFFFF" />
+  <rect x="300" y="565" width="20" height="20" class="bar" />
+  <text x="330" y="582" class="small">Reported</text>
+  <rect x="300" y="605" width="20" height="20" class="bar-soft" />
+  <text x="330" y="622" class="small">Pending</text>
+
+  <rect x="80" y="730" width="360" height="200" rx="16" class="panel" />
+  <text x="110" y="775" class="label">Trend Snapshot</text>
+  <path d="M120 860 L160 830 L200 845 L240 810 L280 820 L320 790 L360 800" class="line" />
+  <line x1="110" y1="880" x2="410" y2="880" class="grid" />
+
+  <rect x="480" y="140" width="880" height="790" rx="22" class="panel-soft" />
+  <text x="520" y="190" class="label">National Overview (Concept)</text>
+  <rect x="520" y="230" width="800" height="580" rx="16" class="map" />
+  <line x1="520" y1="360" x2="1320" y2="360" class="grid" />
+  <line x1="520" y1="500" x2="1320" y2="500" class="grid" />
+  <line x1="520" y1="640" x2="1320" y2="640" class="grid" />
+  <line x1="700" y1="230" x2="700" y2="810" class="grid" />
+  <line x1="880" y1="230" x2="880" y2="810" class="grid" />
+  <line x1="1060" y1="230" x2="1060" y2="810" class="grid" />
+  <line x1="1240" y1="230" x2="1240" y2="810" class="grid" />
+  <circle cx="640" cy="420" r="8" class="dot" />
+  <circle cx="820" cy="520" r="8" class="dot" />
+  <circle cx="980" cy="610" r="8" class="dot" />
+  <circle cx="1120" cy="430" r="8" class="dot" />
+  <circle cx="1200" cy="690" r="8" class="dot" />
+
+  <rect x="1400" y="140" width="312" height="300" rx="16" class="panel" />
+  <text x="1430" y="185" class="label">Yield Index</text>
+  <text x="1430" y="215" class="small">5-year view</text>
+  <path d="M1440 300 L1490 270 L1540 290 L1590 250 L1640 260 L1690 235" class="line" />
+  <line x1="1430" y1="330" x2="1685" y2="330" class="grid" />
+
+  <rect x="1400" y="460" width="312" height="250" rx="16" class="panel" />
+  <text x="1430" y="505" class="label">Water Use</text>
+  <rect x="1430" y="560" width="40" height="90" class="bar" />
+  <rect x="1490" y="520" width="40" height="130" class="bar-soft" />
+  <rect x="1550" y="540" width="40" height="110" class="bar" />
+  <rect x="1610" y="500" width="40" height="150" class="bar-soft" />
+
+  <text x="520" y="860" class="small">Conceptual layout. Replace tiles with real Quick Stats queries when reporting.</text>
+</svg>

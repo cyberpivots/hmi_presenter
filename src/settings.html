@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Settings — ClarkSoft</title>
+    <link rel="stylesheet" href="master_irrigator_presentation_hmi.css?v=1">
+</head>
+<body data-theme="quality_irrigation">
+    <header class="header">
+        <div class="header-left">
+            <div class="header-title">Settings & Preferences</div>
+        </div>
+        <div class="header-right">
+            <a class="help-button" href="master_irrigator_presentation_hmi.html">Back to presentation</a>
+        </div>
+    </header>
+    <main class="page settings-shell">
+        <section class="panel-card">
+            <h2>HMI config file</h2>
+            <p class="panel-text panel-text-muted">Load a small JSON file to set theme, view, deck, and slide defaults.</p>
+            <div class="settings-grid">
+                <div>
+                    <label class="panel-text" for="config_file_input">Config file (JSON)</label>
+                    <input class="deck-editor-input" id="config_file_input" type="file" accept=".json,application/json" />
+                    <p class="settings-note">Files are read locally in the browser. Nothing is uploaded.</p>
+                    <p class="settings-note">Sample file: /assets/hmi_config_sample.json</p>
+                    <div class="settings-row">
+                        <button class="deck-editor-button primary" id="config_apply" type="button">Apply to this browser</button>
+                        <button class="deck-editor-button" id="config_download" type="button">Download current config</button>
+                        <button class="deck-editor-button" id="config_copy_link" type="button">Copy launch link</button>
+                    </div>
+                    <label class="panel-text" for="config_launch_link">Launch link</label>
+                    <input class="deck-editor-input" id="config_launch_link" type="text" readonly />
+                </div>
+                <div>
+                    <label class="panel-text" for="config_preview">Config preview</label>
+                    <pre class="settings-code" id="config_preview">No config loaded.</pre>
+                    <p class="settings-note">Schema: theme, reduced_motion, content_density, view, deck, slide.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-card">
+            <h2>Theme and motion</h2>
+            <p class="panel-text panel-text-muted">These settings are stored in localStorage for this browser.</p>
+            <div class="settings-grid">
+                <div>
+                    <label class="panel-text" for="settings_theme">Theme</label>
+                    <select class="deck-editor-input" id="settings_theme">
+                        <option value="quality_irrigation">Quality Irrigation</option>
+                        <option value="blues_green">Blues &amp; Green</option>
+                        <option value="night_ops">Night Ops</option>
+                        <option value="high_contrast">High Contrast</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="panel-text" for="settings_reduced_motion">Reduced motion</label>
+                    <select class="deck-editor-input" id="settings_reduced_motion">
+                        <option value="false">Off</option>
+                        <option value="true">On</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="panel-text" for="settings_density">Content density</label>
+                    <select class="deck-editor-input" id="settings_density">
+                        <option value="auto">Auto (screen size)</option>
+                        <option value="standard">Standard</option>
+                        <option value="compact">Compact</option>
+                        <option value="relaxed">Relaxed</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-card">
+            <h2>View defaults</h2>
+            <p class="panel-text panel-text-muted">Used to build a launch link for the presenter view.</p>
+            <div class="settings-grid">
+                <div>
+                    <label class="panel-text" for="settings_view">View mode</label>
+                    <select class="deck-editor-input" id="settings_view">
+                        <option value="control">Control</option>
+                        <option value="presenter">Presenter</option>
+                        <option value="fullscreen">Fullscreen</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="panel-text" for="settings_deck">Deck id</label>
+                    <input class="deck-editor-input" id="settings_deck" type="text" placeholder="ai_pivot_data_stack" />
+                </div>
+                <div>
+                    <label class="panel-text" for="settings_slide">Slide number</label>
+                    <input class="deck-editor-input" id="settings_slide" type="number" min="1" step="1" placeholder="10" />
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-card">
+            <h2>Deck audit — top issues</h2>
+            <p class="panel-text panel-text-muted">Latest run: <span id="deck-audit-run">Loading...</span></p>
+            <div class="audit-table-wrap">
+                <table class="audit-table" aria-label="Top issues per deck">
+                    <thead>
+                        <tr>
+                            <th>Deck</th>
+                            <th>Slide</th>
+                            <th>Viewport</th>
+                            <th>Score</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deck-audit-body">
+                        <tr><td colspan="5">Loading audit data…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script>
+        (function () {
+            const CONFIG_STORAGE_KEY = "mi_hmi_config";
+            const THEME_STORAGE_KEY = "mi_hmi_theme";
+            const REDUCED_MOTION_STORAGE_KEY = "mi_hmi_reduced_motion";
+            const CONTENT_DENSITY_STORAGE_KEY = "mi_hmi_content_density";
+            const previewEl = document.getElementById("config_preview");
+            const fileInput = document.getElementById("config_file_input");
+            const applyButton = document.getElementById("config_apply");
+            const downloadButton = document.getElementById("config_download");
+            const copyButton = document.getElementById("config_copy_link");
+            const launchLinkInput = document.getElementById("config_launch_link");
+            const themeSelect = document.getElementById("settings_theme");
+            const reducedMotionSelect = document.getElementById("settings_reduced_motion");
+            const densitySelect = document.getElementById("settings_density");
+            const viewSelect = document.getElementById("settings_view");
+            const deckInput = document.getElementById("settings_deck");
+            const slideInput = document.getElementById("settings_slide");
+
+            function safeJsonParse(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function readStoredConfig() {
+                try {
+                    const raw = localStorage.getItem(CONFIG_STORAGE_KEY);
+                    return raw ? safeJsonParse(raw) : null;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function buildConfigFromForm() {
+                const slideValue = slideInput.value ? Number.parseInt(slideInput.value, 10) : null;
+                return {
+                    theme: themeSelect.value || "quality_irrigation",
+                    reduced_motion: reducedMotionSelect.value === "true",
+                    content_density: densitySelect ? densitySelect.value || "standard" : "standard",
+                    view: viewSelect.value || "control",
+                    deck: deckInput.value || "",
+                    slide: Number.isFinite(slideValue) && slideValue > 0 ? slideValue : null
+                };
+            }
+
+            function updateLaunchLink(config) {
+                const url = new URL(window.location.href);
+                url.pathname = url.pathname.replace("settings.html", "master_irrigator_presentation_hmi.html");
+                url.searchParams.set("view", config.view || "control");
+                if (config.deck) {
+                    url.searchParams.set("deck", config.deck);
+                }
+                if (config.slide) {
+                    url.searchParams.set("slide", String(config.slide));
+                }
+                if (config.content_density) {
+                    url.searchParams.set("density", config.content_density);
+                }
+                launchLinkInput.value = url.toString();
+            }
+
+            function renderConfigPreview(config) {
+                if (!previewEl) {
+                    return;
+                }
+                previewEl.textContent = config ? JSON.stringify(config, null, 2) : "No config loaded.";
+            }
+
+            function applyConfigToForm(config) {
+                if (!config) {
+                    return;
+                }
+                if (config.theme && themeSelect) {
+                    themeSelect.value = config.theme;
+                }
+                if (typeof config.reduced_motion === "boolean" && reducedMotionSelect) {
+                    reducedMotionSelect.value = config.reduced_motion ? "true" : "false";
+                }
+                if (config.content_density && densitySelect) {
+                    densitySelect.value = config.content_density;
+                }
+                if (config.view && viewSelect) {
+                    viewSelect.value = config.view;
+                }
+                if (deckInput) {
+                    deckInput.value = config.deck || "";
+                }
+                if (slideInput) {
+                    slideInput.value = config.slide || "";
+                }
+            }
+
+            function persistConfig(config) {
+                try {
+                    localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+                    localStorage.setItem(THEME_STORAGE_KEY, config.theme || "quality_irrigation");
+                    localStorage.setItem(REDUCED_MOTION_STORAGE_KEY, config.reduced_motion ? "true" : "false");
+                    localStorage.setItem(CONTENT_DENSITY_STORAGE_KEY, config.content_density || "standard");
+                } catch (error) {
+                    return;
+                }
+            }
+
+            function downloadConfig(config) {
+                const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "hmi_config.json";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(link.href);
+            }
+
+            function copyLaunchLink() {
+                if (!launchLinkInput || !launchLinkInput.value) {
+                    return;
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(launchLinkInput.value);
+                    return;
+                }
+                launchLinkInput.select();
+                document.execCommand("copy");
+            }
+
+            function syncFromForm() {
+                const config = buildConfigFromForm();
+                renderConfigPreview(config);
+                updateLaunchLink(config);
+            }
+
+            const storedConfig = readStoredConfig();
+            if (storedConfig) {
+                applyConfigToForm(storedConfig);
+                renderConfigPreview(storedConfig);
+                updateLaunchLink(storedConfig);
+            } else {
+                syncFromForm();
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener("change", (event) => {
+                    const file = event.target.files && event.target.files[0];
+                    if (!file) {
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const parsed = safeJsonParse(reader.result);
+                        if (!parsed) {
+                            previewEl.textContent = "Invalid JSON file.";
+                            return;
+                        }
+                        applyConfigToForm(parsed);
+                        renderConfigPreview(parsed);
+                        updateLaunchLink(parsed);
+                    };
+                    reader.readAsText(file);
+                });
+            }
+
+            [themeSelect, reducedMotionSelect, densitySelect, viewSelect, deckInput, slideInput].forEach((el) => {
+                if (!el) {
+                    return;
+                }
+                el.addEventListener("input", syncFromForm);
+            });
+
+            if (applyButton) {
+                applyButton.addEventListener("click", () => {
+                    const config = buildConfigFromForm();
+                    persistConfig(config);
+                    renderConfigPreview(config);
+                    updateLaunchLink(config);
+                });
+            }
+
+            if (downloadButton) {
+                downloadButton.addEventListener("click", () => {
+                    const config = buildConfigFromForm();
+                    downloadConfig(config);
+                });
+            }
+
+            if (copyButton) {
+                copyButton.addEventListener("click", copyLaunchLink);
+            }
+
+            const runEl = document.getElementById("deck-audit-run");
+            const bodyEl = document.getElementById("deck-audit-body");
+            fetch("/api/deck-audit/latest")
+                .then((resp) => resp.json())
+                .then((data) => {
+                    runEl.textContent = data.run_id ? `${data.run_id} (${data.timestamp_utc || "n/a"})` : "No run data";
+                    const rows = [];
+                    (data.top_issues || []).forEach((deck) => {
+                        (deck.issues || []).forEach((issue, idx) => {
+                            rows.push({
+                                deck: deck.deck_title,
+                                slide: issue.slide_index,
+                                viewport: issue.viewport || "n/a",
+                                score: issue.score,
+                                notes: [
+                                    issue.mean_luma ? `Luma ${issue.mean_luma.toFixed(1)}` : "Luma n/a",
+                                    issue.contrast_std ? `Contrast ${issue.contrast_std.toFixed(1)}` : "Contrast n/a",
+                                    issue.media_fit_pct ? `Media fit ${issue.media_fit_pct.toFixed(1)}%` : "Media fit n/a",
+                                ].join(" • "),
+                            });
+                        });
+                    });
+                    if (!rows.length) {
+                        bodyEl.innerHTML = "<tr><td colspan=\"5\">No audit data available.</td></tr>";
+                        return;
+                    }
+                    bodyEl.innerHTML = rows.map((row) => (
+                        `<tr><td>${row.deck}</td><td>${row.slide}</td><td>${row.viewport}</td><td>${row.score}</td><td>${row.notes}</td></tr>`
+                    )).join("");
+                })
+                .catch(() => {
+                    runEl.textContent = "Audit data unavailable";
+                    bodyEl.innerHTML = "<tr><td colspan=\"5\">Could not load audit data.</td></tr>";
+                });
+        })();
+    </script>
+</body>
+</html>

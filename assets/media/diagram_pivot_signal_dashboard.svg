@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Pivot signal dashboard diagram">
+  <defs>
+    <style>
+      .title { font: 700 24px "Source Sans 3", Arial, sans-serif; fill: #002D62; }
+      .tile-title { font: 600 16px "Source Sans 3", Arial, sans-serif; fill: #0B1B2D; }
+      .tile-value { font: 700 22px "Source Sans 3", Arial, sans-serif; fill: #0093D0; }
+      .tile-sub { font: 400 12px "Source Sans 3", Arial, sans-serif; fill: #4B5563; }
+      .alert-text { font: 700 14px "Source Sans 3", Arial, sans-serif; fill: #FFFFFF; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF" />
+
+  <text class="title" x="32" y="44">Pivot Signal Dashboard (Concept)</text>
+
+  <rect x="680" y="18" width="248" height="32" rx="16" fill="#A29061" />
+  <text class="alert-text" x="700" y="39">ALERT: Pressure drop</text>
+
+  <rect x="40" y="90" width="400" height="180" rx="16" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="tile-title" x="64" y="130">Pressure</text>
+  <text class="tile-value" x="64" y="168">48 psi</text>
+  <text class="tile-sub" x="64" y="196">Target: 55 psi</text>
+
+  <rect x="520" y="90" width="400" height="180" rx="16" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="tile-title" x="544" y="130">Flow</text>
+  <text class="tile-value" x="544" y="168">820 gpm</text>
+  <text class="tile-sub" x="544" y="196">Stable trend</text>
+
+  <rect x="40" y="310" width="400" height="180" rx="16" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="tile-title" x="64" y="350">Pivot speed</text>
+  <text class="tile-value" x="64" y="388">72%</text>
+  <text class="tile-sub" x="64" y="416">Cycle: 9.2 hrs</text>
+
+  <rect x="520" y="310" width="400" height="180" rx="16" fill="#F7FAFC" stroke="#0093D0" stroke-width="2" />
+  <text class="tile-title" x="544" y="350">Soil moisture</text>
+  <text class="tile-value" x="544" y="388">0.28</text>
+  <text class="tile-sub" x="544" y="416">Volumetric fraction</text>
+</svg>

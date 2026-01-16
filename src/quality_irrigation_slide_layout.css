@@ -1,0 +1,239 @@
+:root {
+    --qi-blue: #002E5D;
+    --qi-blue-soft: #3D5975;
+    --qi-accent: #3D9BE9;
+    --qi-text: #000000;
+    --qi-text-soft: #3B3A3A;
+    --qi-bg: #FFFFFF;
+    --qi-bg-muted: #F7F7F7;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Avenir LT W01 85 Heavy", "Avenir", "Helvetica Neue", Arial, sans-serif;
+    color: var(--qi-text);
+    background: var(--qi-bg-muted);
+}
+
+.slide-deck {
+    display: grid;
+    gap: 32px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.slide {
+    background: var(--qi-bg);
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16 / 9;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+.slide-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.slide-header img {
+    height: 36px;
+}
+
+.slide-header .slide-title {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--qi-blue);
+}
+
+.hero-title {
+    font-size: 36px;
+    margin: 0 0 12px 0;
+    color: var(--qi-blue);
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    margin: 0;
+    color: var(--qi-text-soft);
+    max-width: 620px;
+}
+
+.agenda-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--qi-text-soft);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    flex: 1;
+}
+
+.stat-card {
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--qi-bg-muted);
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--qi-blue-soft);
+}
+
+.stat-value {
+    font-size: 28px;
+    margin-top: 8px;
+    color: var(--qi-blue);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: var(--qi-text-soft);
+}
+
+.data-table th,
+.data-table td {
+    border-bottom: 1px solid #E5E5E5;
+    padding: 8px 0;
+    text-align: left;
+}
+
+.data-table th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--qi-blue-soft);
+}
+
+.chart-placeholder {
+    height: 100%;
+    border: 1px dashed #C6C6C6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--qi-text-soft);
+    font-size: 14px;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    flex: 1;
+}
+
+.photo-block {
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    background: var(--qi-bg-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--qi-text-soft);
+    font-size: 14px;
+    min-height: 220px;
+}
+
+.photo-caption {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--qi-text-soft);
+}
+
+.callout-card {
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    padding: 16px;
+    background: #FFFFFF;
+    display: grid;
+    gap: 10px;
+}
+
+.callout-title {
+    font-size: 18px;
+    color: var(--qi-blue);
+}
+
+.callout-body {
+    font-size: 14px;
+    color: var(--qi-text-soft);
+    line-height: 1.5;
+}
+
+.slide-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--qi-text-soft);
+    margin-top: 16px;
+}
+
+.local_server_help {
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    padding: 16px 24px;
+    background: var(--qi-bg);
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    font-size: 14px;
+    color: var(--qi-text-soft);
+}
+
+.local_server_help h2 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: var(--qi-blue);
+}
+
+.local_server_help p {
+    margin: 0 0 8px 0;
+}
+
+.local_server_help a {
+    color: var(--qi-blue);
+}
+
+.local_server_help ol {
+    margin: 0 0 0 18px;
+    padding: 0;
+}
+
+@media (max-width: 900px) {
+    .slide {
+        padding: 20px;
+    }
+
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-grid {
+        grid-template-columns: 1fr;
+    }
+}

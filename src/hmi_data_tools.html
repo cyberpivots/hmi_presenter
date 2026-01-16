@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HMI Data Tools (Dev)</title>
+    <link rel="stylesheet" href="/assets/vendor/css/qi_fonts.css" />
+    <link rel="stylesheet" href="hmi_data_tools.css" />
+</head>
+<body data-theme="quality_irrigation">
+    <div class="page">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand_logo">
+                    <img src="/assets/quality_irrigation_logo.png" alt="Quality Irrigation logo" />
+                </div>
+                <div>
+                    <p class="brand_title">HMI Data Tools</p>
+                    <p class="brand_subtitle">Quality Irrigation | ClarkSoft HMI Presenter</p>
+                    <p class="brand_subtitle">Program deck: Colorado Master Irrigator - Republican River Basin</p>
+                    <p class="brand_subtitle">Local JSON, CSV, and PDF tools</p>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <a class="ghost_button" href="settings.html">Settings</a>
+                <a class="ghost_button" href="master_irrigator_presentation_hmi.html">Presentation</a>
+                <a class="ghost_button" href="#local_server_help">Local server help</a>
+            </div>
+        </header>
+
+        <nav class="menu-bar" aria-label="Data tools menu">
+            <details class="menu" name="hmi-menu">
+                <summary>File</summary>
+                <div class="menu-panel" role="group" aria-label="File">
+                    <button class="menu-item" type="button" data-menu-action="file-open-data">Open JSON/CSV...</button>
+                    <button class="menu-item" type="button" data-menu-action="file-open-pdf">Open PDF...</button>
+                    <button class="menu-item" type="button" data-menu-action="file-clear">Clear previews</button>
+                    <button class="menu-item" type="button" data-menu-action="file-open-hmi">Open presentation HMI</button>
+                </div>
+            </details>
+            <details class="menu" name="hmi-menu">
+                <summary>Edit</summary>
+                <div class="menu-panel" role="group" aria-label="Edit">
+                    <button class="menu-item" type="button" data-menu-action="edit-clear-data">Clear JSON/CSV</button>
+                    <button class="menu-item" type="button" data-menu-action="edit-clear-pdf">Clear PDF</button>
+                </div>
+            </details>
+            <details class="menu" name="hmi-menu">
+                <summary>View</summary>
+                <div class="menu-panel" role="group" aria-label="View">
+                    <button class="menu-item" type="button" data-menu-action="view-theme-light">Theme: Light</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-dark">Theme: Dark</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-blues_green">Theme: Blues/Green</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-quality_irrigation">Theme: Quality Irrigation</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-futuristic">Theme: Futuristic</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-soil_field">Theme: Soil/Field</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-night_ops">Theme: Night Ops</button>
+                    <button class="menu-item" type="button" data-menu-action="view-theme-high_contrast">Theme: High Contrast</button>
+                </div>
+            </details>
+            <details class="menu" name="hmi-menu">
+                <summary>Help</summary>
+                <div class="menu-panel" role="group" aria-label="Help">
+                    <button class="menu-item" type="button" data-menu-action="help-local">Local server steps</button>
+                    <button class="menu-item" type="button" data-menu-action="help-hmi">Open presentation HMI</button>
+                </div>
+            </details>
+        </nav>
+
+        <main class="content">
+            <section class="card branding-card">
+                <h2>Branding + credits</h2>
+                <ul class="branding_list">
+                    <li><strong>Design:</strong> ClarkSoft Agentic Development Teams.</li>
+                    <li><strong>Licensed owner:</strong> Quality Irrigation.</li>
+                    <li><strong>Program deck:</strong> Colorado Master Irrigator - Republican River Basin.</li>
+                    <li><strong>Program status:</strong> Benefactor only; not affiliated with ClarkSoft.</li>
+                    <li><strong>Sponsor + presenter:</strong> Quality Irrigation.</li>
+                    <li><strong>Ownership:</strong> ClarkSoft owns all IP and developed products from this workspace.</li>
+                    <li><strong>Purpose:</strong> Support high-quality presentations for rural grower communities in the Republican River Basin.</li>
+                </ul>
+            </section>
+            <section class="card" id="local_server_help">
+                <h2>Local server help</h2>
+                <p>Use the same local server steps as the presentation HMI.</p>
+                <ol class="step_list">
+                    <li>Open WSL and go to: /mnt/g/ClarkSoft/projects/master_irrigator</li>
+                    <li>Run: bash /mnt/g/ClarkSoft/projects/master_irrigator/scripts/start_hmi_dev.sh</li>
+                    <li>Open: http://localhost:52101/hmi/hmi_data_tools.html</li>
+                    <li>Keep the WSL window open while you work.</li>
+                </ol>
+            </section>
+
+            <section class="grid three">
+                <article class="card">
+                    <h2>JSON + CSV preview</h2>
+                    <p>Select a file to preview it in the browser.</p>
+                    <div class="control_row">
+                        <input class="file_input" id="data_file_input" type="file" accept=".json,.csv,application/json,text/csv" />
+                        <button class="ghost_button" id="data_clear" type="button">Clear</button>
+                    </div>
+                    <p class="meta_text" id="data_file_info">No file selected.</p>
+                    <p class="error_text" id="data_error" role="alert" aria-live="polite"></p>
+
+                    <div class="preview_block is_hidden" id="json_block">
+                        <div class="preview_title">JSON preview</div>
+                        <pre class="code_block" id="json_preview"></pre>
+                    </div>
+
+                    <div class="preview_block is_hidden" id="csv_block">
+                        <div class="preview_title">CSV preview</div>
+                        <div class="table_wrap">
+                            <table class="preview_table" id="csv_preview">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <p class="meta_text" id="csv_note"></p>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h2>PDF preview</h2>
+                    <p>Select a PDF file. The preview stays local.</p>
+                    <div class="control_row">
+                        <input class="file_input" id="pdf_file_input" type="file" accept=".pdf,application/pdf" />
+                        <button class="ghost_button" id="pdf_open_button" type="button" disabled>Open PDF in new tab</button>
+                    </div>
+                    <p class="meta_text" id="pdf_file_info">No PDF selected.</p>
+                    <div class="pdf_frame">
+                        <embed id="pdf_preview" type="application/pdf" title="PDF preview" />
+                    </div>
+                    <p class="meta_text">If the preview is blank, use the open button.</p>
+                </article>
+
+                <article class="card">
+                    <h2>Server data sources</h2>
+                    <p>Preview CSV and PDF fixtures from the local API.</p>
+                    <div class="control_row">
+                        <select class="text_input" id="server_data_select"></select>
+                        <button class="ghost_button" id="server_data_refresh" type="button">Refresh</button>
+                    </div>
+                    <div class="control_row is_hidden" id="server_entry_row">
+                        <div class="field">
+                            <label class="field_label" for="server_entry_select">CSV entry</label>
+                            <select class="text_input" id="server_entry_select"></select>
+                        </div>
+                    </div>
+                    <p class="meta_text" id="server_data_status">Loading data sources.</p>
+                    <p class="error_text" id="server_data_error" role="alert" aria-live="polite"></p>
+
+                    <div class="preview_block is_hidden" id="server_csv_block">
+                        <div class="preview_title">Server CSV preview</div>
+                        <div class="table_wrap">
+                            <table class="preview_table" id="server_csv_preview">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <p class="meta_text" id="server_csv_note"></p>
+                    </div>
+
+                    <div class="preview_block is_hidden" id="server_pdf_block">
+                        <div class="preview_title">Server PDF preview</div>
+                        <ul class="meta_list" id="server_pdf_meta"></ul>
+                        <pre class="code_block" id="server_pdf_text"></pre>
+                    </div>
+                </article>
+            </section>
+
+            <section class="card">
+                <h2>File format rules</h2>
+                <div class="rule_grid">
+                    <div>
+                        <h3>JSON</h3>
+                        <ul class="rule_list">
+                            <li>Use a .json file.</li>
+                            <li>Top level can be an object or an array.</li>
+                            <li>Use double quotes for keys and text.</li>
+                            <li>Keep file size small for preview.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>CSV</h3>
+                        <ul class="rule_list">
+                            <li>Use a .csv file.</li>
+                            <li>First row is the header.</li>
+                            <li>Use commas to separate columns.</li>
+                            <li>Wrap text with commas in double quotes.</li>
+                            <li>Preview shows up to 50 rows and 12 columns.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>PDF extraction pipeline (WSL)</h2>
+                <p>These steps use open-source tools. Install them first if needed.</p>
+                <ol class="step_list">
+                    <li>Find the full WSL path for your PDF file.</li>
+                    <li>Pick an output folder for text and images.</li>
+                    <li>Run the commands below in WSL.</li>
+                </ol>
+                <div class="control_row">
+                    <div class="field">
+                        <label class="field_label" for="pdf_path_input">PDF path (WSL)</label>
+                        <input class="text_input" id="pdf_path_input" type="text" placeholder="/mnt/g/ClarkSoft/path/to/file.pdf" />
+                    </div>
+                    <div class="field">
+                        <label class="field_label" for="pdf_output_input">Output folder (WSL)</label>
+                        <input class="text_input" id="pdf_output_input" type="text" placeholder="/mnt/g/ClarkSoft/path/to/output" />
+                    </div>
+                </div>
+                <div class="control_row">
+                    <div class="field">
+                        <label class="field_label" for="tabula_jar_input">Tabula jar path (optional)</label>
+                        <input class="text_input" id="tabula_jar_input" type="text" placeholder="/mnt/g/ClarkSoft/path/to/tabula.jar" />
+                    </div>
+                </div>
+                <pre class="code_block" id="pdf_commands"></pre>
+                <p class="meta_text">Note: The browser cannot read full file paths for you. Paste them above.</p>
+                <div class="note_list">
+                    <p><strong>Table extraction:</strong> Tabula can export CSV/TSV/JSON using its CLI.</p>
+                    <p><strong>OCR:</strong> Use OCRmyPDF if the PDF is scanned and text is missing.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="hmi_data_tools.js"></script>
+</body>
+</html>

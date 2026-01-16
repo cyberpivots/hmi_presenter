@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="ET and soil water balance diagram">
+  <defs>
+    <style>
+      .title { font: 700 24px "Source Sans 3", Arial, sans-serif; fill: #002D62; }
+      .label { font: 600 16px "Source Sans 3", Arial, sans-serif; fill: #0B1B2D; }
+      .sub { font: 400 12px "Source Sans 3", Arial, sans-serif; fill: #4B5563; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#0093D0" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF" />
+
+  <text class="title" x="32" y="44">ET + Soil Water Balance (Concept)</text>
+
+  <rect x="330" y="200" width="300" height="180" rx="18" fill="#F1E5D6" stroke="#A29061" stroke-width="2" />
+  <text class="label" x="395" y="300">Soil storage</text>
+  <text class="sub" x="380" y="325">Root zone balance</text>
+
+  <text class="label" x="130" y="220">ET</text>
+  <line x1="190" y1="225" x2="330" y2="260" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+
+  <text class="label" x="430" y="140">Rainfall</text>
+  <line x1="480" y1="150" x2="480" y2="200" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+
+  <text class="label" x="720" y="220">Irrigation</text>
+  <line x1="690" y1="225" x2="630" y2="260" stroke="#0093D0" stroke-width="4" marker-end="url(#arrow)" />
+</svg>

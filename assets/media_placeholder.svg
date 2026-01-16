@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#F4F0E8" stroke="#C9C1B5" stroke-width="4" />
+  <text x="50%" y="45%" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#5B5347">
+    Media Placeholder
+  </text>
+  <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#5B5347">
+    Replace with approved source
+  </text>
+</svg>
