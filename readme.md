@@ -21,6 +21,10 @@ Status: planning and research.
 ## Local skill workspace
 - hmi_developer/ is reserved for HMI developer skill assets and prototypes.
 
+## Recreation guides (dev)
+- hmi_developer/recreate_presenter_shell_2026_01_17.md
+- hmi_developer/recreate_photo_map_presenter_2026_01_17.md
+
 ## Pages (dev)
 - src/irrigation_eyes_hmi.html: imagery analysis HMI mockup.
 - src/master_irrigator_presentation_hmi.html: slide deck presenter console.

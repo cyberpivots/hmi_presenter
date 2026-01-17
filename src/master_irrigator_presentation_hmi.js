@@ -1230,6 +1230,39 @@ function fitSlidePreview() {
     slidePreview.style.setProperty("--slide-content-scale", scale.toFixed(3));
 }
 
+function applyConsoleScale() {
+    if (!document.body) {
+        return;
+    }
+    if (!isConsoleLayout()) {
+        document.body.style.removeProperty("--mi-console-scale");
+        return;
+    }
+    const page = document.querySelector(".page");
+    if (!page) {
+        return;
+    }
+    document.body.style.setProperty("--mi-console-scale", "1");
+    const header = document.querySelector(".header");
+    const menu = document.querySelector(".menu-bar");
+    const carousel = document.querySelector("[data-carousel-row]");
+    const agenda = document.querySelector("[data-agenda-row]");
+    const mainGrid = document.querySelector(".main-grid");
+    const sections = [header, menu, carousel, agenda, mainGrid].filter(Boolean);
+    const requiredHeight = sections.reduce((sum, section) => {
+        const rect = section.getBoundingClientRect();
+        return sum + rect.height;
+    }, 0);
+    const requiredWidth = Math.max(page.scrollWidth, page.getBoundingClientRect().width);
+    const heightScale = requiredHeight > 0 ? (window.innerHeight / requiredHeight) : 1;
+    const widthScale = requiredWidth > 0 ? (window.innerWidth / requiredWidth) : 1;
+    const nextScale = Math.min(1, heightScale, widthScale);
+    if (!Number.isFinite(nextScale) || nextScale <= 0) {
+        return;
+    }
+    document.body.style.setProperty("--mi-console-scale", nextScale.toFixed(3));
+}
+
 function adjustLayout() {
     const stage = document.querySelector(".stage");
     if (!stage) {
@@ -1247,28 +1280,7 @@ function adjustLayout() {
     } else {
         delete document.body.dataset.hmiTall;
     }
-    const isCompactHeight = height > 0 && height <= 820;
-    if (isCompactHeight) {
-        document.body.dataset.hmiCompact = "true";
-    } else {
-        delete document.body.dataset.hmiCompact;
-    }
-    if (isConsoleLayout()) {
-        const hideAgenda = height > 0 && height <= 760;
-        const hideCarousel = height > 0 && height <= 720;
-        setAgendaRowHidden(hideAgenda);
-        setCarouselHidden(hideCarousel);
-        const collapseRail = (width > 0 && width <= 1200) || (height > 0 && height <= 860);
-        const stageBody = document.querySelector(".stage-body");
-        if (stageBody) {
-            stageBody.classList.toggle("rail-collapsed", collapseRail);
-        }
-        if (collapseRail) {
-            setRailHidden("[data-rail-notes]", true);
-            setRailHidden("[data-rail-live]", true);
-            setRailHidden("[data-rail-next]", false);
-        }
-    }
+    applyConsoleScale();
     fitSlidePreview();
 }
 
