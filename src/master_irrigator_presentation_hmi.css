@@ -508,6 +508,11 @@ body[data-theme="engineering_bronze"] {
         0 3px 0 rgba(0, 0, 0, 0.58),
         0 10px 22px rgba(0, 0, 0, 0.72);
     --mi-header-band-bg: rgba(27, 18, 8, 0.92);
+    --mi-carousel-number: #fff2de;
+    --mi-carousel-title: #ffffff;
+    --mi-carousel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    --mi-header-subtext: #fdf3e4;
+    --mi-header-meta: #ffffff;
 }
 
 body[data-theme="engineering_bronze"] .header-title {
@@ -518,7 +523,7 @@ body[data-theme="engineering_bronze"] .header-title {
 
 body[data-theme="engineering_bronze"] .header-subtitle,
 body[data-theme="engineering_bronze"] .header-subtitle.header-subtitle-meta {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 body[data-theme="engineering_bronze"] .carousel-item-title {
@@ -541,7 +546,7 @@ body[data-theme="engineering_bronze"][data-hmi-layout="console"] .header-title {
 
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .header-subtitle,
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .header-subtitle.header-subtitle-meta {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .carousel-item-title {
