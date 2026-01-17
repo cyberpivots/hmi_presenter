@@ -55,6 +55,7 @@ const hmiState = {
     slideType: "title",
     slideScope: "deck",
     agendaItems: [],
+    agendaDetailsEnabled: false,
     presentationStart: null,
     timerInterval: null,
     slideStart: null,
@@ -999,7 +1000,7 @@ function checkStyleHealth() {
     }
     const headerDisplay = window.getComputedStyle(header).display;
     const gridDisplay = window.getComputedStyle(grid).display;
-    const ok = headerDisplay === "flex" && gridDisplay === "grid";
+    const ok = (headerDisplay === "flex" || headerDisplay === "grid") && gridDisplay === "grid";
     warning.classList.toggle("is-visible", !ok);
     warning.style.display = ok ? "none" : "block";
     if (!ok) {
@@ -1163,6 +1164,48 @@ function toggleAgendaRow() {
     }
     const hidden = !row.classList.contains("is-hidden");
     setAgendaRowHidden(hidden);
+}
+
+function applyAgendaDetails(enabled) {
+    hmiState.agendaDetailsEnabled = Boolean(enabled);
+    if (hmiState.agendaDetailsEnabled) {
+        document.body.dataset.agendaDetails = "on";
+    } else {
+        delete document.body.dataset.agendaDetails;
+        closeAgendaPopover();
+        setAgendaMessage("");
+    }
+    updateAgendaDetailsToggle();
+}
+
+function updateAgendaDetailsToggle() {
+    const toggles = document.querySelectorAll("[data-action=\"agenda-details-toggle\"]");
+    const label = hmiState.agendaDetailsEnabled ? "Details: On" : "Details: Off";
+    if (toggles.length) {
+        toggles.forEach((toggle) => {
+            toggle.textContent = label;
+            toggle.classList.toggle("is-active", hmiState.agendaDetailsEnabled);
+            toggle.setAttribute("aria-pressed", hmiState.agendaDetailsEnabled ? "true" : "false");
+        });
+    }
+    const statusBadge = document.querySelector("[data-agenda-detail-status]");
+    if (statusBadge) {
+        statusBadge.textContent = label;
+        statusBadge.classList.toggle("is-active", hmiState.agendaDetailsEnabled);
+    }
+}
+
+function setupAgendaDetailsToggle() {
+    const toggles = Array.from(document.querySelectorAll("[data-action=\"agenda-details-toggle\"]"));
+    if (!toggles.length) {
+        return;
+    }
+    toggles.forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+            applyAgendaDetails(!hmiState.agendaDetailsEnabled);
+        });
+    });
+    updateAgendaDetailsToggle();
 }
 
 function togglePanel(panelId, layoutClass) {
@@ -2826,17 +2869,30 @@ function updateSlideContent(slide) {
     const metricList = document.querySelector("[data-metric-list]");
     if (metricList) {
         clearElement(metricList);
-        if (Array.isArray(slide.metrics)) {
+        if (Array.isArray(slide.metrics) && slide.metrics.length) {
             slide.metrics.forEach((metric) => addMetricCard(metricList, metric));
+            setHidden(metricList, false);
+        } else {
+            setHidden(metricList, true);
         }
     }
 
     const calloutList = document.querySelector("[data-callout-list]");
     if (calloutList) {
         clearElement(calloutList);
-        if (Array.isArray(slide.callouts)) {
+        if (Array.isArray(slide.callouts) && slide.callouts.length) {
             slide.callouts.forEach((callout) => addCallout(calloutList, callout));
+            setHidden(calloutList, false);
+        } else {
+            setHidden(calloutList, true);
         }
+    }
+
+    const slideAside = document.querySelector(".slide-preview-aside");
+    if (slideAside) {
+        const hasMetrics = metricList && !metricList.hidden;
+        const hasCallouts = calloutList && !calloutList.hidden;
+        setHidden(slideAside, !(hasMetrics || hasCallouts));
     }
 
     renderSpeakerNotes(slide.speaker_notes || slide.notes);
@@ -3341,6 +3397,12 @@ function setupAgendaPopoverControls() {
         if (Number.isNaN(index)) {
             return;
         }
+        if (!hmiState.agendaDetailsEnabled) {
+            hmiState.activeAgendaIndex = index;
+            closeAgendaPopover();
+            setAgendaMessage("");
+            return;
+        }
         if (hmiState.activeAgendaIndex === index && !document.querySelector("[data-agenda-popover]")?.hidden) {
             hmiState.activeAgendaIndex = null;
             closeAgendaPopover();
@@ -3814,6 +3876,7 @@ async function initHmi() {
     applyTheme(getInitialTheme());
     applyReducedMotion(getInitialReducedMotion());
     applyContentDensity(getInitialContentDensity());
+    applyAgendaDetails(false);
     adjustLayout();
     updateReducedMotionToggle();
     if (isConsoleLayout()) {
@@ -3827,6 +3890,7 @@ async function initHmi() {
     setupMenuBar();
     setupWorkflowActions();
     setupNavigation();
+    setupAgendaDetailsToggle();
     setupAgendaPopoverControls();
     setupRailTabs();
     setupDeckFileLoader();

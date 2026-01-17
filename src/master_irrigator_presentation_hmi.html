@@ -31,9 +31,6 @@
     <div class="page">
         <header class="header">
             <div class="header-left">
-                <div class="header-logo">
-                    <img src="/assets/quality_irrigation_logo.png" alt="Quality Irrigation logo">
-                </div>
                 <div class="header-stack">
                 <div class="header-title">ClarkSoft HMI Presenter</div>
                 <div class="header-subtitle">Program deck: Colorado Master Irrigator | Republican River Basin</div>
@@ -44,6 +41,11 @@
                     <span data-theme-label>LCARS</span>
                 </div>
             </div>
+            </div>
+            <div class="header-center">
+                <div class="header-logo header-logo-centered">
+                    <img src="/assets/quality_irrigation_logo.png" alt="Quality Irrigation logo">
+                </div>
             </div>
                 <div class="header-right">
                     <details class="tools-combobox" id="deck-tools">
@@ -148,6 +150,10 @@
             <div class="agenda-row-chips" data-agenda-chips role="list"></div>
             <p class="agenda-row-empty" data-agenda-chips-empty hidden>Agenda items not loaded.</p>
             <p class="agenda-row-message" data-agenda-message hidden aria-live="polite"></p>
+            <div class="agenda-row-actions">
+                <span class="agenda-detail-status" data-agenda-detail-status>Details: Off</span>
+                <button class="agenda-detail-toggle" type="button" data-action="agenda-details-toggle" aria-pressed="false">Details: Off</button>
+            </div>
             <div class="agenda-popover" data-agenda-popover hidden role="dialog" aria-label="Agenda details">
                 <div class="agenda-popover-header">
                     <strong data-agenda-popover-title>Agenda detail</strong>
@@ -176,19 +182,28 @@
                 <div class="stage-body">
                     <div class="slide-preview">
                         <div class="slide-preview-inner">
-                            <div class="slide-preview-title" data-slide-title>Title Slide</div>
-                            <div class="slide-focus-tag" data-slide-focus hidden></div>
-                            <div class="slide-preview-body" data-slide-subtitle>
-                                Replace this text with the approved title and subtitle for the
-                                current segment of the presentation.
-                            </div>
-                            <ul class="slide-preview-list" data-slide-bullets hidden></ul>
-                            <div class="slide-preview-media slide-preview-stretch" data-slide-media hidden></div>
-                            <div class="slide-chart slide-preview-stretch" data-slide-chart hidden></div>
-                            <div class="slide-preview-note" data-slide-body>Notes placeholder.</div>
-                            <div class="slide-qa" data-slide-qa hidden>
-                                <div class="qa-prompt" data-qa-prompt></div>
-                                <div class="qa-options" data-qa-options></div>
+                            <div class="slide-preview-grid">
+                                <div class="slide-preview-main">
+                                    <div class="slide-preview-title" data-slide-title>Title Slide</div>
+                                    <div class="slide-focus-tag" data-slide-focus hidden></div>
+                                    <div class="slide-preview-body" data-slide-subtitle>
+                                        Replace this text with the approved title and subtitle for the
+                                        current segment of the presentation.
+                                    </div>
+                                    <ul class="slide-preview-list" data-slide-bullets hidden></ul>
+                                    <div class="slide-preview-media slide-preview-stretch" data-slide-media hidden></div>
+                                    <div class="slide-chart slide-preview-stretch" data-slide-chart hidden></div>
+                                    <div class="slide-preview-note" data-slide-body>Notes placeholder.</div>
+                                    <div class="slide-qa" data-slide-qa hidden>
+                                        <div class="qa-prompt" data-qa-prompt></div>
+                                        <div class="qa-options" data-qa-options></div>
+                                    </div>
+                                </div>
+                                <aside class="slide-preview-aside" hidden>
+                                    <div class="slide-preview-aside-title">Key highlights</div>
+                                    <div class="metric-list" data-metric-list hidden></div>
+                                    <div class="callout-list" data-callout-list hidden></div>
+                                </aside>
                             </div>
                         </div>
                     </div>
