@@ -488,15 +488,15 @@ body[data-theme="engineering_bronze"] {
     --mi-menu-border: #3b2a17;
     --mi-menu-text: #ffffff;
     --mi-menu-active-bg: rgba(216, 132, 50, 0.18);
-    --mi-card-bg: #1b1208;
+    --mi-card-bg: #22160b;
     --mi-card-border: #3b2a17;
     --mi-card-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-    --mi-stage-bg: #1d1409;
+    --mi-stage-bg: #22160b;
     --mi-stage-border: #3b2a17;
     --mi-preview-bg: radial-gradient(circle at 18% 10%, rgba(255, 207, 115, 0.14), transparent 34%), linear-gradient(135deg, #140d05 0%, #1d1309 100%);
     --mi-preview-border: #3b2a17;
     --mi-preview-inner-border: #4a331c;
-    --mi-slide-item-bg: #1f150a;
+    --mi-slide-item-bg: #24180c;
     --mi-slide-item-border: #3b2a17;
     --mi-slide-item-active-bg: rgba(255, 207, 115, 0.14);
     --mi-slide-item-active-border: #d88432;
@@ -534,7 +534,7 @@ body[data-theme="engineering_bronze"] .slide-preview-title {
 }
 
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .header-title {
-    font-size: clamp(16px, 1.8vw, 20px);
+    font-size: clamp(17px, 2vw, 21px);
     font-weight: 700;
     letter-spacing: 0.09em;
 }
@@ -545,7 +545,7 @@ body[data-theme="engineering_bronze"][data-hmi-layout="console"] .header-subtitl
 }
 
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .carousel-item-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
 }
 
