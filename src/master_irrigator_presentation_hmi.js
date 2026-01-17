@@ -1187,7 +1187,7 @@ function resetLayout() {
         setCarouselHidden(false);
         setAgendaRowHidden(false);
     } else {
-        setPanelHidden("slide-list-panel", "layout-hide-list", false);
+        setPanelHidden("slide-list-panel", "layout-hide-list", true);
     }
     setPanelHidden("side-panel", "layout-hide-side", !isConsoleLayout());
     setRailHidden("[data-rail-notes]", false);
@@ -1204,58 +1204,30 @@ function fitSlidePreview() {
     if (!slidePreview) {
         return;
     }
+    const slideInner = slidePreview.querySelector(".slide-preview-inner");
+    if (!slideInner) {
+        return;
+    }
     if (!isConsoleLayout()) {
-        slidePreview.style.removeProperty("--slide-fit-width");
-        slidePreview.style.removeProperty("--slide-fit-height");
+        slidePreview.style.removeProperty("--slide-content-scale");
         return;
     }
-    const stageBody = document.querySelector(".stage-body");
-    if (!stageBody) {
-        slidePreview.style.removeProperty("--slide-fit-width");
-        slidePreview.style.removeProperty("--slide-fit-height");
+
+    slidePreview.style.setProperty("--slide-content-scale", "1");
+    const style = window.getComputedStyle(slidePreview);
+    const paddingX = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
+    const paddingY = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
+    const availableWidth = Math.max(0, slidePreview.clientWidth - paddingX);
+    const availableHeight = Math.max(0, slidePreview.clientHeight - paddingY);
+    const contentWidth = slideInner.scrollWidth;
+    const contentHeight = slideInner.scrollHeight;
+    if (availableWidth <= 0 || availableHeight <= 0 || contentWidth <= 0 || contentHeight <= 0) {
         return;
     }
-    const rail = stageBody.querySelector(".stage-rail");
-    const stageBodyStyles = getComputedStyle(stageBody);
-    const gapValue = Number.parseFloat(stageBodyStyles.columnGap || stageBodyStyles.gap || "0");
-    const gap = Number.isNaN(gapValue) ? 0 : gapValue;
-    let railWidth = 0;
-    if (rail) {
-        const railStyles = getComputedStyle(rail);
-        if (railStyles.display !== "none") {
-            railWidth = rail.getBoundingClientRect().width;
-        }
-    }
-    const availableWidth = Math.max(stageBody.clientWidth - railWidth - (railWidth > 0 ? gap : 0), 0);
-    const availableHeight = Math.max(stageBody.clientHeight, 0);
-    if (availableWidth === 0 || availableHeight === 0) {
-        slidePreview.style.removeProperty("--slide-fit-width");
-        slidePreview.style.removeProperty("--slide-fit-height");
-        if (fitSlidePreviewRetries < FIT_SLIDE_PREVIEW_MAX_RETRIES) {
-            fitSlidePreviewRetries += 1;
-            window.requestAnimationFrame(() => fitSlidePreview());
-        }
-        return;
-    }
-    const ratio = 4 / 3;
-    let fitHeight = availableHeight;
-    let fitWidth = availableHeight * ratio;
-    if (fitWidth > availableWidth) {
-        fitWidth = availableWidth;
-        fitHeight = availableWidth / ratio;
-    }
-    if (fitWidth < 320 || fitHeight < 240) {
-        slidePreview.style.removeProperty("--slide-fit-width");
-        slidePreview.style.removeProperty("--slide-fit-height");
-        if (fitSlidePreviewRetries < FIT_SLIDE_PREVIEW_MAX_RETRIES) {
-            fitSlidePreviewRetries += 1;
-            window.requestAnimationFrame(() => fitSlidePreview());
-        }
-        return;
-    }
-    fitSlidePreviewRetries = 0;
-    slidePreview.style.setProperty("--slide-fit-width", `${Math.floor(fitWidth)}px`);
-    slidePreview.style.setProperty("--slide-fit-height", `${Math.floor(fitHeight)}px`);
+    const scaleWidth = availableWidth / contentWidth;
+    const scaleHeight = availableHeight / contentHeight;
+    const scale = Math.min(1, scaleWidth, scaleHeight);
+    slidePreview.style.setProperty("--slide-content-scale", scale.toFixed(3));
 }
 
 function adjustLayout() {
@@ -3258,6 +3230,7 @@ function renderSlide() {
     renderSlideCarousel(hmiState.scopeSlides, hmiState.currentIndex);
     updateCommon(hmiState.scopeSlides, hmiState.currentIndex);
     updateSlideContent(slide);
+    fitSlidePreview();
     hmiState.slideStart = Date.now();
     broadcastSlideState();
 }
