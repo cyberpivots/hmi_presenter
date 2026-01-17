@@ -484,19 +484,19 @@ body[data-theme="engineering_bronze"] {
     --mi-shadow: rgba(0, 0, 0, 0.6);
     --mi-page-bg: radial-gradient(circle at 10% 6%, rgba(216, 132, 50, 0.12), transparent 34%), linear-gradient(180deg, #1a1208 0%, #22170c 60%, #1a1208 100%);
     --mi-header-bg: linear-gradient(120deg, #22170c 0%, #2b1d10 55%, #1a1208 100%);
-    --mi-menu-bg: #1d1309;
+    --mi-menu-bg: #24180c;
     --mi-menu-border: #3b2a17;
     --mi-menu-text: #ffffff;
     --mi-menu-active-bg: rgba(216, 132, 50, 0.18);
-    --mi-card-bg: #160f06;
+    --mi-card-bg: #1b1208;
     --mi-card-border: #3b2a17;
     --mi-card-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-    --mi-stage-bg: #1a1208;
+    --mi-stage-bg: #1d1409;
     --mi-stage-border: #3b2a17;
     --mi-preview-bg: radial-gradient(circle at 18% 10%, rgba(255, 207, 115, 0.14), transparent 34%), linear-gradient(135deg, #140d05 0%, #1d1309 100%);
     --mi-preview-border: #3b2a17;
     --mi-preview-inner-border: #4a331c;
-    --mi-slide-item-bg: #1a1208;
+    --mi-slide-item-bg: #1f150a;
     --mi-slide-item-border: #3b2a17;
     --mi-slide-item-active-bg: rgba(255, 207, 115, 0.14);
     --mi-slide-item-active-border: #d88432;
@@ -507,6 +507,7 @@ body[data-theme="engineering_bronze"] {
         0 2px 0 rgba(0, 0, 0, 0.68),
         0 3px 0 rgba(0, 0, 0, 0.58),
         0 10px 22px rgba(0, 0, 0, 0.72);
+    --mi-header-band-bg: rgba(27, 18, 8, 0.92);
 }
 
 body[data-theme="engineering_bronze"] .header-title {
@@ -551,6 +552,20 @@ body[data-theme="engineering_bronze"][data-hmi-layout="console"] .carousel-item-
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .carousel-item-number,
 body[data-theme="engineering_bronze"][data-hmi-layout="console"] .panel-title {
     font-weight: 700;
+}
+
+body[data-theme="engineering_bronze"] .console-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--mi-header-band-bg);
+    border-radius: inherit;
+    z-index: 0;
+}
+
+body[data-theme="engineering_bronze"] .console-header > * {
+    position: relative;
+    z-index: 1;
 }
 
 body[data-theme="science_cyan"] {
