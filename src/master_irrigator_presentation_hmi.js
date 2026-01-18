@@ -508,6 +508,11 @@ function applyViewModeFromUrl() {
     if (document.body) {
         document.body.dataset.hmiView = viewMode;
     }
+    if (viewMode === HMI_VIEW_CONTROL) {
+        hmiState.activeRailPanel = "tools";
+    } else {
+        hmiState.activeRailPanel = "next";
+    }
 
     const deckParam = params.get("deck") || (config && config.deck);
     if (deckParam) {
@@ -2278,6 +2283,23 @@ function getRailTabs() {
     return Array.from(document.querySelectorAll("[data-rail-tab]"));
 }
 
+function updateRailCollapsedState() {
+    const stageBody = document.querySelector(".stage-body");
+    const stageRail = document.querySelector(".stage-rail");
+    if (!stageBody || !stageRail) {
+        return;
+    }
+    const panels = getRailPanels();
+    const tabs = getRailTabs();
+    const hasVisibleTab = tabs.some((tab) => !tab.hidden);
+    const hasActivePanel = panels.some(
+        (panel) => panel.classList.contains("is-active") && !panel.classList.contains("is-hidden")
+    );
+    const shouldCollapse = !(hasVisibleTab && hasActivePanel);
+    stageBody.classList.toggle("rail-collapsed", shouldCollapse);
+    stageRail.hidden = shouldCollapse;
+}
+
 function isRailPanelAllowed(panel) {
     if (!panel || panel.classList.contains("is-hidden")) {
         return false;
@@ -2333,6 +2355,7 @@ function setActiveRailPanel(panelId) {
 
 function updateRailTabs() {
     setActiveRailPanel(hmiState.activeRailPanel || "next");
+    updateRailCollapsedState();
 }
 
 function setupRailTabs() {
