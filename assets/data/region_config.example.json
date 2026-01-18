@@ -1,0 +1,27 @@
+{
+  "region_name": "Multi-state region name",
+  "states": ["CO", "KS", "NE"],
+  "quickstats": {
+    "dataset_url": "https://www.nass.usda.gov/datasets/qs.environmental_20260117.txt.gz",
+    "short_desc_contains": ["IRRIGAT"],
+    "agg_level_desc": ["STATE", "COUNTY"],
+    "unit_desc_contains": ["ACRES"],
+    "max_rows": 200000,
+    "delete_source_after": true
+  },
+  "modis": {
+    "product": "MOD13A2",
+    "band_contains": "NDVI",
+    "irrigation_districts": [
+      {"id": "district_01", "name": "District 01", "lat": 39.0, "lon": -101.0}
+    ],
+    "dates_override": ["A2025161", "A2025177", "A2025193"],
+    "dates_limit": 10,
+    "km_radius": 1
+  },
+  "ghcn": {
+    "stations": ["USW00023062"],
+    "start_date": "2023-01-01",
+    "end_date": "2023-12-31"
+  }
+}

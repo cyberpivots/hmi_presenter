@@ -4,6 +4,8 @@ const MAX_CSV_COLUMNS = 12;
 const THEME_STORAGE_KEY = "mi_hmi_theme";
 const DEFAULT_THEME = "quality_irrigation";
 const SERVER_DATA_URL = "/api/data-sources";
+const FLOW_REPORT_URL = "/api/slide-flow-report";
+const FLOW_REPORT_CSV_URL = "/api/slide-flow-report.csv";
 
 const dataFileInput = document.getElementById("data_file_input");
 const dataClearButton = document.getElementById("data_clear");
@@ -37,6 +39,15 @@ const serverPdfBlock = document.getElementById("server_pdf_block");
 const serverPdfMeta = document.getElementById("server_pdf_meta");
 const serverPdfText = document.getElementById("server_pdf_text");
 
+const flowRunIdInput = document.getElementById("flow_run_id");
+const flowLimitSelect = document.getElementById("flow_limit_select");
+const flowRefresh = document.getElementById("flow_refresh");
+const flowDownloadCsv = document.getElementById("flow_download_csv");
+const flowStatus = document.getElementById("flow_status");
+const flowError = document.getElementById("flow_error");
+const flowBlock = document.getElementById("flow_block");
+const flowTable = document.getElementById("flow_table");
+
 let currentPdfUrl = null;
 let serverSources = [];
 
@@ -64,6 +75,13 @@ const formatBytes = (bytes) => {
         return `${(bytes / 1024).toFixed(1)} KB`;
     }
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+const formatNumber = (value, digits = 2) => {
+    if (!Number.isFinite(value)) {
+        return "--";
+    }
+    return value.toFixed(digits);
 };
 
 const clearTable = (table) => {
@@ -132,6 +150,15 @@ const resetServerPreview = () => {
     setText(serverPdfText, "");
     toggle(serverCsvBlock, false);
     toggle(serverPdfBlock, false);
+};
+
+const resetFlowReport = () => {
+    if (flowTable) {
+        clearTable(flowTable);
+    }
+    setText(flowStatus, "Loading flow scores.");
+    setText(flowError, "");
+    toggle(flowBlock, false);
 };
 
 const resetPdfPreview = () => {
@@ -488,6 +515,119 @@ const renderServerPdfPreview = (preview) => {
     toggle(serverPdfBlock, true);
 };
 
+const renderFlowReportTable = (decks) => {
+    if (!flowTable) {
+        return 0;
+    }
+    const head = flowTable.querySelector("thead");
+    const body = flowTable.querySelector("tbody");
+    if (!head || !body) {
+        return 0;
+    }
+    head.innerHTML = "";
+    body.innerHTML = "";
+
+    const headers = [
+        "Deck",
+        "Slide",
+        "Title",
+        "Flow Score",
+        "OCR Conf",
+        "Text Density",
+        "Font px",
+        "Mean Luma",
+        "Contrast",
+    ];
+
+    const headRow = document.createElement("tr");
+    headers.forEach((label) => {
+        const th = document.createElement("th");
+        th.textContent = label;
+        headRow.appendChild(th);
+    });
+    head.appendChild(headRow);
+
+    let rowCount = 0;
+    decks.forEach((deck) => {
+        const deckTitle = deck.deck_title || deck.deck_id || "Deck";
+        (deck.slides || []).forEach((slide) => {
+            const tr = document.createElement("tr");
+            const cells = [
+                deckTitle,
+                slide.slide_index ?? "--",
+                slide.slide_title || "--",
+                formatNumber(slide.similarity_score, 3),
+                formatNumber(slide.ocr_confidence, 1),
+                formatNumber(slide.text_density, 3),
+                formatNumber(slide.avg_font_px, 1),
+                formatNumber(slide.mean_luma, 1),
+                formatNumber(slide.contrast_std, 1),
+            ];
+            cells.forEach((value) => {
+                const td = document.createElement("td");
+                td.textContent = value;
+                tr.appendChild(td);
+            });
+            body.appendChild(tr);
+            rowCount += 1;
+        });
+    });
+    return rowCount;
+};
+
+const buildFlowReportUrl = () => {
+    const params = new URLSearchParams();
+    const runId = flowRunIdInput?.value.trim();
+    const limitValue = flowLimitSelect?.value || "5";
+    if (runId) {
+        params.set("run_id", runId);
+    }
+    params.set("limit", limitValue);
+    return `${FLOW_REPORT_URL}?${params.toString()}`;
+};
+
+const buildFlowCsvUrl = () => {
+    const params = new URLSearchParams();
+    const runId = flowRunIdInput?.value.trim();
+    if (runId) {
+        params.set("run_id", runId);
+    }
+    const query = params.toString();
+    return query ? `${FLOW_REPORT_CSV_URL}?${query}` : FLOW_REPORT_CSV_URL;
+};
+
+const loadFlowReport = async () => {
+    resetFlowReport();
+    if (!flowStatus) {
+        return;
+    }
+    setText(flowStatus, "Loading flow scores.");
+    try {
+        const response = await fetch(buildFlowReportUrl(), { cache: "no-store" });
+        if (!response.ok) {
+            const errorText = await response.text();
+            setText(flowError, errorText || "Failed to load flow report.");
+            setText(flowStatus, "Flow report failed.");
+            return;
+        }
+        const payload = await response.json();
+        const decks = payload.decks || [];
+        const rowCount = renderFlowReportTable(decks);
+        if (rowCount === 0) {
+            setText(flowStatus, "No flow scores found.");
+            return;
+        }
+        toggle(flowBlock, true);
+        setText(
+            flowStatus,
+            `Run: ${payload.run_id} | ${payload.limit_per_deck} per deck | OCR: prefer 1920x1080`
+        );
+    } catch (error) {
+        setText(flowError, "Failed to load flow report. Check the API server.");
+        setText(flowStatus, "Flow report failed.");
+    }
+};
+
 const fetchServerPreview = async () => {
     resetServerPreview();
     if (!serverDataSelect) {
@@ -617,6 +757,19 @@ if (serverDataRefresh) {
     });
 }
 
+if (flowRefresh) {
+    flowRefresh.addEventListener("click", () => {
+        loadFlowReport();
+    });
+}
+
+if (flowDownloadCsv) {
+    flowDownloadCsv.addEventListener("click", () => {
+        const url = buildFlowCsvUrl();
+        window.open(url, "_blank", "noopener,noreferrer");
+    });
+}
+
 if (pdfPathInput) {
     pdfPathInput.addEventListener("input", buildPdfCommands);
 }
@@ -634,3 +787,4 @@ buildPdfCommands();
 applyTheme(getInitialTheme());
 setupMenuBar();
 loadServerSources();
+loadFlowReport();

@@ -1,0 +1,136 @@
+{
+  "source": "menu_and_settings_inventory",
+  "menu_actions": {
+    "File": [
+      {
+        "text": "Open JSON...",
+        "action": "file-open",
+        "href": null
+      },
+      {
+        "text": "Select deck from catalog",
+        "action": "file-select",
+        "href": null
+      },
+      {
+        "text": "Reload current deck",
+        "action": "file-reload",
+        "href": null
+      },
+      {
+        "text": "Close deck",
+        "action": "file-close",
+        "href": null
+      },
+      {
+        "text": "Download current deck",
+        "action": "file-download",
+        "href": null
+      }
+    ],
+    "Navigate": [
+      {
+        "text": "Previous slide",
+        "action": "nav-prev",
+        "href": null
+      },
+      {
+        "text": "Next slide",
+        "action": "nav-next",
+        "href": null
+      },
+      {
+        "text": "First slide",
+        "action": "nav-first",
+        "href": null
+      },
+      {
+        "text": "Last slide",
+        "action": "nav-last",
+        "href": null
+      },
+      {
+        "text": "Jump to slide\u2026",
+        "action": "nav-jump",
+        "href": null
+      }
+    ],
+    "Tools": [
+      {
+        "text": "Deck editor\u2026",
+        "action": null,
+        "href": "deck_editor.html"
+      },
+      {
+        "text": "Version manager\u2026",
+        "action": null,
+        "href": "version_manager.html"
+      },
+      {
+        "text": "Settings\u2026",
+        "action": null,
+        "href": "settings.html"
+      },
+      {
+        "text": "Data tools\u2026",
+        "action": null,
+        "href": "hmi_data_tools.html"
+      }
+    ],
+    "View": [
+      {
+        "text": "Open presenter view",
+        "action": "view-open-presenter",
+        "href": null
+      },
+      {
+        "text": "Toggle fullscreen slide",
+        "action": "view-fullscreen",
+        "href": null
+      },
+      {
+        "text": "Open projector window",
+        "action": "view-open-fullscreen",
+        "href": null
+      },
+      {
+        "text": "Reset layout",
+        "action": "view-reset",
+        "href": null
+      }
+    ],
+    "Help": [
+      {
+        "text": "Open help",
+        "action": "help-open",
+        "href": null
+      }
+    ]
+  },
+  "header_controls": [
+    {
+      "tag": "details",
+      "text": "Deck toolsSlide JSONUsing server deck.DeckLoading deck list.Deck description will appear here.File: not set",
+      "id": "deck-tools",
+      "data_action": null,
+      "href": null
+    },
+    {
+      "tag": "span",
+      "text": "Draft",
+      "id": null,
+      "data_action": null,
+      "href": null
+    }
+  ],
+  "settings_sections": [
+    "Start state",
+    "Appearance",
+    "Console layout",
+    "Console panels",
+    "Insights + media",
+    "Input",
+    "Config file",
+    "Deck audit \u2014 top issues"
+  ]
+}

@@ -6,116 +6,312 @@
     <title>Settings — ClarkSoft</title>
     <link rel="stylesheet" href="master_irrigator_presentation_hmi.css?v=1">
 </head>
-<body data-theme="quality_irrigation">
+<body class="settings-page" data-theme="quality_irrigation">
     <header class="header">
         <div class="header-left">
-            <div class="header-title">Settings & Preferences</div>
+            <div class="header-title">ClarkSoft Console Settings</div>
+            <div class="header-subtitle">Customize themes, layouts, views, and control surfaces.</div>
         </div>
         <div class="header-right">
-            <a class="help-button" href="master_irrigator_presentation_hmi.html">Back to presentation</a>
+            <a class="help-button" href="master_irrigator_presentation_hmi.html">Back to presenter</a>
         </div>
     </header>
     <main class="page settings-shell">
-        <section class="panel-card">
-            <h2>HMI config file</h2>
-            <p class="panel-text panel-text-muted">Load a small JSON file to set theme, view, deck, and slide defaults.</p>
-            <div class="settings-grid">
-                <div>
-                    <label class="panel-text" for="config_file_input">Config file (JSON)</label>
-                    <input class="deck-editor-input" id="config_file_input" type="file" accept=".json,application/json" />
-                    <p class="settings-note">Files are read locally in the browser. Nothing is uploaded.</p>
-                    <p class="settings-note">Sample file: /assets/hmi_config_sample.json</p>
-                    <div class="settings-row">
-                        <button class="deck-editor-button primary" id="config_apply" type="button">Apply to this browser</button>
-                        <button class="deck-editor-button" id="config_download" type="button">Download current config</button>
-                        <button class="deck-editor-button" id="config_copy_link" type="button">Copy launch link</button>
+        <aside class="settings-nav" aria-label="Settings navigation">
+            <div class="panel-card settings-nav-card">
+                <div class="panel-title">Settings index</div>
+                <a class="settings-nav-link" href="#settings-start">Start state</a>
+                <a class="settings-nav-link" href="#settings-appearance">Appearance</a>
+                <a class="settings-nav-link" href="#settings-layout">Console layout</a>
+                <a class="settings-nav-link" href="#settings-panels">Console panels</a>
+                <a class="settings-nav-link" href="#settings-insights">Insights + media</a>
+                <a class="settings-nav-link" href="#settings-input">Input</a>
+                <a class="settings-nav-link" href="#settings-help">Help</a>
+                <a class="settings-nav-link" href="#settings-config">Config file</a>
+                <a class="settings-nav-link" href="#settings-audit">Deck audit</a>
+            </div>
+            <div class="panel-card settings-nav-card">
+                <div class="panel-title">Quick links</div>
+                <a class="settings-nav-link" href="master_irrigator_presentation_hmi.html"><img class="settings-nav-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Presenter console</a>
+                <a class="settings-nav-link" href="master_irrigator_projector_hmi.html" target="_blank" rel="noopener"><img class="settings-nav-badge" src="/assets/icons/console/projector_256.png" alt="" aria-hidden="true">Projector view</a>
+                <a class="settings-nav-link" href="deck_editor.html"><img class="settings-nav-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Deck editor</a>
+                <a class="settings-nav-link" href="hmi_data_tools.html"><img class="settings-nav-badge" src="/assets/icons/console/chart_256.png" alt="" aria-hidden="true">Data tools</a>
+            </div>
+            <div class="panel-card settings-nav-card">
+                <div class="panel-title">Console note</div>
+                <p class="settings-note">Control menus target 26px text at 1080p for readability.</p>
+            </div>
+        </aside>
+
+        <div class="settings-content">
+            <section class="panel-card" id="settings-start">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Start state</h2>
+                        <p class="panel-text panel-text-muted">Defaults used when building a launch link or loading a new browser.</p>
                     </div>
-                    <label class="panel-text" for="config_launch_link">Launch link</label>
-                    <input class="deck-editor-input" id="config_launch_link" type="text" readonly />
                 </div>
-                <div>
-                    <label class="panel-text" for="config_preview">Config preview</label>
-                    <pre class="settings-code" id="config_preview">No config loaded.</pre>
-                    <p class="settings-note">Schema: theme, reduced_motion, content_density, view, deck, slide.</p>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_view">View mode</label>
+                        <select class="deck-editor-input" id="settings_view">
+                            <option value="control">Control</option>
+                            <option value="presenter">Presenter</option>
+                            <option value="fullscreen">Fullscreen</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_deck">Deck id</label>
+                        <input class="deck-editor-input" id="settings_deck" type="text" placeholder="ai_pivot_data_stack" />
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_slide">Slide number</label>
+                        <input class="deck-editor-input" id="settings_slide" type="number" min="1" step="1" placeholder="10" />
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="panel-card">
-            <h2>Theme and motion</h2>
-            <p class="panel-text panel-text-muted">These settings are stored in localStorage for this browser.</p>
-            <div class="settings-grid">
-                <div>
-                    <label class="panel-text" for="settings_theme">Theme</label>
-                    <select class="deck-editor-input" id="settings_theme">
-                        <option value="quality_irrigation">Quality Irrigation</option>
-                        <option value="blues_green">Blues &amp; Green</option>
-                        <option value="night_ops">Night Ops</option>
-                        <option value="high_contrast">High Contrast</option>
-                    </select>
+            <section class="panel-card" id="settings-appearance">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/theme_palette_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Appearance</h2>
+                        <p class="panel-text panel-text-muted">Theme, motion, and text density controls.</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="panel-text" for="settings_reduced_motion">Reduced motion</label>
-                    <select class="deck-editor-input" id="settings_reduced_motion">
-                        <option value="false">Off</option>
-                        <option value="true">On</option>
-                    </select>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_theme">Theme</label>
+                        <select class="deck-editor-input" id="settings_theme">
+                            <option value="quality_irrigation">Quality Irrigation</option>
+                            <option value="blues_green">Blues &amp; Green</option>
+                            <option value="night_ops">Night Ops</option>
+                            <option value="high_contrast">High Contrast</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_reduced_motion">Reduced motion</label>
+                        <select class="deck-editor-input" id="settings_reduced_motion">
+                            <option value="false">Off</option>
+                            <option value="true">On</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_density">Content density</label>
+                        <select class="deck-editor-input" id="settings_density">
+                            <option value="auto">Auto (screen size)</option>
+                            <option value="standard">Standard</option>
+                            <option value="compact">Compact</option>
+                            <option value="relaxed">Relaxed</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="panel-text" for="settings_density">Content density</label>
-                    <select class="deck-editor-input" id="settings_density">
-                        <option value="auto">Auto (screen size)</option>
-                        <option value="standard">Standard</option>
-                        <option value="compact">Compact</option>
-                        <option value="relaxed">Relaxed</option>
-                    </select>
-                </div>
-            </div>
-        </section>
+                <p class="settings-note">Contrast safety is enforced automatically: light text on dark backgrounds, dark text on light backgrounds.</p>
+            </section>
 
-        <section class="panel-card">
-            <h2>View defaults</h2>
-            <p class="panel-text panel-text-muted">Used to build a launch link for the presenter view.</p>
-            <div class="settings-grid">
-                <div>
-                    <label class="panel-text" for="settings_view">View mode</label>
-                    <select class="deck-editor-input" id="settings_view">
-                        <option value="control">Control</option>
-                        <option value="presenter">Presenter</option>
-                        <option value="fullscreen">Fullscreen</option>
-                    </select>
+            <section class="panel-card" id="settings-layout">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/console_scale_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Console layout</h2>
+                        <p class="panel-text panel-text-muted">Adjust layout mode and scale for the control console.</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="panel-text" for="settings_deck">Deck id</label>
-                    <input class="deck-editor-input" id="settings_deck" type="text" placeholder="ai_pivot_data_stack" />
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_layout">Layout mode</label>
+                        <select class="deck-editor-input" id="settings_layout">
+                            <option value="console">Console</option>
+                            <option value="newspaper">Newspaper</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_console_scale">Console scale</label>
+                        <select class="deck-editor-input" id="settings_console_scale">
+                            <option value="auto">Auto</option>
+                            <option value="0.9">90%</option>
+                            <option value="0.95">95%</option>
+                            <option value="1">100%</option>
+                            <option value="1.05">105%</option>
+                            <option value="1.1">110%</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="panel-text" for="settings_slide">Slide number</label>
-                    <input class="deck-editor-input" id="settings_slide" type="number" min="1" step="1" placeholder="10" />
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="panel-card">
-            <h2>Deck audit — top issues</h2>
-            <p class="panel-text panel-text-muted">Latest run: <span id="deck-audit-run">Loading...</span></p>
-            <div class="audit-table-wrap">
-                <table class="audit-table" aria-label="Top issues per deck">
-                    <thead>
-                        <tr>
-                            <th>Deck</th>
-                            <th>Slide</th>
-                            <th>Viewport</th>
-                            <th>Score</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="deck-audit-body">
-                        <tr><td colspan="5">Loading audit data…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            <section class="panel-card" id="settings-panels">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/layout_grid_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Console panels</h2>
+                        <p class="panel-text panel-text-muted">Show or hide structural panels in control view.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_slide_list">Slide list panel</label>
+                        <select class="deck-editor-input" id="settings_slide_list">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_side_panel">Side panel</label>
+                        <select class="deck-editor-input" id="settings_side_panel">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_carousel">Carousel row</label>
+                        <select class="deck-editor-input" id="settings_carousel">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_agenda">Agenda row</label>
+                        <select class="deck-editor-input" id="settings_agenda">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_notes">Speaker notes rail</label>
+                        <select class="deck-editor-input" id="settings_notes">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-card" id="settings-insights">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/insights_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Insights + media</h2>
+                        <p class="panel-text panel-text-muted">Control analytic overlays and slide media visibility.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_insights">Insights</label>
+                        <select class="deck-editor-input" id="settings_insights">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_media">Media</label>
+                        <select class="deck-editor-input" id="settings_media">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="panel-text" for="settings_chart">Charts</label>
+                        <select class="deck-editor-input" id="settings_chart">
+                            <option value="on">On</option>
+                            <option value="off">Off</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-card" id="settings-input">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/gamepad_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Input</h2>
+                        <p class="panel-text panel-text-muted">Optional inputs for control view navigation.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="settings_gamepad">Gamepad input</label>
+                        <select class="deck-editor-input" id="settings_gamepad">
+                            <option value="off">Off</option>
+                            <option value="on">On</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="settings-note">Keyboard shortcuts: S opens presenter view, F opens projector view.</p>
+            </section>
+
+            <section class="panel-card" id="settings-help">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/keyboard_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Presenter help</h2>
+                        <p class="panel-text panel-text-muted">Help has moved here for quick access from settings.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-row">
+                        <a class="control-button" href="master_irrigator_presentation_hmi.html?view=control&layout=console&help=1">Open presenter help</a>
+                    </div>
+                </div>
+                <p class="settings-note">Opens the help overlay in the presenter console.</p>
+            </section>
+
+            <section class="panel-card" id="settings-config">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/settings_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Config file</h2>
+                        <p class="panel-text panel-text-muted">Load a small JSON file to set theme, view, deck, and layout defaults.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text" for="config_file_input">Config file (JSON)</label>
+                        <input class="deck-editor-input" id="config_file_input" type="file" accept=".json,application/json" />
+                        <p class="settings-note">Files are read locally in the browser. Nothing is uploaded.</p>
+                        <p class="settings-note">Sample file: /assets/hmi_config_sample.json</p>
+                        <div class="settings-row">
+                            <button class="deck-editor-button primary" id="config_apply" type="button">Apply to this browser</button>
+                            <button class="deck-editor-button" id="config_download" type="button">Download current config</button>
+                            <button class="deck-editor-button" id="config_copy_link" type="button">Copy launch link</button>
+                        </div>
+                        <label class="panel-text" for="config_launch_link">Launch link</label>
+                        <input class="deck-editor-input" id="config_launch_link" type="text" readonly />
+                    </div>
+                    <div>
+                        <label class="panel-text" for="config_preview">Config preview</label>
+                        <pre class="settings-code" id="config_preview">No config loaded.</pre>
+                        <p class="settings-note">Schema: theme, reduced_motion, content_density, view, layout, deck, slide, insights_enabled, media_hidden, chart_hidden, gamepad_enabled, slide_list_hidden, side_panel_hidden, carousel_hidden, agenda_hidden, notes_hidden, console_scale.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-card" id="settings-audit">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/chart_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Deck audit — top issues</h2>
+                        <p class="panel-text panel-text-muted">Latest run: <span id="deck-audit-run">Loading...</span></p>
+                    </div>
+                </div>
+                <div class="audit-table-wrap">
+                    <table class="audit-table" aria-label="Top issues per deck">
+                        <thead>
+                            <tr>
+                                <th>Deck</th>
+                                <th>Slide</th>
+                                <th>Viewport</th>
+                                <th>Score</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deck-audit-body">
+                            <tr><td colspan="5">Loading audit data…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
     <script>
         (function () {
@@ -123,6 +319,11 @@
             const THEME_STORAGE_KEY = "mi_hmi_theme";
             const REDUCED_MOTION_STORAGE_KEY = "mi_hmi_reduced_motion";
             const CONTENT_DENSITY_STORAGE_KEY = "mi_hmi_content_density";
+            const LAYOUT_STORAGE_KEY = "mi_hmi_layout";
+            const INSIGHTS_STORAGE_KEY = "mi_hmi_insights";
+            const MEDIA_HIDDEN_STORAGE_KEY = "mi_hmi_media_hidden";
+            const CHART_HIDDEN_STORAGE_KEY = "mi_hmi_chart_hidden";
+            const GAMEPAD_STORAGE_KEY = "mi_hmi_gamepad";
             const previewEl = document.getElementById("config_preview");
             const fileInput = document.getElementById("config_file_input");
             const applyButton = document.getElementById("config_apply");
@@ -135,6 +336,17 @@
             const viewSelect = document.getElementById("settings_view");
             const deckInput = document.getElementById("settings_deck");
             const slideInput = document.getElementById("settings_slide");
+            const layoutSelect = document.getElementById("settings_layout");
+            const consoleScaleSelect = document.getElementById("settings_console_scale");
+            const insightsSelect = document.getElementById("settings_insights");
+            const mediaSelect = document.getElementById("settings_media");
+            const chartSelect = document.getElementById("settings_chart");
+            const gamepadSelect = document.getElementById("settings_gamepad");
+            const slideListSelect = document.getElementById("settings_slide_list");
+            const sidePanelSelect = document.getElementById("settings_side_panel");
+            const carouselSelect = document.getElementById("settings_carousel");
+            const agendaSelect = document.getElementById("settings_agenda");
+            const notesSelect = document.getElementById("settings_notes");
 
             function safeJsonParse(value) {
                 try {
@@ -153,6 +365,17 @@
                 }
             }
 
+            function normalizeConsoleScale(value) {
+                if (!value || value === "auto") {
+                    return null;
+                }
+                const numeric = Number.parseFloat(value);
+                if (!Number.isFinite(numeric) || numeric <= 0) {
+                    return null;
+                }
+                return numeric;
+            }
+
             function buildConfigFromForm() {
                 const slideValue = slideInput.value ? Number.parseInt(slideInput.value, 10) : null;
                 return {
@@ -160,8 +383,19 @@
                     reduced_motion: reducedMotionSelect.value === "true",
                     content_density: densitySelect ? densitySelect.value || "standard" : "standard",
                     view: viewSelect.value || "control",
+                    layout: layoutSelect ? layoutSelect.value || "console" : "console",
                     deck: deckInput.value || "",
-                    slide: Number.isFinite(slideValue) && slideValue > 0 ? slideValue : null
+                    slide: Number.isFinite(slideValue) && slideValue > 0 ? slideValue : null,
+                    insights_enabled: insightsSelect ? insightsSelect.value !== "off" : true,
+                    media_hidden: mediaSelect ? mediaSelect.value === "off" : false,
+                    chart_hidden: chartSelect ? chartSelect.value === "off" : false,
+                    gamepad_enabled: gamepadSelect ? gamepadSelect.value === "on" : false,
+                    slide_list_hidden: slideListSelect ? slideListSelect.value === "hide" : false,
+                    side_panel_hidden: sidePanelSelect ? sidePanelSelect.value === "hide" : false,
+                    carousel_hidden: carouselSelect ? carouselSelect.value === "hide" : false,
+                    agenda_hidden: agendaSelect ? agendaSelect.value === "hide" : false,
+                    notes_hidden: notesSelect ? notesSelect.value === "hide" : false,
+                    console_scale: consoleScaleSelect ? normalizeConsoleScale(consoleScaleSelect.value) : null
                 };
             }
 
@@ -177,6 +411,9 @@
                 }
                 if (config.content_density) {
                     url.searchParams.set("density", config.content_density);
+                }
+                if (config.layout) {
+                    url.searchParams.set("layout", config.layout);
                 }
                 launchLinkInput.value = url.toString();
             }
@@ -204,11 +441,44 @@
                 if (config.view && viewSelect) {
                     viewSelect.value = config.view;
                 }
+                if (config.layout && layoutSelect) {
+                    layoutSelect.value = config.layout;
+                }
+                if (consoleScaleSelect) {
+                    consoleScaleSelect.value = typeof config.console_scale === "number" ? String(config.console_scale) : "auto";
+                }
                 if (deckInput) {
                     deckInput.value = config.deck || "";
                 }
                 if (slideInput) {
                     slideInput.value = config.slide || "";
+                }
+                if (typeof config.insights_enabled === "boolean" && insightsSelect) {
+                    insightsSelect.value = config.insights_enabled ? "on" : "off";
+                }
+                if (typeof config.media_hidden === "boolean" && mediaSelect) {
+                    mediaSelect.value = config.media_hidden ? "off" : "on";
+                }
+                if (typeof config.chart_hidden === "boolean" && chartSelect) {
+                    chartSelect.value = config.chart_hidden ? "off" : "on";
+                }
+                if (typeof config.gamepad_enabled === "boolean" && gamepadSelect) {
+                    gamepadSelect.value = config.gamepad_enabled ? "on" : "off";
+                }
+                if (typeof config.slide_list_hidden === "boolean" && slideListSelect) {
+                    slideListSelect.value = config.slide_list_hidden ? "hide" : "show";
+                }
+                if (typeof config.side_panel_hidden === "boolean" && sidePanelSelect) {
+                    sidePanelSelect.value = config.side_panel_hidden ? "hide" : "show";
+                }
+                if (typeof config.carousel_hidden === "boolean" && carouselSelect) {
+                    carouselSelect.value = config.carousel_hidden ? "hide" : "show";
+                }
+                if (typeof config.agenda_hidden === "boolean" && agendaSelect) {
+                    agendaSelect.value = config.agenda_hidden ? "hide" : "show";
+                }
+                if (typeof config.notes_hidden === "boolean" && notesSelect) {
+                    notesSelect.value = config.notes_hidden ? "hide" : "show";
                 }
             }
 
@@ -218,6 +488,11 @@
                     localStorage.setItem(THEME_STORAGE_KEY, config.theme || "quality_irrigation");
                     localStorage.setItem(REDUCED_MOTION_STORAGE_KEY, config.reduced_motion ? "true" : "false");
                     localStorage.setItem(CONTENT_DENSITY_STORAGE_KEY, config.content_density || "standard");
+                    localStorage.setItem(LAYOUT_STORAGE_KEY, config.layout || "console");
+                    localStorage.setItem(INSIGHTS_STORAGE_KEY, config.insights_enabled ? "on" : "off");
+                    localStorage.setItem(MEDIA_HIDDEN_STORAGE_KEY, config.media_hidden ? "true" : "false");
+                    localStorage.setItem(CHART_HIDDEN_STORAGE_KEY, config.chart_hidden ? "true" : "false");
+                    localStorage.setItem(GAMEPAD_STORAGE_KEY, config.gamepad_enabled ? "on" : "off");
                 } catch (error) {
                     return;
                 }
@@ -282,7 +557,25 @@
                 });
             }
 
-            [themeSelect, reducedMotionSelect, densitySelect, viewSelect, deckInput, slideInput].forEach((el) => {
+            [
+                themeSelect,
+                reducedMotionSelect,
+                densitySelect,
+                viewSelect,
+                deckInput,
+                slideInput,
+                layoutSelect,
+                consoleScaleSelect,
+                insightsSelect,
+                mediaSelect,
+                chartSelect,
+                gamepadSelect,
+                slideListSelect,
+                sidePanelSelect,
+                carouselSelect,
+                agendaSelect,
+                notesSelect,
+            ].forEach((el) => {
                 if (!el) {
                     return;
                 }

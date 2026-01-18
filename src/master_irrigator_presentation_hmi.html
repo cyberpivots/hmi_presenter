@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/vendor/css/featherlight-1.7.14.min.css" />
     <link rel="stylesheet" href="master_irrigator_presentation_hmi.css?v=1">
 </head>
-<body data-slide-type="title" data-slide-scope="deck" data-theme="quality_irrigation" data-hmi-layout="console">
+<body data-slide-type="title" data-slide-scope="deck" data-theme="quality_irrigation" data-hmi-layout="newspaper" data-hmi-view="control">
     <div id="hmi-bootstrap-warning" class="hmi-warning">
         Loading layout. If this message stays, hard refresh (Ctrl+F5).
     </div>
@@ -62,53 +62,55 @@
                         </div>
                     </details>
                     <span class="status-pill">Draft</span>
-                    <button class="help-button" id="help-button" type="button">Help</button>
-                    <a class="help-button" href="hmi_data_tools.html">Data tools</a>
-                    <button class="help-button" type="button" data-action="presenter-view">Presenter view</button>
                 </div>
         </header>
 
         <nav class="menu-bar" aria-label="Presentation menu">
-            <div class="menu theme-inline">
-                <label class="theme-label" for="theme-select">Theme</label>
-                <select id="theme-select" class="theme-select" aria-label="Select theme"></select>
-            </div>
             <details class="menu" name="hmi-menu">
-                <summary>File</summary>
+                <summary><img class="menu-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">File</summary>
                 <div class="menu-panel" role="group" aria-label="File">
-                    <button class="menu-item" type="button" data-menu-action="file-open">Open JSON...</button>
-                    <button class="menu-item" type="button" data-menu-action="file-select">Select deck from catalog</button>
-                    <button class="menu-item" type="button" data-menu-action="file-reload">Reload current deck</button>
-                    <button class="menu-item" type="button" data-menu-action="file-close">Close deck</button>
-                    <button class="menu-item" type="button" data-menu-action="file-download">Download current deck</button>
+                    <button class="menu-item" type="button" data-menu-action="file-open"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Open JSON...</button>
+                    <button class="menu-item" type="button" data-menu-action="file-select"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Select deck from catalog</button>
+                    <button class="menu-item" type="button" data-menu-action="file-reload"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Reload current deck</button>
+                    <button class="menu-item" type="button" data-menu-action="file-close"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Close deck</button>
+                    <button class="menu-item" type="button" data-menu-action="file-download"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Download current deck</button>
                 </div>
             </details>
             <details class="menu" name="hmi-menu">
-                <summary>Tools</summary>
+                <summary><img class="menu-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Navigate</summary>
+                <div class="menu-panel" role="group" aria-label="Navigate">
+                    <button class="menu-item" type="button" data-menu-action="nav-prev"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Previous slide</button>
+                    <button class="menu-item" type="button" data-menu-action="nav-next"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Next slide</button>
+                    <button class="menu-item" type="button" data-menu-action="nav-first"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">First slide</button>
+                    <button class="menu-item" type="button" data-menu-action="nav-last"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Last slide</button>
+                    <button class="menu-item" type="button" data-menu-action="nav-jump"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Jump to slide…</button>
+                </div>
+            </details>
+            <details class="menu" name="hmi-menu">
+                <summary><img class="menu-badge" src="/assets/icons/console/settings_256.png" alt="" aria-hidden="true">Tools</summary>
                 <div class="menu-panel" role="group" aria-label="Tools">
-                    <a class="menu-item" href="deck_editor.html">Deck editor…</a>
-                    <a class="menu-item" href="version_manager.html">Version manager…</a>
-                    <a class="menu-item" href="settings.html">Settings…</a>
+                    <a class="menu-item" href="deck_editor.html"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Deck editor…</a>
+                    <a class="menu-item" href="version_manager.html"><img class="menu-item-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Version manager…</a>
+                    <a class="menu-item" href="settings.html"><img class="menu-item-badge" src="/assets/icons/console/settings_256.png" alt="" aria-hidden="true">Settings…</a>
+                    <a class="menu-item" href="hmi_data_tools.html"><img class="menu-item-badge" src="/assets/icons/console/chart_256.png" alt="" aria-hidden="true">Data tools…</a>
                 </div>
             </details>
             <details class="menu" name="hmi-menu">
-                <summary>View</summary>
+                <summary><img class="menu-badge" src="/assets/icons/console/projector_256.png" alt="" aria-hidden="true">View</summary>
                 <div class="menu-panel" role="group" aria-label="View">
-                    <button class="menu-item" type="button" data-menu-action="view-toggle-list">Toggle slide list</button>
-                    <button class="menu-item" type="button" data-menu-action="view-toggle-side">Toggle side panel</button>
-                    <button class="menu-item" type="button" data-menu-action="view-toggle-agenda">Toggle agenda</button>
-                    <button class="menu-item" type="button" data-menu-action="view-toggle-notes">Toggle speaker notes</button>
-                    <button class="menu-item" type="button" data-menu-action="view-toggle-motion" data-motion-toggle>Reduce motion: Off</button>
-                    <button class="menu-item" type="button" data-menu-action="view-fullscreen">Toggle fullscreen slide</button>
-                    <button class="menu-item" type="button" data-menu-action="view-open-fullscreen">Open fullscreen window</button>
-                    <button class="menu-item" type="button" data-menu-action="view-reset">Reset layout</button>
+                    <button class="menu-item" type="button" data-menu-action="view-open-presenter"><img class="menu-item-badge" src="/assets/icons/console/slides_256.png" alt="" aria-hidden="true">Open presenter view</button>
+                    <button class="menu-item" type="button" data-menu-action="view-fullscreen"><img class="menu-item-badge" src="/assets/icons/console/console_scale_256.png" alt="" aria-hidden="true">Toggle fullscreen slide</button>
+                    <button class="menu-item" type="button" data-menu-action="view-open-fullscreen"><img class="menu-item-badge" src="/assets/icons/console/projector_256.png" alt="" aria-hidden="true">Open projector window</button>
+                    <button class="menu-item" type="button" data-menu-action="view-reset"><img class="menu-item-badge" src="/assets/icons/console/layout_grid_256.png" alt="" aria-hidden="true">Reset layout</button>
                 </div>
             </details>
             <details class="menu" name="hmi-menu">
-                <summary>Help</summary>
-                <div class="menu-panel" role="group" aria-label="Help">
-                    <button class="menu-item" type="button" data-menu-action="help-open">Open help</button>
-                    <button class="menu-item" type="button" data-menu-action="help-tools">Open data tools</button>
+                <summary><img class="menu-badge" src="/assets/icons/console/theme_palette_256.png" alt="" aria-hidden="true">Theme</summary>
+                <div class="menu-panel" role="group" aria-label="Theme">
+                    <div class="theme-inline">
+                        <span class="theme-label">Theme</span>
+                        <select class="theme-select" id="theme-select" aria-label="Theme selector"></select>
+                    </div>
                 </div>
             </details>
         </nav>
@@ -200,7 +202,8 @@
                                     </div>
                                 </div>
                                 <aside class="slide-preview-aside" hidden>
-                                    <div class="slide-preview-aside-title">Key highlights</div>
+                                    <div class="slide-preview-aside-title" data-slide-aside-title>Key highlights</div>
+                                    <div class="slide-preview-aside-charts" data-slide-aside-charts hidden></div>
                                     <div class="metric-list" data-metric-list hidden></div>
                                     <div class="callout-list" data-callout-list hidden></div>
                                 </aside>
@@ -212,6 +215,8 @@
                             <button class="rail-tab is-active" type="button" data-rail-tab="next" aria-pressed="true">Next</button>
                             <button class="rail-tab" type="button" data-rail-tab="notes" aria-pressed="false">Notes</button>
                             <button class="rail-tab" type="button" data-rail-tab="tools" aria-pressed="false">Tools</button>
+                            <button class="rail-tab" type="button" data-rail-tab="agenda" aria-pressed="false">Agenda</button>
+                            <button class="rail-tab" type="button" data-rail-tab="credits" aria-pressed="false">Credits</button>
                             <button class="rail-tab" type="button" data-rail-tab="workflow" aria-pressed="false">Workflow</button>
                             <button class="rail-tab" type="button" data-rail-tab="live" aria-pressed="false">Live</button>
                             <button class="rail-tab" type="button" data-rail-tab="focus" aria-pressed="false">Focus</button>
@@ -228,11 +233,28 @@
                         <div class="rail-card rail-tools" data-rail-tools data-rail-panel="tools">
                             <div class="rail-title">Tools</div>
                             <div class="rail-tool-grid">
-                                <a class="rail-link" href="settings.html">Settings</a>
-                                <a class="rail-link" href="deck_editor.html">Deck editor</a>
-                                <a class="rail-link" href="version_manager.html">Version manager</a>
-                                <a class="rail-link" href="hmi_data_tools.html">Data tools</a>
+                                <a class="rail-link" href="settings.html"><img class="rail-link-badge" src="/assets/icons/console/settings_256.png" alt="" aria-hidden="true">Settings</a>
+                                <a class="rail-link" href="deck_editor.html"><img class="rail-link-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Deck editor</a>
+                                <a class="rail-link" href="version_manager.html"><img class="rail-link-badge" src="/assets/icons/console/deck_256.png" alt="" aria-hidden="true">Version manager</a>
+                                <a class="rail-link" href="hmi_data_tools.html"><img class="rail-link-badge" src="/assets/icons/console/chart_256.png" alt="" aria-hidden="true">Data tools</a>
                             </div>
+                        </div>
+                        <div class="rail-card rail-agenda" data-rail-panel="agenda">
+                            <div class="rail-title">Agenda</div>
+                            <ul class="panel-list" data-agenda-list></ul>
+                            <p class="panel-text panel-text-muted" data-agenda-empty hidden>Agenda items not loaded.</p>
+                        </div>
+                        <div class="rail-card rail-credits" data-rail-panel="credits">
+                            <div class="rail-title">Branding + credits</div>
+                            <ul class="panel-list">
+                                <li><strong>Design:</strong> ClarkSoft Agentic Development Teams.</li>
+                                <li><strong>Licensed owner:</strong> Quality Irrigation.</li>
+                                <li><strong>Program deck:</strong> Colorado Master Irrigator - Republican River Basin.</li>
+                                <li><strong>Program status:</strong> Benefactor only; not affiliated with ClarkSoft.</li>
+                                <li><strong>Sponsor + presenter:</strong> Quality Irrigation.</li>
+                                <li><strong>Ownership:</strong> ClarkSoft owns all IP and developed products from this workspace.</li>
+                                <li><strong>Purpose:</strong> Support high-quality presentations for rural grower communities in the Republican River Basin.</li>
+                            </ul>
                         </div>
                         <div class="rail-card rail-workflow" data-rail-panel="workflow">
                             <div class="rail-title">Workflow</div>
@@ -262,8 +284,7 @@
                             <div class="workflow-actions">
                                 <button class="rail-action" type="button" data-action="workflow-file-open">Open JSON…</button>
                                 <button class="rail-action" type="button" data-action="workflow-file-select">Select deck</button>
-                                <button class="rail-action" type="button" data-action="presenter-view">Presenter view</button>
-                                <button class="rail-action" type="button" data-action="fullscreen-open">Second screen view</button>
+                                <button class="rail-action" type="button" data-action="fullscreen-open">Projector view</button>
                             </div>
                             <p class="rail-text rail-text-muted">Packaged presenter stays aligned with this deck.</p>
                         </div>
@@ -297,10 +318,8 @@
                     </aside>
                 </div>
                 <div class="stage-footer">
-                    <button class="control-button" type="button" data-action="prev">Previous</button>
-                    <button class="control-button primary" type="button" data-action="next">Next</button>
                     <button class="control-button ghost" type="button" data-action="fullscreen">Enter fullscreen</button>
-                    <button class="control-button ghost" type="button" data-action="fullscreen-open">Second screen view</button>
+                    <button class="control-button ghost" type="button" data-action="fullscreen-open">Projector view</button>
                     <button class="control-button ghost" type="button">Blackout</button>
                 </div>
             </section>
@@ -315,34 +334,49 @@
                     <span class="presenter-pace" data-presenter-pace>Pace: not set</span>
                     <span class="presenter-audience" data-presenter-audience>Audience: not set</span>
                 </div>
-                <div class="presenter-notes" data-presenter-notes>Markdown-rendered notes appear here.</div>
-                <div class="presenter-next">
-                    <strong>Next slide</strong>
-                    <p data-presenter-next>Loading...</p>
+                <div class="presenter-body">
+                    <div class="presenter-notes" data-presenter-notes>Markdown-rendered notes appear here.</div>
+                    <div class="presenter-next">
+                        <strong>Next slide</strong>
+                        <p data-presenter-next>Loading...</p>
+                    </div>
+                </div>
+                <div class="presenter-insights" data-presenter-insights>
+                    <div class="presenter-insights-header">Field insights (real data)</div>
+                    <div class="presenter-insights-grid">
+                        <article class="insight-card">
+                            <div class="insight-title">Precipitation time series</div>
+                            <div class="insight-chart" data-presenter-chart="ndvi_timeseries"></div>
+                        </article>
+                        <article class="insight-card">
+                            <div class="insight-title">Temperature time series</div>
+                            <div class="insight-chart" data-presenter-chart="ndmi_timeseries"></div>
+                        </article>
+                        <article class="insight-card">
+                            <div class="insight-title">Precip vs temp</div>
+                            <div class="insight-chart" data-presenter-chart="ndvi_scatter"></div>
+                        </article>
+                        <article class="insight-card">
+                            <div class="insight-title">Irrigated acres (bar)</div>
+                            <div class="insight-chart" data-presenter-chart="ndvi_bar"></div>
+                        </article>
+                        <article class="insight-card">
+                            <div class="insight-title">Irrigated acres share</div>
+                            <div class="insight-chart" data-presenter-chart="site_pie"></div>
+                        </article>
+                        <article class="insight-card">
+                            <div class="insight-title">Irrigation vs precip</div>
+                            <div class="insight-chart" data-presenter-chart="site_radar"></div>
+                        </article>
+                        <article class="insight-card insight-card-wide">
+                            <div class="insight-title">Precip sparklines (small multiples)</div>
+                            <div class="sparkline-grid" data-presenter-chart="ndvi_sparklines"></div>
+                        </article>
+                    </div>
+                    <div class="presenter-insights-status" data-presenter-chart-status>Loading CSV…</div>
                 </div>
             </section>
 
-            <aside class="side-panel" id="side-panel">
-                <details class="panel-card" id="agenda-panel" open>
-                    <summary class="panel-title">Agenda</summary>
-                    <ul class="panel-list" data-agenda-list></ul>
-                    <p class="panel-text panel-text-muted" data-agenda-empty hidden>Agenda items not loaded.</p>
-                </details>
-
-                <!-- Versioning and run controls now live on version_manager.html -->
-                <div class="panel-card panel-card-credits">
-                    <div class="panel-title">Branding + credits</div>
-                    <ul class="panel-list">
-                        <li><strong>Design:</strong> ClarkSoft Agentic Development Teams.</li>
-                        <li><strong>Licensed owner:</strong> Quality Irrigation.</li>
-                        <li><strong>Program deck:</strong> Colorado Master Irrigator - Republican River Basin.</li>
-                        <li><strong>Program status:</strong> Benefactor only; not affiliated with ClarkSoft.</li>
-                        <li><strong>Sponsor + presenter:</strong> Quality Irrigation.</li>
-                        <li><strong>Ownership:</strong> ClarkSoft owns all IP and developed products from this workspace.</li>
-                        <li><strong>Purpose:</strong> Support high-quality presentations for rural grower communities in the Republican River Basin.</li>
-                    </ul>
-                </div>
-            </aside>
         </main>
 
         <section class="status-bar">
@@ -361,6 +395,8 @@
         </section>
     </div>
 
+    <div class="floating-panels" id="floating-panels" aria-hidden="true"></div>
+
     <dialog class="help-dialog" id="help-dialog">
         <div class="help-title">Presenter help</div>
         <p class="help-text">
@@ -372,6 +408,7 @@
             <li>Open WSL and go to: /mnt/g/ClarkSoft/projects/master_irrigator</li>
             <li>Run: bash /mnt/g/ClarkSoft/projects/master_irrigator/scripts/start_hmi_dev.sh</li>
             <li>Open: http://localhost:52101/hmi/master_irrigator_presentation_hmi.html</li>
+            <li>Projector view: http://localhost:52101/hmi/master_irrigator_projector_hmi.html</li>
             <li>Keep the WSL window open while you work.</li>
         </ol>
         <p class="help-text">
@@ -399,6 +436,7 @@
     <script src="/assets/vendor/js/jquery-3.6.1.min.js"></script>
     <script src="/assets/vendor/js/featherlight-1.7.14.min.js"></script>
     <script src="/assets/vendor/js/marked.min.js"></script>
-    <script src="master_irrigator_presentation_hmi.js?v=1"></script>
+    <script src="/assets/vendor/js/echarts.min.js"></script>
+    <script src="master_irrigator_presentation_hmi.js?v=2"></script>
 </body>
 </html>

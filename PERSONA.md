@@ -26,6 +26,8 @@ Scope: /mnt/g/clarksoft/projects/hmi_presenter.
 4) Verify stability.
 5) Adjust if needed.
 6) Note the lesson.
+7) Log ML improvement runs in the PG17 hmi_presenter tracking tables.
+8) Log prediction outputs when available in the hmi_presenter prediction tables.
 
 ## Daily use
 - Before any task, read this file.

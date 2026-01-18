@@ -1,0 +1,148 @@
+{
+  "images": [
+    {
+      "id": "settings",
+      "title": "Settings",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a clean gear with eight rounded teeth.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-xlr9Tq0l1w2r7TyhGX2hkQo1.png?st=2026-01-17T23%3A01%3A58Z&se=2026-01-18T01%3A01%3A58Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=77e5a8ec-6bd1-4477-8afc-16703a64f029&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A01%3A58Z&ske=2026-01-19T00%3A01%3A58Z&sks=b&skv=2024-08-04&sig=6Z9amrOpZRnUPaRDJq3uRDBIKIH2bXBjLkphX2ZTXs4%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/settings_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/settings_256.png",
+      "error": null
+    },
+    {
+      "id": "theme_palette",
+      "title": "Theme palette",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a painter palette with two round paint wells.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-tOWQADIrx7lGE7JoLJqBpQMo.png?st=2026-01-17T23%3A02%3A20Z&se=2026-01-18T01%3A02%3A20Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=13da7400-b3f7-4f8c-9cba-908fecbd114c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A02%3A20Z&ske=2026-01-19T00%3A02%3A20Z&sks=b&skv=2024-08-04&sig=2aDbqbxBzIT5lCDC0k%2BcoI2xVGazeMCPQSMrf75mU5g%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/theme_palette_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/theme_palette_256.png",
+      "error": null
+    },
+    {
+      "id": "layout_grid",
+      "title": "Layout grid",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a 3x3 grid of rounded squares.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-CBuE4KEC97pO2Cw3pA7zXE5b.png?st=2026-01-17T23%3A02%3A49Z&se=2026-01-18T01%3A02%3A49Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=35890473-cca8-4a54-8305-05a39e0bc9c3&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-17T23%3A38%3A21Z&ske=2026-01-18T23%3A38%3A21Z&sks=b&skv=2024-08-04&sig=LWT3SEKNqk3cenFz67uaJRV6%2BDvOdL84qbn86/rnyaM%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/layout_grid_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/layout_grid_256.png",
+      "error": null
+    },
+    {
+      "id": "console_scale",
+      "title": "Console scale",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: four outward arrows from a center square.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-v6tO9CVsqIU2eFUzKcvELxpJ.png?st=2026-01-17T23%3A03%3A18Z&se=2026-01-18T01%3A03%3A18Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=9346e9b9-5d29-4d37-a0a9-c6f95f09f79d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A03%3A18Z&ske=2026-01-19T00%3A03%3A18Z&sks=b&skv=2024-08-04&sig=CWzlHayieHl6Uvllyi2DsHmtn/ogYnLX1%2BayTmE0F6o%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/console_scale_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/console_scale_256.png",
+      "error": null
+    },
+    {
+      "id": "deck",
+      "title": "Deck",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: three stacked cards with rounded corners.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-aqnfBDhwF9rqV5OOE8WGW09B.png?st=2026-01-17T23%3A03%3A40Z&se=2026-01-18T01%3A03%3A40Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-17T21%3A12%3A21Z&ske=2026-01-18T21%3A12%3A21Z&sks=b&skv=2024-08-04&sig=o9agdKPHBe35s%2BQ8XH5qUk3VwwFiP0VPJkDRzY5MFac%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/deck_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/deck_256.png",
+      "error": null
+    },
+    {
+      "id": "slides",
+      "title": "Slides",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a single slide rectangle with a title bar and two content blocks.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-OxbebBPfeFEIh4AuuuHAejnj.png?st=2026-01-17T23%3A04%3A05Z&se=2026-01-18T01%3A04%3A05Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=7daae675-7b42-4e2e-ab4c-8d8419a28d99&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A04%3A05Z&ske=2026-01-19T00%3A04%3A05Z&sks=b&skv=2024-08-04&sig=tiYcII9svF8SyV5NTdMY/ADrsbLIwrpWUM%2BG0cDn3/s%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/slides_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/slides_256.png",
+      "error": null
+    },
+    {
+      "id": "insights",
+      "title": "Insights",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a simple sparkline with three dots.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-5n7My7RTpREP9dcsh0cjKk6N.png?st=2026-01-17T23%3A04%3A29Z&se=2026-01-18T01%3A04%3A29Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A04%3A29Z&ske=2026-01-19T00%3A04%3A29Z&sks=b&skv=2024-08-04&sig=IoKoNqjPYS5cteFcGMudTqrNVVbWJX9en0E5tqR5mto%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/insights_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/insights_256.png",
+      "error": null
+    },
+    {
+      "id": "chart",
+      "title": "Chart",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a small bar chart with three bars.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-O3AkDRGmcyFYakl7hHeIPAqx.png?st=2026-01-17T23%3A04%3A47Z&se=2026-01-18T01%3A04%3A47Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=9346e9b9-5d29-4d37-a0a9-c6f95f09f79d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-17T23%3A30%3A01Z&ske=2026-01-18T23%3A30%3A01Z&sks=b&skv=2024-08-04&sig=qJ%2BHNN%2BvPAD2UP3%2BA8jOZD38rPeqmrIDjbFayaxhV5c%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/chart_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/chart_256.png",
+      "error": null
+    },
+    {
+      "id": "media",
+      "title": "Media",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a photo frame with a mountain outline and sun circle.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-slJOtESPSV9JBlCn5m3PEduU.png?st=2026-01-17T23%3A05%3A07Z&se=2026-01-18T01%3A05%3A07Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=77e5a8ec-6bd1-4477-8afc-16703a64f029&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A04%3A18Z&ske=2026-01-19T00%3A04%3A18Z&sks=b&skv=2024-08-04&sig=zcdJtJKjq6%2BikXS7t6%2BAo6Igj74fLsXI5dprrQcOxKw%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/media_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/media_256.png",
+      "error": null
+    },
+    {
+      "id": "gamepad",
+      "title": "Gamepad",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a game controller with two sticks and two buttons.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-qUSReCUghp94Yd8mXkjVeknk.png?st=2026-01-17T23%3A05%3A27Z&se=2026-01-18T01%3A05%3A27Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=8b33a531-2df9-46a3-bc02-d4b1430a422c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-17T19%3A31%3A08Z&ske=2026-01-18T19%3A31%3A08Z&sks=b&skv=2024-08-04&sig=YRu1ftRYtIw0UXMJcf6NHIBMwO%2BfFnAo2jJnFBOiLig%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/gamepad_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/gamepad_256.png",
+      "error": null
+    },
+    {
+      "id": "keyboard",
+      "title": "Keyboard",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a minimalist keyboard outline with blank key blocks.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-AdILPInONLv0eJpWUq7rblJZ.png?st=2026-01-17T23%3A05%3A52Z&se=2026-01-18T01%3A05%3A52Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=b1a0ae1f-618f-4548-84fd-8b16cacd5485&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-17T17%3A46%3A33Z&ske=2026-01-18T17%3A46%3A33Z&sks=b&skv=2024-08-04&sig=OQt59Vk24nb%2B717xC/B89VDBov1bKHByWj9l%2BYzJxj0%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/keyboard_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/keyboard_256.png",
+      "error": null
+    },
+    {
+      "id": "projector",
+      "title": "Projector",
+      "prompt": "Minimal vector line icon, 2px stroke, single symbol centered. Use navy #002D62 for strokes and one small accent in #0093D0. Optional tiny gold #A29061 dot only if needed. Place the icon on a subtle rounded-square badge (90% size) filled #FFFFFF with 1px border #D5DEE6. Background solid #F7FAFC. No text, no letters, no numbers, no gradients, no shadows. Subject: a projector box with a lens circle and small beam.",
+      "model": "dall-e-3",
+      "size": "1024x1024",
+      "quality": "standard",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-EiRLBr4KErio8VmcKGLmMUgM/user-PtIvO70eehYwk3wgBtAWMgHa/img-zYzv38yyzW1ZigP9zp4u0Boi.png?st=2026-01-17T23%3A06%3A15Z&se=2026-01-18T01%3A06%3A15Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=f1dafa11-a0c2-4092-91d4-10981fbda051&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-01-18T00%3A06%3A15Z&ske=2026-01-19T00%3A06%3A15Z&sks=b&skv=2024-08-04&sig=LyxYIkO71GSd8f0XvC9wRWPtzAewe1G%2BC5lhR72cbHI%3D",
+      "output_1024": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/projector_dalle3_1024x1024.png",
+      "output_256": "/mnt/g/ClarkSoft/projects/hmi_presenter/assets/icons/console/projector_256.png",
+      "error": null
+    }
+  ]
+}

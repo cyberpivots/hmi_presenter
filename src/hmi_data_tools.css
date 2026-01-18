@@ -1,4 +1,4 @@
-@import url("/assets/vendor/css/qi_fonts.css");
+@import url("/assets/vendor/css/qi_fonts.css?v=20260118");
 
 :root {
     --mi-font-display: "Oswald", "Source Sans 3", sans-serif;
@@ -198,6 +198,7 @@ body {
     flex-direction: column;
     position: relative;
     z-index: 1;
+    min-width: 0;
 }
 
 body::before {
@@ -387,6 +388,8 @@ body::before {
     padding: 18px 24px 28px;
     display: grid;
     gap: 16px;
+    min-width: 0;
+    min-height: 0;
 }
 
 .card {
@@ -396,6 +399,8 @@ body::before {
     border: 1px solid var(--line);
     border-top: 2px solid var(--blue-500);
     animation: card-in 0.6s ease;
+    min-width: 0;
+    min-height: 0;
 }
 
 .content .card:nth-of-type(1) {
@@ -425,6 +430,8 @@ body::before {
 .grid {
     display: grid;
     gap: 16px;
+    min-width: 0;
+    min-height: 0;
 }
 
 .grid.two {
@@ -516,6 +523,14 @@ body::before {
     border: 1px solid var(--line);
     border-radius: 12px;
     max-height: 260px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.flow_table_wrap {
+    max-height: 320px;
+    min-width: 0;
+    min-height: 0;
 }
 
 .preview_table {
@@ -541,10 +556,16 @@ body::before {
     letter-spacing: 0.06em;
 }
 
+#flow_table td {
+    font-variant-numeric: tabular-nums;
+}
+
 .rule_grid {
     display: grid;
     gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    min-width: 0;
+    min-height: 0;
 }
 
 .rule_grid h3 {

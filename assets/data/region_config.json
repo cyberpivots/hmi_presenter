@@ -1,0 +1,26 @@
+{
+  "region_name": "Republican River Basin (CO/KS/NE)",
+  "states": ["CO", "KS", "NE"],
+  "quickstats": {
+    "dataset_url": "https://www.nass.usda.gov/datasets/qs.environmental_20260117.txt.gz",
+    "short_desc_contains": ["IRRIGAT"],
+    "agg_level_desc": ["STATE", "COUNTY"],
+    "unit_desc_contains": ["ACRES"],
+    "max_rows": 200000,
+    "delete_source_after": true
+  },
+  "modis": {
+    "product": "MOD13A2",
+    "band_contains": "NDVI",
+    "irrigation_districts": [],
+    "dates_override": [],
+    "dates_limit": 10,
+    "km_radius": 1
+  },
+  "ghcn": {
+    "stations": [],
+    "auto_select_from_sites": true,
+    "start_date": "2023-01-01",
+    "end_date": "2023-12-31"
+  }
+}

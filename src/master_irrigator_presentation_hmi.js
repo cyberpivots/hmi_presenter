@@ -8,6 +8,7 @@ const SLIDE_TARGET_MAX_SECONDS = 90;
 const THEME_STORAGE_KEY = "mi_hmi_theme";
 const HMI_CONFIG_STORAGE_KEY = "mi_hmi_config";
 const CONTENT_DENSITY_STORAGE_KEY = "mi_hmi_content_density";
+const HMI_LAYOUT_STORAGE_KEY = "mi_hmi_layout";
 const DEFAULT_THEME = "nebula_rain";
 const THEME_LABELS = {
     nebula_rain: "Nebula Rain",
@@ -32,18 +33,32 @@ const THEME_LABELS = {
     retro: "Retro"
 };
 const REDUCED_MOTION_STORAGE_KEY = "mi_hmi_reduced_motion";
+const INSIGHTS_STORAGE_KEY = "mi_hmi_insights";
+const MEDIA_HIDDEN_STORAGE_KEY = "mi_hmi_media_hidden";
+const CHART_HIDDEN_STORAGE_KEY = "mi_hmi_chart_hidden";
+const GAMEPAD_STORAGE_KEY = "mi_hmi_gamepad";
 const STYLE_WARNING_ID = "style-warning";
 const STYLE_WARNING_MESSAGE = "Styles did not load. Hard refresh (Ctrl+F5) or open the WSL IP link.";
 const BOOTSTRAP_WARNING_ID = "hmi-bootstrap-warning";
 const BOOTSTRAP_LOADING_MESSAGE = "Loading HMI data...";
 const HMI_VIEW_PARAM = "view";
 const CONTENT_DENSITY_PARAM = "density";
+const HMI_LAYOUT_PARAM = "layout";
+const HMI_HELP_PARAM = "help";
 const HMI_VIEW_FULLSCREEN = "fullscreen";
 const HMI_VIEW_PRESENTER = "presenter";
 const HMI_VIEW_CONTROL = "control";
+const HMI_PROJECTOR_PAGE = "master_irrigator_projector_hmi.html";
+const HMI_PRESENTER_PAGE = "master_irrigator_presentation_hmi.html";
 const PRESENTATION_CHANNEL_NAME = "mi_presentation_channel";
 const PRESENTATION_STORAGE_KEY = `${PRESENTATION_CHANNEL_NAME}_storage`;
 const SAFE_MEDIA_PROTOCOLS = new Set(["http:", "https:"]);
+const CSV_SAMPLE_DATA_URL = "/assets/sample_data.csv";
+const CSV_QUICKSTATS_STATE_URL = "/assets/data/quickstats_irrigation_state_summary.csv";
+const CSV_GHCN_DAILY_URL = "/assets/data/ghcn_daily_summary.csv";
+const CSV_MODIS_NDVI_URL = "/assets/data/modis_ndvi_timeseries.csv";
+const GAMEPAD_ACTION_COOLDOWN_MS = 280;
+const CONTRAST_MIN_RATIO = 4.5;
 let bootstrapHideTimer = null;
 let fitSlidePreviewRetries = 0;
 const FIT_SLIDE_PREVIEW_MAX_RETRIES = 3;
@@ -66,6 +81,12 @@ const hmiState = {
     deckCatalog: null,
     reducedMotion: false,
     contentDensity: "standard",
+    layoutMode: "newspaper",
+    insightsEnabled: true,
+    mediaHidden: false,
+    chartHidden: false,
+    gamepadEnabled: false,
+    lastGamepadAction: 0,
     timerPaused: false,
     timerPausedAt: null,
     viewMode: HMI_VIEW_CONTROL,
@@ -369,6 +390,115 @@ function applyTheme(theme) {
     } catch (error) {
         return;
     }
+    window.requestAnimationFrame(applyThemeContrast);
+}
+
+function buildThemeSelectOptions(select) {
+    if (!select) {
+        return;
+    }
+    clearElement(select);
+    Object.entries(THEME_LABELS).forEach(([value, label]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        select.appendChild(option);
+    });
+}
+
+function setupThemeMenuSelect() {
+    const select = document.getElementById("theme-select");
+    if (!select) {
+        return;
+    }
+    buildThemeSelectOptions(select);
+    const current = document.body ? document.body.dataset.theme : null;
+    if (current && select.value !== current) {
+        select.value = current;
+    }
+    select.addEventListener("change", (event) => {
+        applyTheme(event.target.value);
+    });
+}
+
+function parseCssColor(value) {
+    if (!value) {
+        return null;
+    }
+    const normalized = value.trim().toLowerCase();
+    if (normalized.startsWith("#")) {
+        const hex = normalized.slice(1);
+        if (hex.length === 3) {
+            const r = parseInt(hex[0] + hex[0], 16);
+            const g = parseInt(hex[1] + hex[1], 16);
+            const b = parseInt(hex[2] + hex[2], 16);
+            return { r, g, b };
+        }
+        if (hex.length === 6) {
+            const r = parseInt(hex.slice(0, 2), 16);
+            const g = parseInt(hex.slice(2, 4), 16);
+            const b = parseInt(hex.slice(4, 6), 16);
+            return { r, g, b };
+        }
+        return null;
+    }
+    const rgbMatch = normalized.match(/rgba?\\(([^)]+)\\)/);
+    if (!rgbMatch) {
+        return null;
+    }
+    const parts = rgbMatch[1].split(",").map((part) => Number.parseFloat(part.trim()));
+    if (parts.length < 3 || parts.some((value) => !Number.isFinite(value))) {
+        return null;
+    }
+    return { r: parts[0], g: parts[1], b: parts[2] };
+}
+
+function srgbToLinear(channel) {
+    const value = channel / 255;
+    if (value <= 0.03928) {
+        return value / 12.92;
+    }
+    return Math.pow((value + 0.055) / 1.055, 2.4);
+}
+
+function getRelativeLuminance(color) {
+    const r = srgbToLinear(color.r);
+    const g = srgbToLinear(color.g);
+    const b = srgbToLinear(color.b);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function getContrastRatio(colorA, colorB) {
+    const lumA = getRelativeLuminance(colorA);
+    const lumB = getRelativeLuminance(colorB);
+    const light = Math.max(lumA, lumB);
+    const dark = Math.min(lumA, lumB);
+    return (light + 0.05) / (dark + 0.05);
+}
+
+function applyThemeContrast() {
+    if (!document.body) {
+        return;
+    }
+    const style = window.getComputedStyle(document.body);
+    const bgRaw = style.getPropertyValue("--qi-bg").trim();
+    const textRaw = style.getPropertyValue("--qi-text").trim();
+    const bgColor = parseCssColor(bgRaw);
+    const textColor = parseCssColor(textRaw);
+    if (!bgColor || !textColor) {
+        return;
+    }
+    const ratio = getContrastRatio(bgColor, textColor);
+    const isDarkBg = getRelativeLuminance(bgColor) < 0.45;
+    const shouldForce = ratio < CONTRAST_MIN_RATIO;
+    document.body.dataset.themeContrast = shouldForce ? "forced" : "ok";
+    if (shouldForce) {
+        document.body.style.setProperty("--qi-text", isDarkBg ? "#F8FAFC" : "#0B1B2D");
+        document.body.style.setProperty("--qi-text-soft", isDarkBg ? "#CBD5E1" : "#42566A");
+    } else {
+        document.body.style.removeProperty("--qi-text");
+        document.body.style.removeProperty("--qi-text-soft");
+    }
 }
 
 function getInitialTheme() {
@@ -401,12 +531,206 @@ function applyReducedMotion(enabled) {
     }
 }
 
+function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
+    const nextValue = Boolean(enabled);
+    hmiState.insightsEnabled = nextValue;
+    if (document.body) {
+        document.body.dataset.hmiInsights = nextValue ? "on" : "off";
+    }
+    const presenterNodes = document.querySelectorAll("[data-presenter-insights]");
+    presenterNodes.forEach((node) => {
+        node.hidden = !nextValue;
+    });
+    if (isProjectorView()) {
+        const projectorNodes = document.querySelectorAll("[data-projector-insights]");
+        projectorNodes.forEach((node) => {
+            node.hidden = false;
+        });
+    }
+    updateInsightsToggle();
+    if (persist) {
+        try {
+            localStorage.setItem(INSIGHTS_STORAGE_KEY, nextValue ? "on" : "off");
+        } catch (error) {
+            return;
+        }
+    }
+    if (broadcast && !hmiState.isReceiver) {
+        broadcastSlideState();
+    }
+    if (nextValue || isProjectorView()) {
+        void setupPresenterInsights();
+    }
+}
+
+function applyMediaVisibility(hidden, persist = true) {
+    const nextValue = Boolean(hidden);
+    hmiState.mediaHidden = nextValue;
+    if (document.body) {
+        if (nextValue) {
+            document.body.dataset.hmiMediaHidden = "true";
+        } else {
+            delete document.body.dataset.hmiMediaHidden;
+        }
+    }
+    updateMediaToggle();
+    if (persist) {
+        try {
+            localStorage.setItem(MEDIA_HIDDEN_STORAGE_KEY, nextValue ? "true" : "false");
+        } catch (error) {
+            return;
+        }
+    }
+}
+
+function updateMediaToggle() {
+    const toggles = document.querySelectorAll("[data-media-toggle]");
+    const label = hmiState.mediaHidden ? "Media: Off" : "Media: On";
+    toggles.forEach((toggle) => {
+        toggle.textContent = label;
+        toggle.setAttribute("aria-pressed", hmiState.mediaHidden ? "true" : "false");
+    });
+}
+
+function applyChartVisibility(hidden, persist = true) {
+    const nextValue = Boolean(hidden);
+    hmiState.chartHidden = nextValue;
+    if (document.body) {
+        if (nextValue) {
+            document.body.dataset.hmiChartHidden = "true";
+        } else {
+            delete document.body.dataset.hmiChartHidden;
+        }
+    }
+    updateChartToggle();
+    const currentSlide = hmiState.slides && Number.isFinite(hmiState.currentIndex)
+        ? hmiState.slides[hmiState.currentIndex]
+        : null;
+    if (currentSlide) {
+        updateSlideContent(currentSlide);
+    }
+    if (persist) {
+        try {
+            localStorage.setItem(CHART_HIDDEN_STORAGE_KEY, nextValue ? "true" : "false");
+        } catch (error) {
+            return;
+        }
+    }
+}
+
+function updateChartToggle() {
+    const toggles = document.querySelectorAll("[data-chart-toggle]");
+    const label = hmiState.chartHidden ? "Charts: Off" : "Charts: On";
+    toggles.forEach((toggle) => {
+        toggle.textContent = label;
+        toggle.setAttribute("aria-pressed", hmiState.chartHidden ? "true" : "false");
+    });
+}
+
+function getInitialInsightsEnabled() {
+    const config = readStoredConfig();
+    if (config && typeof config.insights_enabled === "boolean") {
+        return config.insights_enabled;
+    }
+    try {
+        const stored = localStorage.getItem(INSIGHTS_STORAGE_KEY);
+        if (stored === "off") {
+            return false;
+        }
+        if (stored === "on") {
+            return true;
+        }
+    } catch (error) {
+        return true;
+    }
+    return true;
+}
+
+function getInitialMediaHidden() {
+    const config = readStoredConfig();
+    if (config && typeof config.media_hidden === "boolean") {
+        return config.media_hidden;
+    }
+    try {
+        const stored = localStorage.getItem(MEDIA_HIDDEN_STORAGE_KEY);
+        if (stored === "true") {
+            return true;
+        }
+        if (stored === "false") {
+            return false;
+        }
+    } catch (error) {
+        return false;
+    }
+    return false;
+}
+
+function getInitialChartHidden() {
+    const config = readStoredConfig();
+    if (config && typeof config.chart_hidden === "boolean") {
+        return config.chart_hidden;
+    }
+    try {
+        const stored = localStorage.getItem(CHART_HIDDEN_STORAGE_KEY);
+        if (stored === "true") {
+            return true;
+        }
+        if (stored === "false") {
+            return false;
+        }
+    } catch (error) {
+        return false;
+    }
+    return false;
+}
+
+function getInitialGamepadEnabled() {
+    const config = readStoredConfig();
+    if (config && typeof config.gamepad_enabled === "boolean") {
+        return config.gamepad_enabled;
+    }
+    try {
+        const stored = localStorage.getItem(GAMEPAD_STORAGE_KEY);
+        return stored === "on";
+    } catch (error) {
+        return false;
+    }
+}
+
+function applyGamepadEnabled(enabled, persist = true) {
+    const nextValue = Boolean(enabled);
+    hmiState.gamepadEnabled = nextValue;
+    if (document.body) {
+        if (nextValue) {
+            document.body.dataset.hmiGamepad = "on";
+        } else {
+            delete document.body.dataset.hmiGamepad;
+        }
+    }
+    updateGamepadToggle();
+    if (persist) {
+        try {
+            localStorage.setItem(GAMEPAD_STORAGE_KEY, nextValue ? "on" : "off");
+        } catch (error) {
+            return;
+        }
+    }
+}
+
 function normalizeContentDensity(value) {
     if (!value || typeof value !== "string") {
         return null;
     }
     const normalized = value.trim().toLowerCase();
     if (["compact", "standard", "relaxed", "auto"].includes(normalized)) {
+        return normalized;
+    }
+    return null;
+}
+
+function normalizeLayout(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (normalized === "console" || normalized === "newspaper") {
         return normalized;
     }
     return null;
@@ -429,6 +753,23 @@ function resolveContentDensity(value) {
     return normalized;
 }
 
+function applyLayoutMode(value, persist = true) {
+    if (!document.body) {
+        return;
+    }
+    const normalized = normalizeLayout(value) || normalizeLayout(document.body.dataset.hmiLayout) || "console";
+    document.body.dataset.hmiLayout = normalized;
+    hmiState.layoutMode = normalized;
+    if (!persist) {
+        return;
+    }
+    try {
+        localStorage.setItem(HMI_LAYOUT_STORAGE_KEY, normalized);
+    } catch (error) {
+        return;
+    }
+}
+
 function applyContentDensity(value, persist = true) {
     if (!document.body) {
         return;
@@ -445,6 +786,25 @@ function applyContentDensity(value, persist = true) {
     } catch (error) {
         return;
     }
+}
+
+function getInitialLayout() {
+    const params = getSearchParams();
+    const config = readStoredConfig();
+    const paramValue = params.get(HMI_LAYOUT_PARAM);
+    const configValue = config && config.layout ? config.layout : null;
+    let storedValue = null;
+    try {
+        storedValue = localStorage.getItem(HMI_LAYOUT_STORAGE_KEY);
+    } catch (error) {
+        storedValue = null;
+    }
+    const bodyValue = document.body && document.body.dataset ? document.body.dataset.hmiLayout : null;
+    return normalizeLayout(paramValue)
+        || normalizeLayout(configValue)
+        || normalizeLayout(storedValue)
+        || normalizeLayout(bodyValue)
+        || "console";
 }
 
 function getInitialReducedMotion() {
@@ -476,6 +836,16 @@ function getSearchParams() {
     }
 }
 
+function shouldOpenHelpFromUrl() {
+    const params = getSearchParams();
+    const value = params.get(HMI_HELP_PARAM);
+    if (!value) {
+        return false;
+    }
+    const normalized = value.toLowerCase();
+    return normalized === "1" || normalized === "true" || normalized === "yes";
+}
+
 function getInitialContentDensity() {
     const params = getSearchParams();
     const config = readStoredConfig();
@@ -493,12 +863,29 @@ function getInitialContentDensity() {
         || "standard";
 }
 
+function getConsoleScaleOverride() {
+    const config = readStoredConfig();
+    if (!config || config.console_scale === null || typeof config.console_scale === "undefined") {
+        return null;
+    }
+    const value = typeof config.console_scale === "number"
+        ? config.console_scale
+        : Number.parseFloat(config.console_scale);
+    if (!Number.isFinite(value) || value <= 0) {
+        return null;
+    }
+    return value;
+}
+
 function applyViewModeFromUrl() {
     const params = getSearchParams();
     const config = readStoredConfig();
     const viewParam = params.get(HMI_VIEW_PARAM) || (config && config.view);
     let viewMode = HMI_VIEW_CONTROL;
-    if (viewParam === HMI_VIEW_FULLSCREEN) {
+    const bodyView = document.body && document.body.dataset ? document.body.dataset.hmiView : "";
+    if (bodyView === HMI_VIEW_FULLSCREEN || bodyView === HMI_VIEW_PRESENTER || bodyView === HMI_VIEW_CONTROL) {
+        viewMode = bodyView;
+    } else if (viewParam === HMI_VIEW_FULLSCREEN) {
         viewMode = HMI_VIEW_FULLSCREEN;
     } else if (viewParam === HMI_VIEW_PRESENTER) {
         viewMode = HMI_VIEW_PRESENTER;
@@ -571,7 +958,7 @@ async function toggleFullscreen(targetElement) {
 }
 
 function buildFullscreenUrl() {
-    const url = new URL(window.location.href);
+    const url = new URL(HMI_PROJECTOR_PAGE, window.location.href);
     url.searchParams.set(HMI_VIEW_PARAM, HMI_VIEW_FULLSCREEN);
     if (hmiState.deckId) {
         url.searchParams.set("deck", hmiState.deckId);
@@ -613,8 +1000,8 @@ function openFullscreenWindow() {
 }
 
 function buildPresenterUrl() {
-    const url = new URL(window.location.href);
-    url.searchParams.set(HMI_VIEW_PARAM, HMI_VIEW_PRESENTER);
+    const url = new URL(HMI_PRESENTER_PAGE, window.location.href);
+    url.searchParams.set(HMI_VIEW_PARAM, HMI_VIEW_CONTROL);
     if (hmiState.deckId) {
         url.searchParams.set("deck", hmiState.deckId);
     }
@@ -702,6 +1089,39 @@ function setupKeyboardShortcuts() {
     });
 }
 
+function setupGamepadControls() {
+    if (!navigator || typeof navigator.getGamepads !== "function") {
+        return;
+    }
+    const poll = () => {
+        if (!hmiState.gamepadEnabled) {
+            requestAnimationFrame(poll);
+            return;
+        }
+        const pads = navigator.getGamepads();
+        const pad = pads && pads.length ? pads[0] : null;
+        if (pad) {
+            const now = Date.now();
+            if (now - hmiState.lastGamepadAction > GAMEPAD_ACTION_COOLDOWN_MS) {
+                const left = pad.buttons[14] && pad.buttons[14].pressed;
+                const right = pad.buttons[15] && pad.buttons[15].pressed;
+                const primary = pad.buttons[0] && pad.buttons[0].pressed;
+                const secondary = pad.buttons[1] && pad.buttons[1].pressed;
+                const axis = Array.isArray(pad.axes) ? pad.axes[0] : 0;
+                if (left || axis < -0.6 || secondary) {
+                    hmiState.lastGamepadAction = now;
+                    goToSlide(-1);
+                } else if (right || axis > 0.6 || primary) {
+                    hmiState.lastGamepadAction = now;
+                    goToSlide(1);
+                }
+            }
+        }
+        requestAnimationFrame(poll);
+    };
+    requestAnimationFrame(poll);
+}
+
 function buildSlidePayload() {
     const slide = hmiState.scopeSlides[hmiState.currentIndex];
     const nextSlide = hmiState.scopeSlides[hmiState.currentIndex + 1];
@@ -742,8 +1162,12 @@ function broadcastLiveState(state) {
     hmiState.presentationChannel.postMessage(payload);
 }
 
+function shouldRenderPresenterPanel() {
+    return hmiState.viewMode === HMI_VIEW_PRESENTER || isNewspaperLayout();
+}
+
 function renderPresenterPanel(payload) {
-    if (hmiState.viewMode !== HMI_VIEW_PRESENTER) {
+    if (!shouldRenderPresenterPanel()) {
         return;
     }
     if (!payload) {
@@ -778,7 +1202,7 @@ function renderPresenterPanel(payload) {
 }
 
 function renderPresenterLiveState(state) {
-    if (hmiState.viewMode !== HMI_VIEW_PRESENTER) {
+    if (!shouldRenderPresenterPanel()) {
         return;
     }
     if (!state) {
@@ -994,9 +1418,28 @@ function ensureStyleWarning() {
 }
 
 function checkStyleHealth() {
-    const header = document.querySelector(".header");
     const grid = document.querySelector(".main-grid");
     const warning = ensureStyleWarning();
+    const isProjector = document.body && document.body.dataset.hmiRole === "projector";
+    if (isProjector) {
+        if (!grid) {
+            warning.classList.add("is-visible");
+            warning.style.display = "block";
+            setBootstrapWarning(STYLE_WARNING_MESSAGE);
+            return;
+        }
+        const gridDisplay = window.getComputedStyle(grid).display;
+        const ok = gridDisplay === "grid";
+        warning.classList.toggle("is-visible", !ok);
+        warning.style.display = ok ? "none" : "block";
+        if (!ok) {
+            setBootstrapWarning(STYLE_WARNING_MESSAGE);
+        } else {
+            scheduleBootstrapWarningHide();
+        }
+        return;
+    }
+    const header = document.querySelector(".header");
     if (!header || !grid) {
         warning.classList.add("is-visible");
         warning.style.display = "block";
@@ -1110,8 +1553,21 @@ function setPanelHidden(panelId, layoutClass, hidden) {
     grid.classList.toggle(layoutClass, hidden);
 }
 
+function isNewspaperLayout() {
+    return document.body.dataset.hmiLayout === "newspaper";
+}
+
 function isConsoleLayout() {
+    const layout = document.body.dataset.hmiLayout;
+    return layout === "console" || layout === "newspaper";
+}
+
+function isConsoleScaleLayout() {
     return document.body.dataset.hmiLayout === "console";
+}
+
+function isProjectorView() {
+    return document.body && document.body.dataset.hmiRole === "projector";
 }
 
 function setCarouselHidden(hidden) {
@@ -1230,6 +1686,93 @@ function toggleDetails(detailsId) {
     panel.open = !panel.open;
 }
 
+function positionToolsPanel(summary, panel) {
+    if (!summary || !panel) {
+        return;
+    }
+    const rect = summary.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const panelWidth = panelRect.width || panel.offsetWidth || 0;
+    const panelHeight = panelRect.height || panel.offsetHeight || 0;
+    const viewportWidth = window.innerWidth || 0;
+    const viewportHeight = window.innerHeight || 0;
+    let left = rect.right - panelWidth;
+    if (left < 12) {
+        left = 12;
+    }
+    if (panelWidth && left + panelWidth > viewportWidth - 12) {
+        left = Math.max(12, viewportWidth - panelWidth - 12);
+    }
+    let top = rect.bottom + 8;
+    if (panelHeight && top + panelHeight > viewportHeight - 12) {
+        top = rect.top - panelHeight - 8;
+    }
+    if (top < 12) {
+        top = 12;
+    }
+    panel.style.setProperty("--tools-panel-top", `${Math.round(top)}px`);
+    panel.style.setProperty("--tools-panel-left", `${Math.round(left)}px`);
+}
+
+function setupDeckToolsFloatingPanel() {
+    const details = document.getElementById("deck-tools");
+    if (!details) {
+        return;
+    }
+    const summary = details.querySelector("summary");
+    const panel = details.querySelector(".tools-panel");
+    if (!summary || !panel) {
+        return;
+    }
+    const portal = document.getElementById("floating-panels");
+    const placeholder = document.createElement("div");
+    placeholder.className = "tools-panel-placeholder";
+    placeholder.hidden = true;
+    const originalParent = panel.parentElement;
+    const restorePanel = () => {
+        if (!originalParent) {
+            return;
+        }
+        if (panel.parentElement !== originalParent) {
+            originalParent.insertBefore(panel, placeholder);
+            placeholder.remove();
+        }
+        panel.setAttribute("aria-hidden", "true");
+    };
+    const movePanel = () => {
+        if (!portal) {
+            return;
+        }
+        if (panel.parentElement !== portal) {
+            originalParent.insertBefore(placeholder, panel);
+            portal.appendChild(panel);
+        }
+        panel.setAttribute("aria-hidden", "false");
+    };
+    const refresh = () => {
+        if (!details.open) {
+            return;
+        }
+        positionToolsPanel(summary, panel);
+    };
+    details.addEventListener("toggle", () => {
+        if (!details.open) {
+            restorePanel();
+            return;
+        }
+        movePanel();
+        window.requestAnimationFrame(refresh);
+    });
+    document.addEventListener("click", (event) => {
+        if (details.contains(event.target) || panel.contains(event.target)) {
+            return;
+        }
+        details.open = false;
+    });
+    window.addEventListener("resize", refresh);
+    window.addEventListener("scroll", refresh, true);
+}
+
 function resetLayout() {
     if (isConsoleLayout()) {
         setCarouselHidden(false);
@@ -1237,7 +1780,7 @@ function resetLayout() {
     } else {
         setPanelHidden("slide-list-panel", "layout-hide-list", true);
     }
-    setPanelHidden("side-panel", "layout-hide-side", !isConsoleLayout());
+    setPanelHidden("side-panel", "layout-hide-side", true);
     setRailHidden("[data-rail-notes]", false);
     setRailHidden("[data-rail-live]", false);
     setRailHidden("[data-rail-next]", false);
@@ -1245,6 +1788,74 @@ function resetLayout() {
     if (agendaPanel && !isConsoleLayout()) {
         agendaPanel.open = true;
     }
+}
+
+function getSlideClampMode(slide) {
+    if (!slide) {
+        return "balanced";
+    }
+    let mediaScore = 0;
+    let notesScore = 0;
+    const slideType = slide.type ? String(slide.type).toLowerCase() : "";
+    if (slideType === "agenda") {
+        return "agenda";
+    }
+    if (slideType === "poll") {
+        return "poll";
+    }
+    if (slideType === "photo_map") {
+        return "photo_map";
+    }
+    if (slide.media) {
+        mediaScore += 2;
+    }
+    if (slide.chart) {
+        mediaScore += 2;
+    }
+    if (Array.isArray(slide.media_gallery) && slide.media_gallery.length) {
+        mediaScore += 2;
+    }
+    if (["image", "video", "photo_map", "dashboard", "data_snapshot"].includes(slideType)) {
+        mediaScore += 1;
+    }
+    if (slide.markdown && String(slide.markdown).trim()) {
+        notesScore += 2;
+    }
+    if (slide.notes && String(slide.notes).trim()) {
+        notesScore += 1;
+    }
+    if (slide.body && String(slide.body).trim()) {
+        notesScore += 1;
+    }
+    if (slide.callout && String(slide.callout).trim()) {
+        notesScore += 1;
+    }
+    if (slide.qa_prompt || (Array.isArray(slide.qa_options) && slide.qa_options.length)) {
+        notesScore += 2;
+    }
+    if (Array.isArray(slide.contacts) && slide.contacts.length) {
+        notesScore += 2;
+    }
+    if (Array.isArray(slide.bullets) && slide.bullets.length >= 6) {
+        notesScore += 1;
+    }
+    if (["poll", "contact_qa", "agenda"].includes(slideType)) {
+        notesScore += 1;
+    }
+    if (!mediaScore && !notesScore) {
+        return "balanced";
+    }
+    if (mediaScore === notesScore) {
+        return "balanced";
+    }
+    return mediaScore > notesScore ? "media" : "notes";
+}
+
+function applySlideClampMode(slide) {
+    if (!document.body) {
+        return;
+    }
+    document.body.dataset.slideClamp = getSlideClampMode(slide);
 }
 
 function fitSlidePreview() {
@@ -1256,38 +1867,58 @@ function fitSlidePreview() {
     if (!slideInner) {
         return;
     }
-    if (!isConsoleLayout()) {
-        slidePreview.style.removeProperty("--slide-content-scale");
-        return;
-    }
-
     slidePreview.style.setProperty("--slide-content-scale", "1");
     const style = window.getComputedStyle(slidePreview);
     const paddingX = (Number.parseFloat(style.paddingLeft) || 0) + (Number.parseFloat(style.paddingRight) || 0);
     const paddingY = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
     const availableWidth = Math.max(0, slidePreview.clientWidth - paddingX);
     const availableHeight = Math.max(0, slidePreview.clientHeight - paddingY);
-    const contentWidth = slideInner.scrollWidth;
-    const contentHeight = slideInner.scrollHeight;
+    const contentRect = slideInner.getBoundingClientRect();
+    const contentWidth = Math.max(contentRect.width, slideInner.scrollWidth || 0);
+    const contentHeight = Math.max(contentRect.height, slideInner.scrollHeight || 0);
     if (availableWidth <= 0 || availableHeight <= 0 || contentWidth <= 0 || contentHeight <= 0) {
         return;
     }
+    const clampMode = document.body ? document.body.dataset.slideClamp : "balanced";
+    const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
+    const bodyRatio = clampMode === "media" ? 0.2 : clampMode === "notes" ? 0.3 : 0.24;
+    const noteRatio = clampMode === "media" ? 0.17 : clampMode === "notes" ? 0.26 : 0.21;
+    const bodyMax = clamp(110, Math.round(availableHeight * bodyRatio), 280);
+    const noteMax = clamp(90, Math.round(availableHeight * noteRatio), 260);
+    const lineClampMap = {
+        media: { body: 3, note: 4 },
+        notes: { body: 7, note: 8 },
+        balanced: { body: 5, note: 6 }
+    };
+    const clampSetting = lineClampMap[clampMode] || lineClampMap.balanced;
+    slidePreview.style.setProperty("--slide-body-max", `${bodyMax}px`);
+    slidePreview.style.setProperty("--slide-note-max", `${noteMax}px`);
+    slidePreview.style.setProperty("--slide-body-lines", `${clampSetting.body}`);
+    slidePreview.style.setProperty("--slide-note-lines", `${clampSetting.note}`);
     const scaleWidth = availableWidth / contentWidth;
     const scaleHeight = availableHeight / contentHeight;
-    const scale = Math.min(1, scaleWidth, scaleHeight);
-    slidePreview.style.setProperty("--slide-content-scale", scale.toFixed(3));
+    const targetScale = Math.min(scaleWidth, scaleHeight);
+    const maxScale = isConsoleScaleLayout() ? 1.45 : 1.5;
+    const scale = Math.min(targetScale, maxScale);
+    slidePreview.style.setProperty("--slide-content-scale", Math.max(0.01, scale).toFixed(3));
 }
 
 function applyConsoleScale() {
     if (!document.body) {
         return;
     }
-    if (!isConsoleLayout()) {
+    if (!isConsoleScaleLayout()) {
         document.body.style.removeProperty("--mi-console-scale");
         return;
     }
     const page = document.querySelector(".page");
     if (!page) {
+        return;
+    }
+    const override = getConsoleScaleOverride();
+    if (Number.isFinite(override) && override > 0) {
+        const clamped = Math.min(1.2, Math.max(0.6, override));
+        document.body.style.setProperty("--mi-console-scale", clamped.toFixed(3));
         return;
     }
     document.body.style.setProperty("--mi-console-scale", "1");
@@ -1320,8 +1951,20 @@ function adjustLayout() {
     const height = window.innerHeight || 0;
     const isWide = width >= 1400;
     const isMedium = width >= 900 && width < 1400;
+    const isNarrow = width > 0 && width < 1200;
+    const isCramped = height > 0 && height < 820;
     stage.classList.toggle("layout-wide", isWide);
     stage.classList.toggle("layout-medium", isMedium);
+    if (isNarrow) {
+        document.body.dataset.hmiNarrow = "true";
+    } else {
+        delete document.body.dataset.hmiNarrow;
+    }
+    if (isCramped) {
+        document.body.dataset.hmiCramped = "true";
+    } else {
+        delete document.body.dataset.hmiCramped;
+    }
     const isTall = width > 0 && height > 0 ? (height / width) >= 1.25 : false;
     if (isTall) {
         document.body.dataset.hmiTall = "true";
@@ -1330,6 +1973,7 @@ function adjustLayout() {
     }
     applyConsoleScale();
     fitSlidePreview();
+    renderSlideCarousel(hmiState.scopeSlides, hmiState.currentIndex);
 }
 
 function openHelpDialog() {
@@ -1510,6 +2154,10 @@ function renderMedia(container, media) {
         return;
     }
     clearElement(container);
+    if (Array.isArray(media)) {
+        renderMediaGallery(container, media);
+        return;
+    }
     if (!media || !media.type || !media.src) {
         setHidden(container, true);
         return;
@@ -1615,6 +2263,45 @@ function renderMedia(container, media) {
     container.appendChild(mediaBlock);
 }
 
+function renderMediaGallery(container, items) {
+    if (!Array.isArray(items) || !items.length) {
+        setHidden(container, true);
+        return;
+    }
+    const images = items.filter((item) => item && item.type === "image" && item.src);
+    if (!images.length) {
+        setHidden(container, true);
+        return;
+    }
+    setHidden(container, false);
+    const gallery = document.createElement("div");
+    gallery.className = "slide-media-gallery";
+    images.forEach((item) => {
+        const safeMediaSrc = normalizeUrl(item.src, ["http:", "https:", "file:", "blob:"]);
+        if (!safeMediaSrc) {
+            return;
+        }
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "slide-media-tile";
+        tile.setAttribute("aria-label", item.alt || item.caption || "Open image");
+        const scale = Number(item.scale);
+        if (Number.isFinite(scale) && scale > 0) {
+            tile.style.setProperty("--media-scale", Math.min(scale, 2).toFixed(2));
+        }
+        const img = document.createElement("img");
+        img.alt = item.alt || item.caption || "Slide media";
+        img.src = safeMediaSrc;
+        img.loading = "lazy";
+        tile.appendChild(img);
+        tile.addEventListener("click", () => {
+            openImageLightbox(safeMediaSrc, item.caption || item.alt || "");
+        });
+        gallery.appendChild(tile);
+    });
+    container.appendChild(gallery);
+}
+
 function openMediaLightbox(media) {
     if (!media || !media.src) {
         return;
@@ -1708,6 +2395,190 @@ function openImageLightbox(src, caption) {
         : "";
     const markup = `<figure class="featherlight-figure"><img src="${safeSrc}" alt="${safeCaptionText || "Presented image"}">${sanitizedCaption}</figure>`;
     window.jQuery.featherlight(markup, { variant: "media-lightbox" });
+}
+
+function hasECharts() {
+    return typeof window.echarts === "object" && window.echarts;
+}
+
+function disposeECharts(container) {
+    if (!container || !hasECharts()) {
+        return;
+    }
+    const nodes = container.querySelectorAll("[data-echarts-canvas]");
+    nodes.forEach((node) => {
+        const instance = window.echarts.getInstanceByDom(node);
+        if (instance) {
+            instance.dispose();
+        }
+    });
+}
+
+function getChartPalette() {
+    return [
+        getCssVariableValue("--qi-blue", "#0093D0"),
+        getCssVariableValue("--qi-navy", "#002D62"),
+        getCssVariableValue("--qi-amber", "#D9822B"),
+        getCssVariableValue("--qi-blue-soft", "#5B7FA6")
+    ];
+}
+
+function getPlotlyTitle(value, fallback = "") {
+    if (!value) {
+        return fallback;
+    }
+    if (typeof value === "string") {
+        return value;
+    }
+    if (typeof value === "object" && typeof value.text === "string") {
+        return value.text;
+    }
+    return fallback;
+}
+
+function mapPlotlyDash(value) {
+    if (!value) {
+        return "solid";
+    }
+    const normalized = String(value).toLowerCase();
+    if (normalized === "dash") {
+        return "dashed";
+    }
+    if (normalized === "dot") {
+        return "dotted";
+    }
+    if (normalized === "dashdot") {
+        return "dashed";
+    }
+    return "solid";
+}
+
+function buildPlotlyYAxis(axisConfig, fallbackLabel) {
+    const label = getPlotlyTitle(axisConfig && axisConfig.title, fallbackLabel);
+    const range = axisConfig && Array.isArray(axisConfig.range) ? axisConfig.range : null;
+    const suffix = axisConfig && axisConfig.ticksuffix ? axisConfig.ticksuffix : "";
+    const axis = {
+        type: "value"
+    };
+    if (label) {
+        axis.name = label;
+    }
+    if (range && Number.isFinite(range[0]) && Number.isFinite(range[1])) {
+        axis.min = range[0];
+        axis.max = range[1];
+    }
+    if (suffix) {
+        axis.axisLabel = {
+            formatter: (value) => `${value}${suffix}`
+        };
+    }
+    return axis;
+}
+
+function buildEChartsOptionFromPlotly(chart) {
+    if (!chart || !chart.plotly || !Array.isArray(chart.plotly.data)) {
+        return null;
+    }
+    const plotly = chart.plotly;
+    const traces = plotly.data;
+    if (!traces.length) {
+        return null;
+    }
+    const layout = plotly.layout || {};
+    const xAxisConfig = layout.xaxis || {};
+    const xValues = Array.isArray(xAxisConfig.tickvals) && xAxisConfig.tickvals.length
+        ? xAxisConfig.tickvals
+        : (traces[0].x || []);
+    const xLabels = xValues.map((value) => `${value}`);
+    const palette = getChartPalette();
+
+    const series = traces.map((trace, index) => {
+        const traceType = typeof trace.type === "string" ? trace.type.toLowerCase() : "scatter";
+        const mode = typeof trace.mode === "string" ? trace.mode.toLowerCase() : "";
+        const hasLines = mode.includes("lines");
+        const hasMarkers = mode.includes("markers");
+        const seriesType = traceType === "scatter" && !hasLines ? "scatter" : "line";
+        const yAxisIndex = trace.yaxis === "y2" ? 1 : 0;
+        const color = (trace.line && trace.line.color) || (trace.marker && trace.marker.color) || palette[index % palette.length];
+        const lineStyle = {};
+        if (trace.line && trace.line.dash) {
+            lineStyle.type = mapPlotlyDash(trace.line.dash);
+        }
+        if (trace.line && Number.isFinite(trace.line.width)) {
+            lineStyle.width = trace.line.width;
+        }
+        const values = Array.isArray(trace.y) ? trace.y.map((value) => {
+            const num = Number(value);
+            return Number.isFinite(num) ? num : null;
+        }) : [];
+        return {
+            name: trace.name || `Series ${index + 1}`,
+            type: seriesType,
+            data: values,
+            yAxisIndex,
+            showSymbol: hasMarkers || seriesType === "scatter",
+            symbolSize: seriesType === "scatter" ? 8 : 6,
+            smooth: seriesType === "line",
+            lineStyle,
+            itemStyle: {
+                color
+            }
+        };
+    });
+
+    const grid = {
+        top: layout.margin && Number.isFinite(layout.margin.t) ? layout.margin.t : 24,
+        right: layout.margin && Number.isFinite(layout.margin.r) ? layout.margin.r : 16,
+        bottom: layout.margin && Number.isFinite(layout.margin.b) ? layout.margin.b : 42,
+        left: layout.margin && Number.isFinite(layout.margin.l) ? layout.margin.l : 48,
+        containLabel: true
+    };
+
+    const yAxis = [buildPlotlyYAxis(layout.yaxis || {}, chart.unit || "")];
+    if (traces.some((trace) => trace.yaxis === "y2")) {
+        yAxis.push(buildPlotlyYAxis(layout.yaxis2 || {}, ""));
+    }
+
+    return {
+        grid,
+        tooltip: {
+            trigger: "axis"
+        },
+        legend: {
+            top: 0,
+            type: "scroll"
+        },
+        xAxis: {
+            type: "category",
+            data: xLabels,
+            name: getPlotlyTitle(xAxisConfig.title, ""),
+            axisLabel: {
+                color: getCssVariableValue("--qi-text-soft", "#506070")
+            }
+        },
+        yAxis,
+        series
+    };
+}
+
+function renderEChartsChart(container, option, height) {
+    if (!container || !hasECharts() || !option) {
+        return false;
+    }
+    setHidden(container, false);
+    if (!option.color) {
+        option.color = getChartPalette();
+    }
+    const canvas = document.createElement("div");
+    canvas.className = "echarts-canvas";
+    canvas.dataset.echartsCanvas = "true";
+    if (Number.isFinite(height) && height > 0) {
+        canvas.style.height = `${height}px`;
+    }
+    container.appendChild(canvas);
+    const instance = window.echarts.init(canvas);
+    instance.setOption(option, true);
+    return true;
 }
 
 function renderClarksoftChart(container, chart) {
@@ -2071,6 +2942,7 @@ function renderChart(container, chart) {
     if (!container) {
         return;
     }
+    disposeECharts(container);
     clearElement(container);
     container.classList.remove("is-clarksoft");
     if (!chart) {
@@ -2079,6 +2951,29 @@ function renderChart(container, chart) {
     }
 
     const library = typeof chart.library === "string" ? chart.library.toLowerCase() : "";
+    if ((library === "plotly" && chart.plotly) || (library === "echarts" && chart.echarts)) {
+        const titleText = chart.title || "";
+        if (titleText) {
+            const title = document.createElement("div");
+            title.className = "slide-chart-title";
+            title.textContent = titleText;
+            container.appendChild(title);
+        }
+        const option = library === "plotly"
+            ? buildEChartsOptionFromPlotly(chart)
+            : chart.echarts;
+        const rendered = renderEChartsChart(container, option, chart.height);
+        if (rendered) {
+            const noteText = chart.note || chart.source_note;
+            if (noteText) {
+                const note = document.createElement("div");
+                note.className = "slide-chart-note";
+                note.textContent = noteText;
+                container.appendChild(note);
+            }
+            return;
+        }
+    }
     if (library === "clarksoft") {
         const rendered = renderClarksoftChart(container, chart);
         if (rendered) {
@@ -2087,6 +2982,493 @@ function renderChart(container, chart) {
     }
 
     renderSimpleChart(container, chart);
+}
+
+function parseCsvLine(line) {
+    const cells = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i += 1) {
+        const char = line[i];
+        if (char === "\"") {
+            if (inQuotes && line[i + 1] === "\"") {
+                current += "\"";
+                i += 1;
+            } else {
+                inQuotes = !inQuotes;
+            }
+            continue;
+        }
+        if (char === "," && !inQuotes) {
+            cells.push(current);
+            current = "";
+            continue;
+        }
+        current += char;
+    }
+    cells.push(current);
+    return cells;
+}
+
+function parseCsvText(text) {
+    if (!text) {
+        return { headers: [], rows: [] };
+    }
+    const lines = text.split(/\r?\n/).filter((line) => line.trim() !== "");
+    if (!lines.length) {
+        return { headers: [], rows: [] };
+    }
+    const headers = parseCsvLine(lines[0]).map((header) => header.trim());
+    const rows = lines.slice(1).map((line) => {
+        const values = parseCsvLine(line);
+        const row = {};
+        headers.forEach((header, index) => {
+            row[header] = values[index] !== undefined ? values[index].trim() : "";
+        });
+        return row;
+    });
+    return { headers, rows };
+}
+
+function formatSiteLabel(value) {
+    return String(value || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+        .trim();
+}
+
+function buildSampleMetrics(rows) {
+    const siteMap = new Map();
+    rows.forEach((row) => {
+        const siteId = row.site_id || row.site || row.siteId || "";
+        const date = row.date || "";
+        const ndvi = Number(row.ndvi);
+        const ndmi = Number(row.ndmi);
+        if (!siteId || !date || !Number.isFinite(ndvi) || !Number.isFinite(ndmi)) {
+            return;
+        }
+        if (!siteMap.has(siteId)) {
+            siteMap.set(siteId, []);
+        }
+        siteMap.get(siteId).push({ date, ndvi, ndmi });
+    });
+
+    const sites = Array.from(siteMap.entries()).map(([siteId, entries]) => {
+        const sorted = entries.slice().sort((a, b) => a.date.localeCompare(b.date));
+        return { siteId, entries: sorted };
+    });
+
+    const dateSet = new Set();
+    sites.forEach((site) => {
+        site.entries.forEach((entry) => dateSet.add(entry.date));
+    });
+    const dates = Array.from(dateSet).sort((a, b) => a.localeCompare(b));
+
+    const latestBySite = sites.map((site) => {
+        const last = site.entries[site.entries.length - 1] || null;
+        return {
+            siteId: site.siteId,
+            label: formatSiteLabel(site.siteId),
+            ndvi: last ? last.ndvi : null,
+            ndmi: last ? last.ndmi : null
+        };
+    });
+
+    const countsBySite = sites.map((site) => ({
+        name: formatSiteLabel(site.siteId),
+        value: site.entries.length
+    }));
+
+    return {
+        sites,
+        dates,
+        latestBySite,
+        countsBySite,
+        axisLabels: {
+            ndvi: "NDVI",
+            ndmi: "NDMI"
+        },
+        scatterLabels: { x: "NDVI", y: "NDMI" },
+        sparklineKey: "ndvi"
+    };
+}
+
+function buildTimeSeriesOption(metrics, metricKey) {
+    const palette = getChartPalette();
+    const series = metrics.sites.map((site, index) => {
+        const valueMap = new Map(site.entries.map((entry) => [entry.date, entry[metricKey]]));
+        const data = metrics.dates.map((date) => {
+            const value = valueMap.get(date);
+            return Number.isFinite(value) ? value : null;
+        });
+        return {
+            name: formatSiteLabel(site.siteId),
+            type: "line",
+            data,
+            smooth: true,
+            showSymbol: true,
+            symbolSize: 6,
+            itemStyle: { color: palette[index % palette.length] },
+            lineStyle: { width: 2 }
+        };
+    });
+
+    return {
+        grid: { top: 22, right: 12, bottom: 32, left: 40, containLabel: true },
+        legend: { top: 0, type: "scroll" },
+        tooltip: { trigger: "axis" },
+        xAxis: {
+            type: "category",
+            data: metrics.dates,
+            axisLabel: { color: getCssVariableValue("--qi-text-soft", "#506070") }
+        },
+        yAxis: {
+            type: "value",
+            name: metrics.axisLabels && metrics.axisLabels[metricKey] ? metrics.axisLabels[metricKey] : "",
+            axisLabel: { color: getCssVariableValue("--qi-text-soft", "#506070") }
+        },
+        series
+    };
+}
+
+function buildScatterOption(metrics) {
+    const palette = getChartPalette();
+    const series = metrics.sites.map((site, index) => {
+        const data = site.entries.map((entry) => [entry.ndvi, entry.ndmi]);
+        return {
+            name: formatSiteLabel(site.siteId),
+            type: "scatter",
+            data,
+            symbolSize: 8,
+            itemStyle: { color: palette[index % palette.length] }
+        };
+    });
+
+    return {
+        grid: { top: 24, right: 12, bottom: 36, left: 44, containLabel: true },
+        legend: { top: 0, type: "scroll" },
+        tooltip: { trigger: "item" },
+        xAxis: { type: "value", name: metrics.scatterLabels?.x || "NDVI" },
+        yAxis: { type: "value", name: metrics.scatterLabels?.y || "NDMI" },
+        series
+    };
+}
+
+function buildBarOption(metrics) {
+    const labels = metrics.latestBySite.map((item) => item.label);
+    const data = metrics.latestBySite.map((item) => {
+        if (Number.isFinite(item.value)) {
+            return item.value;
+        }
+        return Number.isFinite(item.ndvi) ? item.ndvi : 0;
+    });
+    return {
+        grid: { top: 24, right: 12, bottom: 36, left: 44, containLabel: true },
+        tooltip: { trigger: "axis" },
+        xAxis: { type: "category", data: labels },
+        yAxis: { type: "value" },
+        series: [
+            {
+                type: "bar",
+                data,
+                itemStyle: { color: getCssVariableValue("--qi-blue", "#0093D0") },
+                barMaxWidth: 36
+            }
+        ]
+    };
+}
+
+function buildPieOption(metrics) {
+    return {
+        tooltip: { trigger: "item" },
+        series: [
+            {
+                type: "pie",
+                radius: ["30%", "60%"],
+                data: metrics.countsBySite,
+                label: { formatter: "{b}: {c}" }
+            }
+        ]
+    };
+}
+
+function buildRadarOption(metrics) {
+    if (metrics.radarIndicators && metrics.radarData) {
+        return {
+            radar: { indicator: metrics.radarIndicators },
+            legend: { top: 0, type: "scroll" },
+            series: [{ type: "radar", data: metrics.radarData }]
+        };
+    }
+    const ndviMax = Math.max(0, ...metrics.sites.flatMap((site) => site.entries.map((entry) => entry.ndvi)));
+    const ndmiMax = Math.max(0, ...metrics.sites.flatMap((site) => site.entries.map((entry) => entry.ndmi)));
+    const indicators = [
+        { name: "NDVI", max: ndviMax || 1 },
+        { name: "NDMI", max: ndmiMax || 1 }
+    ];
+    const palette = getChartPalette();
+    const data = metrics.sites.map((site, index) => {
+        const last = site.entries[site.entries.length - 1] || { ndvi: 0, ndmi: 0 };
+        return {
+            name: formatSiteLabel(site.siteId),
+            value: [last.ndvi || 0, last.ndmi || 0],
+            itemStyle: { color: palette[index % palette.length] }
+        };
+    });
+    return {
+        radar: {
+            indicator: indicators
+        },
+        legend: { top: 0, type: "scroll" },
+        series: [
+            {
+                type: "radar",
+                data
+            }
+        ]
+    };
+}
+
+function buildSparklineOption(values) {
+    return {
+        grid: { top: 6, right: 6, bottom: 6, left: 6 },
+        xAxis: { type: "category", show: false },
+        yAxis: { type: "value", show: false },
+        series: [
+            {
+                type: "line",
+                data: values,
+                smooth: true,
+                symbol: "none",
+                lineStyle: { width: 2, color: getCssVariableValue("--qi-blue", "#0093D0") }
+            }
+        ]
+    };
+}
+
+function renderSparklineGrid(container, metrics, metricKey) {
+    if (!container) {
+        return;
+    }
+    disposeECharts(container);
+    clearElement(container);
+    const grid = document.createElement("div");
+    grid.className = "sparkline-grid";
+    metrics.sites.forEach((site) => {
+        const card = document.createElement("div");
+        card.className = "sparkline-card";
+        const title = document.createElement("div");
+        title.className = "sparkline-title";
+        title.textContent = formatSiteLabel(site.siteId);
+        const chart = document.createElement("div");
+        chart.className = "sparkline-chart";
+        card.append(title, chart);
+        grid.appendChild(card);
+        const values = site.entries.map((entry) => entry[metricKey]).filter((value) => Number.isFinite(value));
+        renderEChartsChart(chart, buildSparklineOption(values), 80);
+    });
+    container.appendChild(grid);
+}
+
+function parseNumber(value) {
+    if (value === null || value === undefined) {
+        return null;
+    }
+    const cleaned = String(value).replace(/,/g, "").trim();
+    if (!cleaned) {
+        return null;
+    }
+    const num = Number(cleaned);
+    return Number.isFinite(num) ? num : null;
+}
+
+function buildRealMetrics(quickstatsRows, ghcnRows) {
+    const stationMap = new Map();
+    ghcnRows.forEach((row) => {
+        const station = row.station || "";
+        const date = row.date || "";
+        const prcp = parseNumber(row.prcp);
+        const tmax = parseNumber(row.tmax);
+        if (!station || !date) {
+            return;
+        }
+        if (!stationMap.has(station)) {
+            stationMap.set(station, { station, state: row.state || "", entries: [] });
+        }
+        stationMap.get(station).entries.push({
+            date,
+            prcp: Number.isFinite(prcp) ? prcp / 10 : null,
+            tmax: Number.isFinite(tmax) ? tmax / 10 : null
+        });
+    });
+    const sites = Array.from(stationMap.values()).map((site) => ({
+        siteId: site.station,
+        state: site.state,
+        entries: site.entries.slice().sort((a, b) => a.date.localeCompare(b.date))
+    }));
+    const dateSet = new Set();
+    sites.forEach((site) => site.entries.forEach((entry) => dateSet.add(entry.date)));
+    const dates = Array.from(dateSet).sort((a, b) => a.localeCompare(b));
+
+    const latestBySite = quickstatsRows.map((row) => ({
+        siteId: row.state_alpha || row.state || "",
+        label: row.state_alpha || row.state || "",
+        value: parseNumber(row.total_value)
+    }));
+
+    const countsBySite = quickstatsRows.map((row) => ({
+        name: row.state_alpha || row.state || "",
+        value: parseNumber(row.total_value) || 0
+    }));
+
+    const prcpByState = {};
+    sites.forEach((site) => {
+        if (!site.state) {
+            return;
+        }
+        const values = site.entries.map((entry) => entry.prcp).filter((value) => Number.isFinite(value));
+        if (!values.length) {
+            return;
+        }
+        const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+        prcpByState[site.state] = avg;
+    });
+
+    const radarIndicators = [
+        { name: "Irrigated acres", max: Math.max(1, ...latestBySite.map((row) => row.value || 0)) },
+        { name: "Avg precip (mm)", max: Math.max(1, ...Object.values(prcpByState)) }
+    ];
+    const radarData = latestBySite.map((row) => ({
+        name: row.label,
+        value: [row.value || 0, prcpByState[row.siteId] || 0]
+    }));
+
+    return {
+        sites,
+        dates,
+        latestBySite,
+        countsBySite,
+        radarIndicators,
+        radarData,
+        axisLabels: { prcp: "Precip (mm)", tmax: "Tmax (°C)" },
+        scatterLabels: { x: "Precip (mm)", y: "Tmax (°C)" },
+        sparklineKey: "prcp"
+    };
+}
+
+function renderPresenterCharts(metrics) {
+    const containers = Array.from(document.querySelectorAll("[data-presenter-chart]"));
+    if (!containers.length) {
+        return;
+    }
+    containers.forEach((container) => {
+        const chartId = container.dataset.presenterChart || "";
+        disposeECharts(container);
+        clearElement(container);
+        if (chartId === "ndvi_sparklines") {
+            renderSparklineGrid(container, metrics, metrics.sparklineKey || "ndvi");
+            return;
+        }
+        let option = null;
+        if (chartId === "ndvi_timeseries") {
+            option = buildTimeSeriesOption(metrics, metrics.axisLabels ? "prcp" : "ndvi");
+        } else if (chartId === "ndmi_timeseries") {
+            option = buildTimeSeriesOption(metrics, metrics.axisLabels ? "tmax" : "ndmi");
+        } else if (chartId === "ndvi_scatter") {
+            option = buildScatterOption(metrics);
+        } else if (chartId === "ndvi_bar") {
+            option = buildBarOption(metrics);
+        } else if (chartId === "site_pie") {
+            option = buildPieOption(metrics);
+        } else if (chartId === "site_radar") {
+            option = buildRadarOption(metrics);
+        }
+        if (option) {
+            renderEChartsChart(container, option, 160);
+        }
+    });
+    if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(() => {
+            resizeECharts();
+        });
+    }
+}
+
+function resizeECharts() {
+    if (!hasECharts()) {
+        return;
+    }
+    const nodes = document.querySelectorAll("[data-echarts-canvas]");
+    nodes.forEach((node) => {
+        const instance = window.echarts.getInstanceByDom(node);
+        if (instance) {
+            instance.resize();
+        }
+    });
+}
+
+async function setupPresenterInsights() {
+    const status = document.querySelector("[data-presenter-chart-status]");
+    const presenterContainers = Array.from(document.querySelectorAll("[data-presenter-insights]"));
+    const projectorContainers = Array.from(document.querySelectorAll("[data-projector-insights]"));
+    const containers = [...presenterContainers, ...projectorContainers];
+    if (!containers.length) {
+        return;
+    }
+    if (!hmiState.insightsEnabled && !isProjectorView()) {
+        if (status) {
+            status.textContent = "Insights hidden.";
+        }
+        return;
+    }
+    if (!hasECharts()) {
+        if (status) {
+            status.textContent = "Charts disabled. ECharts library not loaded.";
+        }
+        return;
+    }
+    if (status) {
+        status.textContent = "Loading CSV…";
+    }
+    try {
+        const [quickstatsText, ghcnText] = await Promise.all([
+            fetch(CSV_QUICKSTATS_STATE_URL, { cache: "no-store" }).then((res) => (res.ok ? res.text() : "")),
+            fetch(CSV_GHCN_DAILY_URL, { cache: "no-store" }).then((res) => (res.ok ? res.text() : ""))
+        ]);
+        if (quickstatsText && ghcnText) {
+            const quickstats = parseCsvText(quickstatsText);
+            const ghcn = parseCsvText(ghcnText);
+            const metrics = buildRealMetrics(quickstats.rows, ghcn.rows);
+            if (metrics.sites.length && metrics.latestBySite.length) {
+                renderPresenterCharts(metrics);
+                if (status) {
+                    status.textContent = `Loaded real data for ${metrics.latestBySite.length} states`;
+                }
+                return;
+            }
+        }
+        const response = await fetch(CSV_SAMPLE_DATA_URL, { cache: "no-store" });
+        if (!response.ok) {
+            throw new Error("CSV load failed.");
+        }
+        const text = await response.text();
+        const parsed = parseCsvText(text);
+        const metrics = buildSampleMetrics(parsed.rows);
+        if (!metrics.sites.length) {
+            if (status) {
+                status.textContent = "No sample rows found in CSV.";
+            }
+            return;
+        }
+        renderPresenterCharts(metrics);
+        if (status) {
+            status.textContent = `Loaded ${metrics.sites.length} sites from sample_data.csv`;
+        }
+    } catch (error) {
+        if (status) {
+            status.textContent = "CSV load failed. Check /assets/data/*.csv.";
+        }
+    }
 }
 
 function renderSpeakerNotes(notes) {
@@ -2475,20 +3857,31 @@ function updateCarouselMeta(slides, currentIndex) {
     setText("[data-carousel-title]", currentTitle);
 }
 
-function getCarouselIndices(slides, currentIndex) {
+function getCarouselRange() {
+    const width = window.innerWidth || 0;
+    if (width && width < 960) {
+        return 1;
+    }
+    return 2;
+}
+
+function getCarouselIndices(slides, currentIndex, range = 2) {
     if (!slides || !slides.length) {
         return [];
     }
     const total = slides.length;
-    if (total === 1) {
-        return [currentIndex];
+    const indices = [];
+    const seen = new Set();
+    const safeRange = Math.min(Math.max(range, 1), Math.floor(total / 2));
+    for (let offset = -safeRange; offset <= safeRange; offset += 1) {
+        const index = (currentIndex + offset + total) % total;
+        if (seen.has(index)) {
+            continue;
+        }
+        indices.push({ index, offset });
+        seen.add(index);
     }
-    const prevIndex = (currentIndex - 1 + total) % total;
-    const nextIndex = (currentIndex + 1) % total;
-    if (total === 2) {
-        return [prevIndex, currentIndex];
-    }
-    return [prevIndex, currentIndex, nextIndex];
+    return indices;
 }
 
 function renderSlideCarousel(slides, currentIndex) {
@@ -2502,24 +3895,25 @@ function renderSlideCarousel(slides, currentIndex) {
         renderSlideJumpOptions(slides, currentIndex);
         return;
     }
-    const indices = getCarouselIndices(slides, currentIndex);
+    const indices = getCarouselIndices(slides, currentIndex, getCarouselRange());
     const total = slides.length;
-    const prevIndex = (currentIndex - 1 + total) % total;
-    const nextIndex = (currentIndex + 1) % total;
-    indices.forEach((index) => {
+    indices.forEach((entry) => {
+        const index = entry.index;
         const slide = slides[index];
         const button = document.createElement("button");
         button.type = "button";
         button.className = "carousel-item";
         button.dataset.slideJump = index.toString();
-        if (index === currentIndex) {
+        if (entry.offset === 0) {
             button.classList.add("is-active");
             button.classList.add("carousel-item--current");
             button.setAttribute("aria-current", "true");
-        } else if (index === prevIndex) {
+        } else if (entry.offset === -1) {
             button.classList.add("carousel-item--prev");
-        } else if (index === nextIndex) {
+        } else if (entry.offset === 1) {
             button.classList.add("carousel-item--next");
+        } else {
+            button.classList.add("carousel-item--far");
         }
 
         const number = document.createElement("div");
@@ -2661,11 +4055,30 @@ function runMenuAction(action) {
     const loadButton = document.querySelector("[data-deck-load]");
     const applyButton = document.querySelector("[data-deck-apply]");
     const downloadButton = document.querySelector("[data-deck-download]");
+    const jumpInput = document.querySelector("[data-slide-jump-input]");
 
     switch (action) {
         case "file-open":
             if (deckInput) {
                 deckInput.click();
+            }
+            break;
+        case "nav-prev":
+            goToSlide(-1);
+            break;
+        case "nav-next":
+            goToSlide(1);
+            break;
+        case "nav-first":
+            goToSlideIndex(0);
+            break;
+        case "nav-last":
+            goToSlideIndex(hmiState.scopeSlides.length - 1);
+            break;
+        case "nav-jump":
+            if (jumpInput) {
+                jumpInput.scrollIntoView({ behavior: "smooth", block: "center" });
+                jumpInput.focus();
             }
             break;
         case "file-select":
@@ -2702,6 +4115,9 @@ function runMenuAction(action) {
             }
             break;
         case "view-toggle-list":
+            if (isNewspaperLayout()) {
+                return;
+            }
             if (isConsoleLayout()) {
                 toggleCarouselRow();
             } else {
@@ -2725,11 +4141,23 @@ function runMenuAction(action) {
             applyReducedMotion(!hmiState.reducedMotion);
             updateReducedMotionToggle();
             break;
+        case "view-toggle-insights":
+            applyInsightsVisibility(!hmiState.insightsEnabled, true, true);
+            break;
+        case "view-toggle-media":
+            applyMediaVisibility(!hmiState.mediaHidden);
+            break;
+        case "view-toggle-chart":
+            applyChartVisibility(!hmiState.chartHidden);
+            break;
         case "view-fullscreen":
             void toggleFullscreen(getFullscreenTargetElement());
             break;
         case "view-open-fullscreen":
             openFullscreenWindow();
+            break;
+        case "view-open-presenter":
+            openPresenterWindow();
             break;
         case "view-theme-light":
             applyTheme("light");
@@ -2764,9 +4192,6 @@ function runMenuAction(action) {
         case "help-open":
             openHelpDialog();
             break;
-        case "help-tools":
-            window.open("hmi_data_tools.html", "_blank", "noopener");
-            break;
         default:
             break;
     }
@@ -2776,36 +4201,6 @@ function setupMenuBar() {
     const menuBar = document.querySelector(".menu-bar");
     if (!menuBar) {
         return;
-    }
-
-    const themeSelect = document.getElementById("theme-select");
-    if (themeSelect) {
-        const themes = [
-            ["nebula_rain", "Nebula Rain"],
-            ["ops_cascade", "Ops Cascade"],
-            ["science_matrix", "Science Matrix"],
-            ["command_aurora", "Command Aurora"],
-            ["lcars_flux", "LCARS Flux"],
-            ["command_blue", "Command Blue"],
-            ["ops_amber", "Ops Amber"],
-            ["medical_teal", "Medical Teal"],
-            ["engineering_bronze", "Engineering Bronze"],
-            ["science_cyan", "Science Cyan"],
-            ["lcars", "LCARS (classic)"],
-            ["quality_irrigation", "Quality Irrigation"],
-            ["dark", "Dark"],
-            ["light", "Light"]
-        ];
-        themeSelect.innerHTML = "";
-        for (const [value, label] of themes) {
-            const opt = document.createElement("option");
-            opt.value = value;
-            opt.textContent = label;
-            themeSelect.appendChild(opt);
-        }
-        themeSelect.addEventListener("change", (e) => {
-            applyTheme(e.target.value);
-        });
     }
 
     menuBar.addEventListener("click", (event) => {
@@ -2823,6 +4218,46 @@ function setupMenuBar() {
         }
         closeOpenMenus();
     });
+}
+
+function updateInsightsToggle() {
+    const toggles = document.querySelectorAll("[data-insights-toggle]");
+    const label = hmiState.insightsEnabled ? "Insights: On" : "Insights: Off";
+    toggles.forEach((toggle) => {
+        toggle.textContent = label;
+        toggle.classList.toggle("is-active", hmiState.insightsEnabled);
+        toggle.setAttribute("aria-pressed", hmiState.insightsEnabled ? "true" : "false");
+    });
+}
+
+function updateGamepadToggle() {
+    const toggles = document.querySelectorAll("[data-gamepad-toggle]");
+    const label = hmiState.gamepadEnabled ? "Gamepad input: On" : "Gamepad input: Off";
+    toggles.forEach((toggle) => {
+        toggle.textContent = label;
+        toggle.setAttribute("aria-pressed", hmiState.gamepadEnabled ? "true" : "false");
+    });
+}
+
+function applyPanelDefaultsFromConfig() {
+    const config = readStoredConfig() || {};
+    if (typeof config.carousel_hidden === "boolean") {
+        setCarouselHidden(config.carousel_hidden);
+    }
+    if (typeof config.agenda_hidden === "boolean") {
+        setAgendaRowHidden(config.agenda_hidden);
+    }
+    if (typeof config.slide_list_hidden === "boolean") {
+        setPanelHidden("slide-list-panel", "layout-hide-list", config.slide_list_hidden);
+    }
+    if (typeof config.side_panel_hidden === "boolean") {
+        setPanelHidden("side-panel", "layout-hide-side", config.side_panel_hidden);
+    } else if (isConsoleLayout() && !isNewspaperLayout()) {
+        setPanelHidden("side-panel", "layout-hide-side", true);
+    }
+    if (typeof config.notes_hidden === "boolean") {
+        setRailHidden("[data-rail-notes]", config.notes_hidden);
+    }
 }
 
 function setupWorkflowActions() {
@@ -2913,9 +4348,43 @@ function updateSlideContent(slide) {
 
     const slideAside = document.querySelector(".slide-preview-aside");
     if (slideAside) {
+        const asideTitle = slideAside.querySelector("[data-slide-aside-title]");
+        const asideCharts = slideAside.querySelector("[data-slide-aside-charts]");
+        const chartList = Array.isArray(slide.aside_charts)
+            ? slide.aside_charts
+            : Array.isArray(slide.charts)
+                ? slide.charts
+                : (slide.chart ? [slide.chart] : []);
+        const charts = chartList.filter(Boolean).slice(0, 2);
+        const chartsEnabled = !hmiState.chartHidden;
+        if (asideCharts) {
+            clearElement(asideCharts);
+            charts.forEach((chart) => {
+                const card = document.createElement("div");
+                card.className = "slide-preview-aside-card";
+                const canvas = document.createElement("div");
+                canvas.className = "slide-preview-aside-chart";
+                card.appendChild(canvas);
+                renderChart(canvas, chart);
+                asideCharts.appendChild(card);
+            });
+            setHidden(asideCharts, charts.length === 0 || !chartsEnabled);
+        }
+        if (charts.length && chartsEnabled) {
+            if (metricList) {
+                setHidden(metricList, true);
+            }
+            if (calloutList) {
+                setHidden(calloutList, true);
+            }
+        }
         const hasMetrics = metricList && !metricList.hidden;
         const hasCallouts = calloutList && !calloutList.hidden;
-        setHidden(slideAside, !(hasMetrics || hasCallouts));
+        const hasCharts = charts.length > 0 && chartsEnabled;
+        if (asideTitle) {
+            asideTitle.textContent = hasCharts ? "Slide charts" : "Key highlights";
+        }
+        setHidden(slideAside, !(hasCharts || hasMetrics || hasCallouts));
     }
 
     renderSpeakerNotes(slide.speaker_notes || slide.notes);
@@ -3314,6 +4783,7 @@ function renderSlide() {
     }
     const slide = hmiState.scopeSlides[hmiState.currentIndex];
     document.body.dataset.activeSlideType = slide.type || "";
+    applySlideClampMode(slide);
     const agendaIndex = Number.isInteger(slide.agenda_index) ? slide.agenda_index - 1 : null;
     renderAgenda(hmiState.agendaItems, agendaIndex);
     renderAgendaChips(hmiState.agendaItems, agendaIndex);
@@ -3321,9 +4791,24 @@ function renderSlide() {
     renderSlideCarousel(hmiState.scopeSlides, hmiState.currentIndex);
     updateCommon(hmiState.scopeSlides, hmiState.currentIndex);
     updateSlideContent(slide);
+    if (shouldRenderPresenterPanel()) {
+        renderPresenterPanel(buildSlidePayload());
+    }
     fitSlidePreview();
     hmiState.slideStart = Date.now();
     broadcastSlideState();
+}
+
+function goToSlideIndex(index) {
+    const total = hmiState.scopeSlides.length;
+    if (!total) {
+        return;
+    }
+    const nextIndex = Math.max(0, Math.min(total - 1, index));
+    hmiState.currentIndex = nextIndex;
+    const slide = hmiState.scopeSlides[hmiState.currentIndex];
+    renderSlide();
+    void logPresenterAction("jump", slide);
 }
 
 function goToSlide(delta) {
@@ -3504,12 +4989,14 @@ function startLiveTimer() {
             clockElement.textContent = `Clock: ${formatted}`;
             clockText = formatted;
         }
-        broadcastLiveState({
+        const liveState = {
             elapsedSeconds,
             slideSeconds,
             clock: clockText,
             liveCues: hmiState.lastLiveCues || {}
-        });
+        };
+        broadcastLiveState(liveState);
+        renderPresenterLiveState(liveState);
     };
 
     if (hmiState.timerInterval) {
@@ -3896,21 +5383,31 @@ function setupPresentationVersionList() {
 
 async function initHmi() {
     applyViewModeFromUrl();
+    applyLayoutMode(getInitialLayout(), false);
     applyTheme(getInitialTheme());
     applyReducedMotion(getInitialReducedMotion());
     applyContentDensity(getInitialContentDensity());
+    applyInsightsVisibility(getInitialInsightsEnabled(), false, false);
+    applyMediaVisibility(getInitialMediaHidden(), false);
+    applyChartVisibility(getInitialChartHidden(), false);
+    applyGamepadEnabled(getInitialGamepadEnabled(), false);
     applyAgendaDetails(false);
     adjustLayout();
     updateReducedMotionToggle();
-    if (isConsoleLayout()) {
-        setPanelHidden("side-panel", "layout-hide-side", true);
-    }
+    updateInsightsToggle();
+    updateMediaToggle();
+    updateChartToggle();
+    updateGamepadToggle();
+    applyPanelDefaultsFromConfig();
     setupFullscreenControls();
     setupPresenterControls();
     setupKeyboardShortcuts();
+    setupGamepadControls();
     setupPresentationChannel();
     setupHelpDialog();
     setupMenuBar();
+    setupThemeMenuSelect();
+    setupDeckToolsFloatingPanel();
     setupWorkflowActions();
     setupNavigation();
     setupAgendaDetailsToggle();
@@ -3924,6 +5421,9 @@ async function initHmi() {
     setupRunLogControls();
     setupLiveTimerControls();
     startLiveTimer();
+    if (shouldOpenHelpFromUrl()) {
+        openHelpDialog();
+    }
 
     hmiState.slideType = document.body.dataset.slideType || "title";
     hmiState.slideScope = document.body.dataset.slideScope || "deck";
@@ -3941,6 +5441,7 @@ async function initHmi() {
     if ((!hmiState.slides || !hmiState.slides.length) && hmiState.deckData && Array.isArray(hmiState.deckData.slides) && hmiState.deckData.slides.length) {
         applySlideData(hmiState.deckData, "Recovered deck data.");
     }
+    void setupPresenterInsights();
     // Hide bootstrap warning after load attempt.
     clearBootstrapWarning();
 }
@@ -3959,6 +5460,7 @@ window.addEventListener("load", () => {
 window.addEventListener("resize", () => {
     adjustLayout();
     updateRailTabs();
+    resizeECharts();
     if (hmiState.contentDensity === "auto") {
         applyContentDensity("auto", false);
     }

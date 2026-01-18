@@ -2,7 +2,18 @@
     "theme": "quality_irrigation",
     "reduced_motion": false,
     "content_density": "standard",
+    "layout": "console",
     "view": "fullscreen",
     "deck": "ai_pivot_data_stack",
-    "slide": 10
+    "slide": 10,
+    "console_scale": null,
+    "insights_enabled": true,
+    "media_hidden": false,
+    "chart_hidden": false,
+    "gamepad_enabled": false,
+    "slide_list_hidden": false,
+    "side_panel_hidden": false,
+    "carousel_hidden": false,
+    "agenda_hidden": false,
+    "notes_hidden": false
 }

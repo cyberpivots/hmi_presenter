@@ -168,6 +168,40 @@
                 </article>
             </section>
 
+            <section class="card" id="flow_report">
+                <h2>Flow score report</h2>
+                <p>Lowest flow-score slides per deck (auto uses the latest run).</p>
+                <div class="control_row">
+                    <div class="field">
+                        <label class="field_label" for="flow_run_id">Run ID (optional)</label>
+                        <input class="text_input" id="flow_run_id" type="text" placeholder="auto latest" />
+                    </div>
+                    <div class="field">
+                        <label class="field_label" for="flow_limit_select">Slides per deck</label>
+                        <select class="text_input" id="flow_limit_select">
+                            <option value="3">3</option>
+                            <option value="5" selected>5</option>
+                            <option value="7">7</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    <button class="ghost_button" id="flow_refresh" type="button">Refresh</button>
+                    <button class="ghost_button" id="flow_download_csv" type="button">Download CSV</button>
+                </div>
+                <p class="meta_text" id="flow_status">Loading flow scores.</p>
+                <p class="error_text" id="flow_error" role="alert" aria-live="polite"></p>
+
+                <div class="preview_block is_hidden" id="flow_block">
+                    <div class="preview_title">Lowest flow scores</div>
+                    <div class="table_wrap flow_table_wrap">
+                        <table class="preview_table" id="flow_table">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <section class="card">
                 <h2>File format rules</h2>
                 <div class="rule_grid">

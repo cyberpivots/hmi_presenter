@@ -1,0 +1,147 @@
+{
+  "version": "2026-01-17",
+  "library": "plotly",
+  "presets": [
+    {
+      "id": "hmi_light",
+      "description": "Light preset for slide-style charts.",
+      "layout": {
+        "paper_bgcolor": "#ffffff",
+        "plot_bgcolor": "#ffffff",
+        "font": {
+          "family": "system-ui",
+          "size": 16,
+          "color": "#0f172a"
+        },
+        "title": {
+          "x": 0,
+          "xanchor": "left",
+          "y": 0.98,
+          "yanchor": "top"
+        },
+        "margin": {
+          "l": 72,
+          "r": 24,
+          "t": 64,
+          "b": 64
+        },
+        "colorway": [
+          "#2563eb",
+          "#16a34a",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6",
+          "#0ea5e9"
+        ],
+        "xaxis": {
+          "showgrid": true,
+          "gridcolor": "#e5e7eb",
+          "zeroline": false,
+          "automargin": true,
+          "title": {
+            "standoff": 12
+          },
+          "tickfont": {
+            "size": 14
+          }
+        },
+        "yaxis": {
+          "showgrid": true,
+          "gridcolor": "#e5e7eb",
+          "zeroline": false,
+          "automargin": true,
+          "title": {
+            "standoff": 12
+          },
+          "tickfont": {
+            "size": 14
+          }
+        },
+        "legend": {
+          "orientation": "h",
+          "x": 0,
+          "xanchor": "left",
+          "y": 1.05,
+          "yanchor": "bottom"
+        }
+      },
+      "config": {
+        "displayModeBar": false,
+        "responsive": true
+      }
+    },
+    {
+      "id": "hmi_dark",
+      "description": "Dark preset for slide-style charts.",
+      "layout": {
+        "paper_bgcolor": "#0b1220",
+        "plot_bgcolor": "#0b1220",
+        "font": {
+          "family": "system-ui",
+          "size": 16,
+          "color": "#e2e8f0"
+        },
+        "title": {
+          "x": 0,
+          "xanchor": "left",
+          "y": 0.98,
+          "yanchor": "top"
+        },
+        "margin": {
+          "l": 72,
+          "r": 24,
+          "t": 64,
+          "b": 64
+        },
+        "colorway": [
+          "#60a5fa",
+          "#34d399",
+          "#fbbf24",
+          "#f87171",
+          "#a78bfa",
+          "#38bdf8"
+        ],
+        "xaxis": {
+          "showgrid": true,
+          "gridcolor": "#1f2937",
+          "zeroline": false,
+          "automargin": true,
+          "title": {
+            "standoff": 12
+          },
+          "tickfont": {
+            "size": 14,
+            "color": "#cbd5f5"
+          }
+        },
+        "yaxis": {
+          "showgrid": true,
+          "gridcolor": "#1f2937",
+          "zeroline": false,
+          "automargin": true,
+          "title": {
+            "standoff": 12
+          },
+          "tickfont": {
+            "size": 14,
+            "color": "#cbd5f5"
+          }
+        },
+        "legend": {
+          "orientation": "h",
+          "x": 0,
+          "xanchor": "left",
+          "y": 1.05,
+          "yanchor": "bottom",
+          "font": {
+            "color": "#e2e8f0"
+          }
+        }
+      },
+      "config": {
+        "displayModeBar": false,
+        "responsive": true
+      }
+    }
+  ]
+}

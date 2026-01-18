@@ -47,6 +47,12 @@ Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
 - DB name (shared dev): clarksoft_core_shared.
 - DB coordination plan: /mnt/g/clarksoft/research/core/postgresql/db_integration_coordination_synthesis_2025_12_28.md.
 
+## ML improvement tracking (required)
+- Any ML improvement work (including parallel algorithms and synthetic data) must be logged in the PG17 shared DB.
+- Use the hmi_presenter schema tables from `src/migrations/004_hmi_presenter_ml_tracking.sql`.
+- Record run_id, algorithms, dataset ids, synthetic profile, metrics, and artifact paths for every run.
+- Record per-sample prediction outputs in the tables from `src/migrations/005_hmi_presenter_ml_predictions.sql` when available.
+
 ## If you are unsure
 Stop and ask a short question.
 
@@ -58,3 +64,14 @@ Stop and ask a short question.
 ## Image Generation Policy
 - Use GPT Image models in this order: gpt-image-1.5 → gpt-image-1 → DALL-E 3 fallback.
 - Do not send response_format (unsupported for Image API).
+
+## Research DB usage (required)
+- Before external research, check the research DB summaries first.
+- Use the shared DB and the `research` schema.
+- Quick lookup (WSL):
+  bash /mnt/g/ClarkSoft/scripts/use_project_db.sh neuromorphic_kb bash -lc 'psql "postgres://${CLARKSOFT_PG_USER}:${CLARKSOFT_PG_PASSWORD}@127.0.0.1:5434/${CLARKSOFT_PG_DB}" -c "SELECT id, source_rel_path, left(summary, 200) AS preview FROM research.compactions ORDER BY created_at DESC LIMIT 5;"'
+- If you add or change a `*_synthesis_*.md` file, run:
+  bash /mnt/g/ClarkSoft/scripts/use_project_db.sh neuromorphic_kb bash /mnt/g/ClarkSoft/scripts/ensure_venv.sh python /mnt/g/clarksoft/projects/neuromorphic_memory_kb/scripts/ingest_research_synthesis.py
+- If summaries are missing, run:
+  bash /mnt/g/ClarkSoft/scripts/use_project_db.sh neuromorphic_kb bash /mnt/g/ClarkSoft/scripts/ensure_venv.sh python /mnt/g/clarksoft/projects/neuromorphic_memory_kb/scripts/compact_research_summaries.py --limit 10
+- Reference: /mnt/g/clarksoft/research/agentic/agent_self_improvement_methods_research_2026_01_18.md
