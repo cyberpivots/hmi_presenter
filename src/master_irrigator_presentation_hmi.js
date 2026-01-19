@@ -2085,6 +2085,27 @@ function fitSlidePreview() {
     slidePreview.style.setProperty("--slide-content-scale", Math.max(0.01, scale).toFixed(3));
 }
 
+function updateMainGridHeight() {
+    if (!document.body) {
+        return;
+    }
+    if (document.body.dataset.hmiLayout === "console") {
+        document.body.style.removeProperty("--mi-main-grid-height");
+        return;
+    }
+    const header = document.querySelector(".header");
+    const menu = document.querySelector(".menu-bar");
+    const carousel = document.querySelector("[data-carousel-row]");
+    const agenda = document.querySelector("[data-agenda-row]");
+    const status = document.querySelector(".status-bar");
+    const chrome = [header, menu, carousel, agenda, status]
+        .filter(Boolean)
+        .reduce((sum, element) => sum + element.getBoundingClientRect().height, 0);
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const available = Math.max(0, viewportHeight - chrome);
+    document.body.style.setProperty("--mi-main-grid-height", `${available}px`);
+}
+
 function applyConsoleScale() {
     if (!document.body) {
         return;
@@ -2152,6 +2173,7 @@ function adjustLayout() {
     } else {
         delete document.body.dataset.hmiTall;
     }
+    updateMainGridHeight();
     applyConsoleScale();
     if (hmiState.currentSlide) {
         const plan = buildSlideWidgetPlan(hmiState.currentSlide);

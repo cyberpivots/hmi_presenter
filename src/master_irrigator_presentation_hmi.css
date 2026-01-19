@@ -2548,6 +2548,10 @@ body[data-hmi-view="control"] .panel-text {
     min-height: 0;
 }
 
+body:not([data-hmi-layout="console"]) .main-grid {
+    min-height: var(--mi-main-grid-height, calc(100vh - 200px));
+}
+
 body[data-hmi-layout="console"] .main-grid {
     gap: var(--mi-console-grid-gap);
     padding: var(--mi-console-grid-padding-y) var(--mi-console-grid-padding-x) 10px;
