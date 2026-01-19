@@ -539,7 +539,8 @@ function applyReducedMotion(enabled) {
 }
 
 function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
-    const nextValue = Boolean(enabled);
+    const isProjector = isProjectorView();
+    const nextValue = isProjector ? false : Boolean(enabled);
     hmiState.insightsEnabled = nextValue;
     if (document.body) {
         document.body.dataset.hmiInsights = nextValue ? "on" : "off";
@@ -550,10 +551,10 @@ function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
     });
     const projectorNodes = document.querySelectorAll("[data-projector-insights]");
     projectorNodes.forEach((node) => {
-        node.hidden = !nextValue;
+        node.hidden = isProjector ? true : !nextValue;
     });
     updateInsightsToggle();
-    if (persist) {
+    if (persist && !isProjector) {
         try {
             localStorage.setItem(INSIGHTS_STORAGE_KEY, nextValue ? "on" : "off");
         } catch (error) {
@@ -563,7 +564,7 @@ function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
     if (broadcast && !hmiState.isReceiver) {
         broadcastSlideState();
     }
-    if (nextValue) {
+    if (nextValue && !isProjector) {
         void setupPresenterInsights();
     }
 }
@@ -2116,7 +2117,7 @@ function updateSlidePreviewFrame() {
     if (!slidePreview || !stageBody) {
         return;
     }
-    if (layout !== "landscape" && layout !== "portrait") {
+    if (layout !== "landscape" && layout !== "portrait" && layout !== "projector") {
         slidePreview.style.removeProperty("--slide-frame-width");
         slidePreview.style.removeProperty("--slide-frame-height");
         return;
@@ -3658,6 +3659,9 @@ function resizeECharts() {
 }
 
 async function setupPresenterInsights() {
+    if (isProjectorView()) {
+        return;
+    }
     const status = document.querySelector("[data-presenter-chart-status]");
     const presenterContainers = Array.from(document.querySelectorAll("[data-presenter-insights]"));
     const projectorContainers = Array.from(document.querySelectorAll("[data-projector-insights]"));

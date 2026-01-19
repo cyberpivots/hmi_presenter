@@ -2642,6 +2642,15 @@ body[data-hmi-layout="portrait"] .stage-rail {
     flex: 0 0 auto;
 }
 
+body[data-hmi-layout="projector"] .stage-body,
+body[data-hmi-role="projector"] .stage-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    justify-items: center;
+    gap: 0;
+}
+
 body[data-hmi-layout="landscape"] .rail-tabs,
 body[data-hmi-layout="portrait"] .rail-tabs {
     display: none;
@@ -2659,6 +2668,19 @@ body[data-hmi-layout="portrait"] .slide-preview {
     aspect-ratio: var(--slide-aspect);
 }
 
+body[data-hmi-layout="projector"] .slide-preview,
+body[data-hmi-role="projector"] .slide-preview {
+    flex: 0 0 auto;
+    width: var(--slide-frame-width, 100%);
+    height: var(--slide-frame-height, auto);
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    align-self: center;
+    --slide-aspect: 16 / 9;
+    aspect-ratio: var(--slide-aspect);
+}
+
 body[data-hmi-layout="landscape"] .slide-preview {
     --slide-base-width: 1600px;
     --slide-base-height: 900px;
@@ -2669,6 +2691,10 @@ body[data-hmi-layout="portrait"] .slide-preview {
     --slide-base-width: 900px;
     --slide-base-height: 1600px;
     --slide-aspect: 9 / 16;
+}
+
+body[data-hmi-role="projector"] [data-projector-insights] {
+    display: none;
 }
 
 body[data-hmi-layout="landscape"] .stage-rail {
@@ -3683,6 +3709,72 @@ body[data-hmi-layout="console"][data-hmi-tall="true"] .slide-preview {
 
 body[data-content-density="compact"] .slide-preview {
     padding: 12px;
+}
+
+body[data-content-density="compact"] {
+    --mi-console-grid-gap: 10px;
+    --mi-console-grid-padding-x: 12px;
+    --mi-console-grid-padding-y: 8px;
+    --mi-console-stage-padding-x: 10px;
+    --mi-console-stage-padding-y: 8px;
+}
+
+body[data-content-density="compact"]:not([data-hmi-layout="console"]) .main-grid {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    gap: 14px;
+}
+
+body[data-content-density="compact"]:not([data-hmi-layout="console"]) .stage {
+    padding: 16px 18px;
+    gap: 12px;
+}
+
+body[data-content-density="compact"] .stage-rail {
+    gap: 10px;
+}
+
+body[data-content-density="compact"] .rail-card {
+    padding: 10px;
+    gap: 6px;
+}
+
+body[data-content-density="compact"] .presenter-panel {
+    padding: 16px;
+    gap: 10px;
+}
+
+body[data-content-density="compact"] .presenter-body {
+    gap: 10px;
+}
+
+body[data-content-density="compact"] .presenter-insights {
+    padding: 10px;
+    gap: 10px;
+}
+
+body[data-content-density="compact"] .presenter-insights-grid {
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+body[data-content-density="compact"] .insight-card {
+    padding: 8px;
+    min-height: 120px;
+}
+
+body[data-content-density="compact"] .insight-chart {
+    min-height: 120px;
+}
+
+body[data-content-density="compact"] .sparkline-grid {
+    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+body[data-content-density="compact"] .sparkline-card {
+    padding: 6px;
+    gap: 4px;
 }
 
 .slide-preview-inner {
@@ -5166,11 +5258,25 @@ body[data-hmi-view="fullscreen"] .slide-preview {
     padding: 0;
 }
 
+body[data-hmi-view="fullscreen"][data-hmi-role="projector"] .slide-preview {
+    min-height: 0;
+    height: var(--slide-frame-height, auto);
+    max-height: 100%;
+    width: var(--slide-frame-width, 100%);
+    max-width: 100%;
+    aspect-ratio: var(--slide-aspect, 16 / 9);
+}
+
 body[data-hmi-view="fullscreen"] .slide-preview-inner {
     border-radius: 0;
     border: none;
     height: 100%;
     padding: 40px;
+}
+
+body[data-hmi-view="fullscreen"][data-hmi-role="projector"] .slide-preview-inner {
+    width: var(--slide-base-width);
+    height: var(--slide-base-height);
 }
 
 body[data-hmi-view="fullscreen"] .stage-footer {
