@@ -2106,6 +2106,44 @@ function updateMainGridHeight() {
     document.body.style.setProperty("--mi-main-grid-height", `${available}px`);
 }
 
+function updateSlidePreviewFrame() {
+    if (!document.body) {
+        return;
+    }
+    const layout = document.body.dataset.hmiLayout || "";
+    const slidePreview = document.querySelector(".slide-preview");
+    const stageBody = document.querySelector(".stage-body");
+    if (!slidePreview || !stageBody) {
+        return;
+    }
+    if (layout !== "landscape" && layout !== "portrait") {
+        slidePreview.style.removeProperty("--slide-frame-width");
+        slidePreview.style.removeProperty("--slide-frame-height");
+        return;
+    }
+    const stageRail = stageBody.querySelector(".stage-rail");
+    const computed = window.getComputedStyle(stageBody);
+    const gapValue = Number.parseFloat(computed.rowGap || computed.gap || "0");
+    const gap = Number.isFinite(gapValue) ? gapValue : 0;
+    const availableWidth = Math.max(0, stageBody.clientWidth);
+    let availableHeight = Math.max(0, stageBody.clientHeight);
+    if (stageRail && stageRail.offsetParent !== null) {
+        availableHeight = Math.max(0, availableHeight - stageRail.getBoundingClientRect().height - gap);
+    }
+    if (availableWidth <= 0 || availableHeight <= 0) {
+        return;
+    }
+    const aspect = layout === "portrait" ? (9 / 16) : (16 / 9);
+    let targetWidth = availableWidth;
+    let targetHeight = targetWidth / aspect;
+    if (targetHeight > availableHeight) {
+        targetHeight = availableHeight;
+        targetWidth = targetHeight * aspect;
+    }
+    slidePreview.style.setProperty("--slide-frame-width", `${Math.round(targetWidth)}px`);
+    slidePreview.style.setProperty("--slide-frame-height", `${Math.round(targetHeight)}px`);
+}
+
 function applyConsoleScale() {
     if (!document.body) {
         return;
@@ -2174,6 +2212,7 @@ function adjustLayout() {
         delete document.body.dataset.hmiTall;
     }
     updateMainGridHeight();
+    updateSlidePreviewFrame();
     applyConsoleScale();
     if (hmiState.currentSlide) {
         const plan = buildSlideWidgetPlan(hmiState.currentSlide);

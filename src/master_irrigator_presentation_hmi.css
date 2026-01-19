@@ -2608,6 +2608,9 @@ body[data-hmi-layout="portrait"] .main-grid {
     gap: 16px;
     padding: 16px 18px 20px;
     min-height: auto;
+    height: var(--mi-main-grid-height, calc(100vh - 200px));
+    min-height: 0;
+    flex: 0 0 auto;
     align-items: stretch;
 }
 
@@ -2636,6 +2639,7 @@ body[data-hmi-layout="portrait"] .stage-rail {
     overflow-y: hidden;
     padding-bottom: 6px;
     scrollbar-width: thin;
+    flex: 0 0 auto;
 }
 
 body[data-hmi-layout="landscape"] .rail-tabs,
@@ -2645,23 +2649,26 @@ body[data-hmi-layout="portrait"] .rail-tabs {
 
 body[data-hmi-layout="landscape"] .slide-preview,
 body[data-hmi-layout="portrait"] .slide-preview {
-    width: 100%;
-    height: auto;
-    max-width: none;
-    margin: 0;
-    align-self: stretch;
+    flex: 0 0 auto;
+    width: var(--slide-frame-width, 100%);
+    height: var(--slide-frame-height, auto);
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    align-self: center;
+    aspect-ratio: var(--slide-aspect);
 }
 
 body[data-hmi-layout="landscape"] .slide-preview {
     --slide-base-width: 1600px;
     --slide-base-height: 900px;
-    aspect-ratio: 16 / 9;
+    --slide-aspect: 16 / 9;
 }
 
 body[data-hmi-layout="portrait"] .slide-preview {
     --slide-base-width: 900px;
     --slide-base-height: 1600px;
-    aspect-ratio: 9 / 16;
+    --slide-aspect: 9 / 16;
 }
 
 body[data-hmi-layout="landscape"] .stage-rail {
