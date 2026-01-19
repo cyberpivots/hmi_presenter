@@ -9,6 +9,7 @@ const SLIDE_TARGET_MAX_SECONDS = 90;
 const THEME_STORAGE_KEY = "mi_hmi_theme";
 const HMI_CONFIG_STORAGE_KEY = "mi_hmi_config";
 const CONTENT_DENSITY_STORAGE_KEY = "mi_hmi_content_density";
+const RAIL_DENSITY_STORAGE_KEY = "mi_hmi_rail_density";
 const HMI_LAYOUT_STORAGE_KEY = "mi_hmi_layout";
 const DEFAULT_THEME = "nebula_rain";
 const THEME_LABELS = {
@@ -44,6 +45,7 @@ const BOOTSTRAP_WARNING_ID = "hmi-bootstrap-warning";
 const BOOTSTRAP_LOADING_MESSAGE = "Loading HMI data...";
 const HMI_VIEW_PARAM = "view";
 const CONTENT_DENSITY_PARAM = "density";
+const RAIL_DENSITY_PARAM = "rail_density";
 const HMI_LAYOUT_PARAM = "layout";
 const HMI_HELP_PARAM = "help";
 const HMI_VIEW_FULLSCREEN = "fullscreen";
@@ -82,6 +84,7 @@ const hmiState = {
     deckCatalog: null,
     reducedMotion: false,
     contentDensity: "standard",
+    railDensity: "auto",
     layoutMode: "newspaper",
     viewportWidth: 0,
     viewportHeight: 0,
@@ -90,6 +93,7 @@ const hmiState = {
     mediaHidden: false,
     chartHidden: false,
     chartMetadata: [],
+    presenterMetrics: null,
     gamepadEnabled: false,
     lastGamepadAction: 0,
     timerPaused: false,
@@ -743,6 +747,17 @@ function normalizeContentDensity(value) {
     return null;
 }
 
+function normalizeRailDensity(value) {
+    if (!value || typeof value !== "string") {
+        return null;
+    }
+    const normalized = value.trim().toLowerCase();
+    if (["compact", "standard", "auto"].includes(normalized)) {
+        return normalized;
+    }
+    return null;
+}
+
 function normalizeLayout(value) {
     const normalized = String(value || "").trim().toLowerCase();
     if (["console", "newspaper", "projector", "landscape", "portrait"].includes(normalized)) {
@@ -771,6 +786,22 @@ function resolveContentDensity(value) {
     const normalized = normalizeContentDensity(value) || "standard";
     if (normalized === "auto") {
         return getAutoContentDensity();
+    }
+    return normalized;
+}
+
+function getAutoRailDensity() {
+    const layout = document.body && document.body.dataset ? document.body.dataset.hmiLayout : "";
+    if (layout === "landscape" || layout === "portrait") {
+        return "compact";
+    }
+    return "standard";
+}
+
+function resolveRailDensity(value) {
+    const normalized = normalizeRailDensity(value) || "standard";
+    if (normalized === "auto") {
+        return getAutoRailDensity();
     }
     return normalized;
 }
@@ -818,6 +849,9 @@ function applyLayoutMode(value, persist = true) {
     } else if (document.body.dataset.hmiOrientation) {
         delete document.body.dataset.hmiOrientation;
     }
+    if (hmiState.railDensity === "auto") {
+        applyRailDensity("auto", false);
+    }
     if (!persist) {
         return;
     }
@@ -841,6 +875,24 @@ function applyContentDensity(value, persist = true) {
     }
     try {
         localStorage.setItem(CONTENT_DENSITY_STORAGE_KEY, normalized);
+    } catch (error) {
+        return;
+    }
+}
+
+function applyRailDensity(value, persist = true) {
+    if (!document.body) {
+        return;
+    }
+    const normalized = normalizeRailDensity(value) || "standard";
+    const resolved = resolveRailDensity(normalized);
+    document.body.dataset.railDensity = resolved;
+    hmiState.railDensity = normalized;
+    if (!persist) {
+        return;
+    }
+    try {
+        localStorage.setItem(RAIL_DENSITY_STORAGE_KEY, normalized);
     } catch (error) {
         return;
     }
@@ -919,6 +971,23 @@ function getInitialContentDensity() {
         || normalizeContentDensity(configValue)
         || normalizeContentDensity(storedValue)
         || "standard";
+}
+
+function getInitialRailDensity() {
+    const params = getSearchParams();
+    const config = readStoredConfig();
+    const paramValue = params.get(RAIL_DENSITY_PARAM);
+    const configValue = config && config.rail_density ? config.rail_density : null;
+    let storedValue = null;
+    try {
+        storedValue = localStorage.getItem(RAIL_DENSITY_STORAGE_KEY);
+    } catch (error) {
+        storedValue = null;
+    }
+    return normalizeRailDensity(paramValue)
+        || normalizeRailDensity(configValue)
+        || normalizeRailDensity(storedValue)
+        || "auto";
 }
 
 function getConsoleScaleOverride() {
@@ -2003,9 +2072,9 @@ function buildSlideWidgetPlan(slide) {
         && (primaryVisual === "both" || primaryVisual === "chart" || (allowSecondary && primaryVisual === "media"));
     const showMedia = stats.hasMedia
         && (primaryVisual === "both" || primaryVisual === "media" || (allowSecondary && primaryVisual === "chart"));
-    const asidePlacement = stats.hasWidgets
-        ? (forceStack ? "bottom" : "right")
-        : "right";
+    const asidePlacement = layoutMode === "portrait"
+        ? "bottom"
+        : (stats.hasWidgets ? (forceStack ? "bottom" : "right") : "right");
     const widgetDensity = (stats.metricsCount + stats.calloutCount + stats.asideChartCount) >= 4
         ? "rich"
         : "light";
@@ -2062,18 +2131,38 @@ function fitSlidePreview() {
     if (availableWidth <= 0 || availableHeight <= 0 || contentWidth <= 0 || contentHeight <= 0) {
         return;
     }
+    const layout = document.body ? document.body.dataset.hmiLayout : "";
     const clampMode = document.body ? document.body.dataset.slideClamp : "balanced";
     const clamp = (min, value, max) => Math.min(max, Math.max(min, value));
-    const bodyRatio = clampMode === "media" ? 0.2 : clampMode === "notes" ? 0.3 : 0.24;
-    const noteRatio = clampMode === "media" ? 0.17 : clampMode === "notes" ? 0.26 : 0.21;
-    const bodyMax = clamp(110, Math.round(availableHeight * bodyRatio), 280);
-    const noteMax = clamp(90, Math.round(availableHeight * noteRatio), 260);
+    let bodyRatio = clampMode === "media" ? 0.2 : clampMode === "notes" ? 0.3 : 0.24;
+    let noteRatio = clampMode === "media" ? 0.17 : clampMode === "notes" ? 0.26 : 0.21;
+    if (layout === "portrait") {
+        bodyRatio += 0.06;
+        noteRatio += 0.05;
+    } else if (layout === "landscape") {
+        bodyRatio += 0.02;
+        noteRatio += 0.02;
+    }
+    const bodyMax = clamp(
+        110,
+        Math.round(availableHeight * bodyRatio),
+        layout === "portrait" ? 360 : layout === "landscape" ? 320 : 280
+    );
+    const noteMax = clamp(
+        90,
+        Math.round(availableHeight * noteRatio),
+        layout === "portrait" ? 320 : layout === "landscape" ? 300 : 260
+    );
     const lineClampMap = {
         media: { body: 3, note: 4 },
         notes: { body: 7, note: 8 },
         balanced: { body: 5, note: 6 }
     };
-    const clampSetting = lineClampMap[clampMode] || lineClampMap.balanced;
+    const clampSetting = { ...(lineClampMap[clampMode] || lineClampMap.balanced) };
+    if (layout === "portrait") {
+        clampSetting.body += 2;
+        clampSetting.note += 2;
+    }
     slidePreview.style.setProperty("--slide-body-max", `${bodyMax}px`);
     slidePreview.style.setProperty("--slide-note-max", `${noteMax}px`);
     slidePreview.style.setProperty("--slide-body-lines", `${clampSetting.body}`);
@@ -2081,7 +2170,11 @@ function fitSlidePreview() {
     const scaleWidth = availableWidth / contentWidth;
     const scaleHeight = availableHeight / contentHeight;
     const targetScale = Math.min(scaleWidth, scaleHeight);
-    const maxScale = isConsoleScaleLayout() ? 1.45 : 1.5;
+    const maxScale = layout === "portrait"
+        ? 1.65
+        : layout === "landscape"
+            ? 1.55
+            : (isConsoleScaleLayout() ? 1.45 : 1.5);
     const scale = Math.min(targetScale, maxScale);
     slidePreview.style.setProperty("--slide-content-scale", Math.max(0.01, scale).toFixed(3));
 }
@@ -2134,7 +2227,7 @@ function updateSlidePreviewFrame() {
     if (availableWidth <= 0 || availableHeight <= 0) {
         return;
     }
-    const aspect = layout === "portrait" ? (9 / 16) : (16 / 9);
+    const aspect = 16 / 9;
     let targetWidth = availableWidth;
     let targetHeight = targetWidth / aspect;
     if (targetHeight > availableHeight) {
@@ -2153,10 +2246,6 @@ function applyConsoleScale() {
         document.body.style.removeProperty("--mi-console-scale");
         return;
     }
-    const page = document.querySelector(".page");
-    if (!page) {
-        return;
-    }
     const override = getConsoleScaleOverride();
     if (Number.isFinite(override) && override > 0) {
         const clamped = Math.min(1.2, Math.max(0.6, override));
@@ -2164,19 +2253,29 @@ function applyConsoleScale() {
         return;
     }
     document.body.style.setProperty("--mi-console-scale", "1");
+    const style = window.getComputedStyle(document.body);
+    const baseWidth = Number.parseFloat(style.getPropertyValue("--mi-console-base-width")) || 1600;
+    const baseHeight = Number.parseFloat(style.getPropertyValue("--mi-console-base-height")) || 900;
     const header = document.querySelector(".header");
     const menu = document.querySelector(".menu-bar");
     const carousel = document.querySelector("[data-carousel-row]");
     const agenda = document.querySelector("[data-agenda-row]");
+    const status = document.querySelector(".status-bar");
     const mainGrid = document.querySelector(".main-grid");
-    const sections = [header, menu, carousel, agenda, mainGrid].filter(Boolean);
+    const sections = [header, menu, carousel, agenda, status, mainGrid].filter(Boolean);
     const requiredHeight = sections.reduce((sum, section) => {
         const rect = section.getBoundingClientRect();
         return sum + rect.height;
     }, 0);
-    const requiredWidth = Math.max(page.scrollWidth, page.getBoundingClientRect().width);
-    const heightScale = requiredHeight > 0 ? (window.innerHeight / requiredHeight) : 1;
-    const widthScale = requiredWidth > 0 ? (window.innerWidth / requiredWidth) : 1;
+    const page = document.querySelector(".page");
+    const pageScrollHeight = page ? page.scrollHeight : 0;
+    const requiredWidth = page
+        ? Math.max(page.scrollWidth || 0, page.getBoundingClientRect().width)
+        : baseWidth;
+    const layoutWidth = Math.max(baseWidth, requiredWidth || 0);
+    const layoutHeight = Math.max(baseHeight, requiredHeight || 0, pageScrollHeight || 0);
+    const heightScale = layoutHeight > 0 ? (window.innerHeight / layoutHeight) : 1;
+    const widthScale = layoutWidth > 0 ? (window.innerWidth / layoutWidth) : 1;
     const nextScale = Math.min(1, heightScale, widthScale);
     if (!Number.isFinite(nextScale) || nextScale <= 0) {
         return;
@@ -3607,37 +3706,96 @@ function buildRealMetrics(quickstatsRows, ghcnRows) {
     };
 }
 
-function renderPresenterCharts(metrics) {
+function buildDerivedSummaryChart(chart) {
+    if (!chart || !chart.plotly || !Array.isArray(chart.plotly.data) || !chart.plotly.data.length) {
+        return null;
+    }
+    const trace = chart.plotly.data[0] || {};
+    const labels = Array.isArray(trace.x) ? trace.x.map((value) => `${value}`) : [];
+    const rawValues = Array.isArray(trace.y) ? trace.y : [];
+    if (!labels.length || labels.length !== rawValues.length) {
+        return null;
+    }
+    const values = rawValues.map((value) => Number(value));
+    if (!values.some((value) => Number.isFinite(value))) {
+        return null;
+    }
+    const maxPoints = 12;
+    const clippedLabels = labels.length > maxPoints ? labels.slice(-maxPoints) : labels;
+    const clippedValues = values.length > maxPoints ? values.slice(-maxPoints) : values;
+    return {
+        title: `${chart.title || "Chart"} (summary)`,
+        labels: clippedLabels,
+        values: clippedValues.map((value) => Number.isFinite(value) ? value : 0),
+        unit: chart.unit || "",
+        note: chart.note || chart.source_note || ""
+    };
+}
+
+function buildPresenterInsightCharts(slide) {
+    if (!slide) {
+        return [];
+    }
+    const charts = [];
+    const pushChart = (chart) => {
+        if (!chart || !shouldShowPresenterItem(chart, { defaultPresenterOnly: true })) {
+            return;
+        }
+        charts.push(chart);
+    };
+    pushChart(slide.chart);
+    if (Array.isArray(slide.aside_charts)) {
+        slide.aside_charts.forEach((chart) => pushChart(chart));
+    }
+    if (Array.isArray(slide.charts)) {
+        slide.charts.forEach((chart) => pushChart(chart));
+    }
+    if (charts.length < 2 && slide.chart) {
+        const derived = buildDerivedSummaryChart(slide.chart);
+        if (derived) {
+            charts.push(derived);
+        }
+    }
+    return charts.slice(0, 2);
+}
+
+function renderPresenterCharts(metrics, slide) {
     const containers = Array.from(document.querySelectorAll("[data-presenter-chart]"));
     if (!containers.length) {
         return;
     }
-    containers.forEach((container) => {
-        const chartId = container.dataset.presenterChart || "";
+    const cards = Array.from(document.querySelectorAll("[data-presenter-chart-card]"));
+    const titles = Array.from(document.querySelectorAll("[data-presenter-chart-title]"));
+    const charts = hmiState.chartHidden ? [] : buildPresenterInsightCharts(slide);
+    containers.forEach((container, index) => {
         disposeECharts(container);
         clearElement(container);
-        if (chartId === "ndvi_sparklines") {
-            renderSparklineGrid(container, metrics, metrics.sparklineKey || "ndvi");
+        const chart = charts[index];
+        if (!chart || hmiState.chartHidden) {
+            setHidden(container, true);
             return;
         }
-        let option = null;
-        if (chartId === "ndvi_timeseries") {
-            option = buildTimeSeriesOption(metrics, metrics.axisLabels ? "prcp" : "ndvi");
-        } else if (chartId === "ndmi_timeseries") {
-            option = buildTimeSeriesOption(metrics, metrics.axisLabels ? "tmax" : "ndmi");
-        } else if (chartId === "ndvi_scatter") {
-            option = buildScatterOption(metrics);
-        } else if (chartId === "ndvi_bar") {
-            option = buildBarOption(metrics);
-        } else if (chartId === "site_pie") {
-            option = buildPieOption(metrics);
-        } else if (chartId === "site_radar") {
-            option = buildRadarOption(metrics);
-        }
-        if (option) {
-            renderEChartsChart(container, option, 160);
-        }
+        setHidden(container, false);
+        renderChart(container, chart);
     });
+    cards.forEach((card, index) => {
+        const chart = charts[index];
+        setHidden(card, !chart || hmiState.chartHidden);
+    });
+    titles.forEach((title, index) => {
+        const chart = charts[index];
+        title.textContent = chart ? (chart.title || "Slide chart") : "Slide chart";
+    });
+    const status = document.querySelector("[data-presenter-chart-status]");
+    if (status) {
+        if (hmiState.chartHidden) {
+            status.textContent = "Charts hidden.";
+        } else if (charts.length) {
+            status.textContent = `Slide charts: ${charts.length} visible.`;
+        } else {
+            status.textContent = "No chart data for this slide.";
+        }
+    }
     if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
         window.requestAnimationFrame(() => {
             resizeECharts();
@@ -3694,7 +3852,8 @@ async function setupPresenterInsights() {
             const ghcn = parseCsvText(ghcnText);
             const metrics = buildRealMetrics(quickstats.rows, ghcn.rows);
             if (metrics.sites.length && metrics.latestBySite.length) {
-                renderPresenterCharts(metrics);
+                hmiState.presenterMetrics = metrics;
+                renderPresenterCharts(metrics, hmiState.currentSlide);
                 if (status) {
                     status.textContent = `Loaded real data for ${metrics.latestBySite.length} states`;
                 }
@@ -3714,7 +3873,8 @@ async function setupPresenterInsights() {
             }
             return;
         }
-        renderPresenterCharts(metrics);
+        hmiState.presenterMetrics = metrics;
+        renderPresenterCharts(metrics, hmiState.currentSlide);
         if (status) {
             status.textContent = `Loaded ${metrics.sites.length} sites from sample_data.csv`;
         }
@@ -4798,6 +4958,7 @@ function updateSlideContent(slide) {
     }
 
     const slideAside = document.querySelector(".slide-preview-aside");
+    const slidePreview = document.querySelector(".slide-preview");
     if (slideAside) {
         const asideTitle = slideAside.querySelector("[data-slide-aside-title]");
         const asideCharts = slideAside.querySelector("[data-slide-aside-charts]");
@@ -4839,6 +5000,14 @@ function updateSlideContent(slide) {
             asideTitle.textContent = hasCharts ? "Slide charts" : "Key highlights";
         }
         setHidden(slideAside, !(hasCharts || hasMetrics || hasCallouts));
+    }
+    if (slidePreview) {
+        const asideVisible = slideAside ? !slideAside.hidden : false;
+        slidePreview.dataset.asideVisible = asideVisible ? "true" : "false";
+    }
+
+    if (hmiState.insightsEnabled && !isProjectorView()) {
+        renderPresenterCharts(hmiState.presenterMetrics, slide);
     }
 
     renderSpeakerNotes(slide.speaker_notes || slide.notes);
@@ -5840,6 +6009,7 @@ async function initHmi() {
     applyLayoutMode(getInitialLayout(), false);
     applyTheme(getInitialTheme());
     applyReducedMotion(getInitialReducedMotion());
+    applyRailDensity(getInitialRailDensity());
     applyContentDensity(getInitialContentDensity());
     applyInsightsVisibility(getInitialInsightsEnabled(), false, false);
     applyMediaVisibility(getInitialMediaHidden(), false);
@@ -5917,6 +6087,9 @@ window.addEventListener("resize", () => {
     resizeECharts();
     if (hmiState.contentDensity === "auto") {
         applyContentDensity("auto", false);
+    }
+    if (hmiState.railDensity === "auto") {
+        applyRailDensity("auto", false);
     }
 });
 

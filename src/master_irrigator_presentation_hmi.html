@@ -349,38 +349,18 @@
                     </div>
                 </div>
                 <div class="presenter-insights" data-presenter-insights>
-                    <div class="presenter-insights-header">Field insights (real data)</div>
+                    <div class="presenter-insights-header">Slide insights</div>
                     <div class="presenter-insights-grid">
-                        <article class="insight-card">
-                            <div class="insight-title">Precipitation time series</div>
-                            <div class="insight-chart" data-presenter-chart="ndvi_timeseries"></div>
+                        <article class="insight-card" data-presenter-chart-card="primary">
+                            <div class="insight-title" data-presenter-chart-title="primary">Slide chart</div>
+                            <div class="insight-chart" data-presenter-chart="slide_primary"></div>
                         </article>
-                        <article class="insight-card">
-                            <div class="insight-title">Temperature time series</div>
-                            <div class="insight-chart" data-presenter-chart="ndmi_timeseries"></div>
-                        </article>
-                        <article class="insight-card">
-                            <div class="insight-title">Precip vs temp</div>
-                            <div class="insight-chart" data-presenter-chart="ndvi_scatter"></div>
-                        </article>
-                        <article class="insight-card">
-                            <div class="insight-title">Irrigated acres (bar)</div>
-                            <div class="insight-chart" data-presenter-chart="ndvi_bar"></div>
-                        </article>
-                        <article class="insight-card">
-                            <div class="insight-title">Irrigated acres share</div>
-                            <div class="insight-chart" data-presenter-chart="site_pie"></div>
-                        </article>
-                        <article class="insight-card">
-                            <div class="insight-title">Irrigation vs precip</div>
-                            <div class="insight-chart" data-presenter-chart="site_radar"></div>
-                        </article>
-                        <article class="insight-card insight-card-wide">
-                            <div class="insight-title">Precip sparklines (small multiples)</div>
-                            <div class="sparkline-grid" data-presenter-chart="ndvi_sparklines"></div>
+                        <article class="insight-card" data-presenter-chart-card="secondary">
+                            <div class="insight-title" data-presenter-chart-title="secondary">Context chart</div>
+                            <div class="insight-chart" data-presenter-chart="slide_secondary"></div>
                         </article>
                     </div>
-                    <div class="presenter-insights-status" data-presenter-chart-status>Loading CSV…</div>
+                    <div class="presenter-insights-status" data-presenter-chart-status>Loading slide chart data…</div>
                 </div>
             </section>
 
