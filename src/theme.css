@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
+
+:root {
+    color-scheme: light;
+    --cs-bg: #0b1316;
+    --cs-bg-alt: #111d22;
+    --cs-surface: #15242a;
+    --cs-surface-strong: #1b2f36;
+    --cs-ink: #e9f1f4;
+    --cs-ink-soft: #b7c7cd;
+    --cs-ink-muted: #7f97a1;
+    --cs-accent: #4cc9f0;
+    --cs-accent-2: #8bd17c;
+    --cs-warning: #f0c24c;
+    --cs-danger: #d95f5f;
+    --cs-border: rgba(233, 241, 244, 0.12);
+    --cs-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+    --cs-radius-lg: 22px;
+    --cs-radius-md: 14px;
+    --cs-radius-sm: 10px;
+    --cs-space-1: 6px;
+    --cs-space-2: 12px;
+    --cs-space-3: 18px;
+    --cs-space-4: 28px;
+    --cs-space-5: 40px;
+    --cs-space-6: 56px;
+    --cs-font-body: "Space Grotesk", "Segoe UI", sans-serif;
+    --cs-font-mono: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+    --cs-header-gradient: linear-gradient(120deg, rgba(76, 201, 240, 0.22), rgba(139, 209, 124, 0.1));
+    --cs-shell-gradient: radial-gradient(circle at top left, rgba(76, 201, 240, 0.18), transparent 55%),
+        radial-gradient(circle at 15% 30%, rgba(139, 209, 124, 0.12), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(240, 194, 76, 0.16), transparent 50%),
+        linear-gradient(180deg, #0b1316 0%, #0f1a1f 100%);
+}
+
+body[data-shell-theme="signal"] {
+    --cs-accent: #52d1ff;
+    --cs-accent-2: #9ce89a;
+}
+
+body[data-shell-theme="ember"] {
+    --cs-accent: #f5b357;
+    --cs-accent-2: #ff7d6b;
+}

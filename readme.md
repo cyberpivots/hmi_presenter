@@ -26,6 +26,7 @@ Status: planning and research.
 - hmi_developer/recreate_photo_map_presenter_2026_01_17.md
 
 ## Pages (dev)
+- src/index.html: HMI presenter dev shell (phase 2 base layout).
 - src/irrigation_eyes_hmi.html: imagery analysis HMI mockup.
 - src/master_irrigator_presentation_hmi.html: slide deck presenter console.
 - src/quality_irrigation_theme_preview.html: theme preview page.

@@ -36,12 +36,23 @@ Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
 - Colorado Master Irrigator is a benefactor only and not affiliated with ClarkSoft.
 - Packaged presenter must remain compatible with any HTML/CSS changes.
 
+## Update checklist
+- Keep "ClarkSoft" in titles/headers for presenter views.
+- If you add a new HMI page, list it in `readme.md`.
+
 ## Structure (planned)
 - src/
 - tests/
 - assets/
 - scripts/
 - hmi_developer/
+
+## Key files (dev)
+- `src/master_irrigator_presentation_hmi.html`, `.css`, `.js`: presenter console.
+- `src/master_irrigator_projector_hmi.html`: projector view.
+- `src/hmi_data_tools.html`, `.css`, `.js`: local JSON/CSV/PDF tools.
+- `src/irrigation_eyes_hmi.html`, `.css`, `.js`: imagery analysis HMI mockup.
+- `src/quality_irrigation_theme_preview.html`, `.css`, `_print.css`: theme preview.
 
 ## DB notes (if needed)
 - DB name (shared dev): clarksoft_core_shared.
@@ -52,6 +63,11 @@ Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
 - Use the hmi_presenter schema tables from `src/migrations/004_hmi_presenter_ml_tracking.sql`.
 - Record run_id, algorithms, dataset ids, synthetic profile, metrics, and artifact paths for every run.
 - Record per-sample prediction outputs in the tables from `src/migrations/005_hmi_presenter_ml_predictions.sql` when available.
+
+## Local scripts (dev)
+- `scripts/build_hmi_chart_data_static.py` uses `assets/data/region_config.json` and writes CSV outputs to `assets/data/`.
+- `scripts/compare_hmi_screenshots.py` compares PNGs and writes diff reports.
+- `scripts/ingest_deck_audit.py` loads deck audit JSON into the shared DB (`hmi_presenter` schema).
 
 ## If you are unsure
 Stop and ask a short question.
