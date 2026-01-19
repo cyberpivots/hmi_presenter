@@ -543,12 +543,10 @@ function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
     presenterNodes.forEach((node) => {
         node.hidden = !nextValue;
     });
-    if (isProjectorView()) {
-        const projectorNodes = document.querySelectorAll("[data-projector-insights]");
-        projectorNodes.forEach((node) => {
-            node.hidden = false;
-        });
-    }
+    const projectorNodes = document.querySelectorAll("[data-projector-insights]");
+    projectorNodes.forEach((node) => {
+        node.hidden = !nextValue;
+    });
     updateInsightsToggle();
     if (persist) {
         try {
@@ -560,7 +558,7 @@ function applyInsightsVisibility(enabled, persist = true, broadcast = false) {
     if (broadcast && !hmiState.isReceiver) {
         broadcastSlideState();
     }
-    if (nextValue || isProjectorView()) {
+    if (nextValue) {
         void setupPresenterInsights();
     }
 }
@@ -630,6 +628,9 @@ function updateChartToggle() {
 }
 
 function getInitialInsightsEnabled() {
+    if (isProjectorView()) {
+        return false;
+    }
     const config = readStoredConfig();
     if (config && typeof config.insights_enabled === "boolean") {
         return config.insights_enabled;
@@ -732,8 +733,15 @@ function normalizeContentDensity(value) {
 
 function normalizeLayout(value) {
     const normalized = String(value || "").trim().toLowerCase();
-    if (normalized === "console" || normalized === "newspaper") {
+    if (["console", "newspaper", "projector", "landscape", "portrait"].includes(normalized)) {
         return normalized;
+    }
+    return null;
+}
+
+function getLayoutOrientation(layout) {
+    if (layout === "landscape" || layout === "portrait") {
+        return layout;
     }
     return null;
 }
@@ -762,6 +770,12 @@ function applyLayoutMode(value, persist = true) {
     const normalized = normalizeLayout(value) || normalizeLayout(document.body.dataset.hmiLayout) || "console";
     document.body.dataset.hmiLayout = normalized;
     hmiState.layoutMode = normalized;
+    const orientation = getLayoutOrientation(normalized);
+    if (orientation) {
+        document.body.dataset.hmiOrientation = orientation;
+    } else if (document.body.dataset.hmiOrientation) {
+        delete document.body.dataset.hmiOrientation;
+    }
     if (!persist) {
         return;
     }
@@ -962,6 +976,9 @@ async function toggleFullscreen(targetElement) {
 function buildFullscreenUrl() {
     const url = new URL(HMI_PROJECTOR_PAGE, window.location.href);
     url.searchParams.set(HMI_VIEW_PARAM, HMI_VIEW_FULLSCREEN);
+    if (hmiState.layoutMode) {
+        url.searchParams.set(HMI_LAYOUT_PARAM, hmiState.layoutMode);
+    }
     if (hmiState.deckId) {
         url.searchParams.set("deck", hmiState.deckId);
     }
@@ -1004,6 +1021,9 @@ function openFullscreenWindow() {
 function buildPresenterUrl() {
     const url = new URL(HMI_PRESENTER_PAGE, window.location.href);
     url.searchParams.set(HMI_VIEW_PARAM, HMI_VIEW_CONTROL);
+    if (hmiState.layoutMode) {
+        url.searchParams.set(HMI_LAYOUT_PARAM, hmiState.layoutMode);
+    }
     if (hmiState.deckId) {
         url.searchParams.set("deck", hmiState.deckId);
     }
@@ -1561,11 +1581,15 @@ function isNewspaperLayout() {
 
 function isConsoleLayout() {
     const layout = document.body.dataset.hmiLayout;
-    return layout === "console" || layout === "newspaper";
+    return layout === "console"
+        || layout === "newspaper"
+        || layout === "landscape"
+        || layout === "portrait";
 }
 
 function isConsoleScaleLayout() {
-    return document.body.dataset.hmiLayout === "console";
+    const layout = document.body.dataset.hmiLayout;
+    return layout === "console" || layout === "landscape" || layout === "portrait";
 }
 
 function isProjectorView() {
@@ -4161,6 +4185,26 @@ function runMenuAction(action) {
         case "view-open-presenter":
             openPresenterWindow();
             break;
+        case "view-layout-console":
+            applyLayoutMode("console");
+            resetLayout();
+            adjustLayout();
+            break;
+        case "view-layout-newspaper":
+            applyLayoutMode("newspaper");
+            resetLayout();
+            adjustLayout();
+            break;
+        case "view-layout-landscape":
+            applyLayoutMode("landscape");
+            resetLayout();
+            adjustLayout();
+            break;
+        case "view-layout-portrait":
+            applyLayoutMode("portrait");
+            resetLayout();
+            adjustLayout();
+            break;
         case "view-theme-light":
             applyTheme("light");
             break;
@@ -4277,6 +4321,24 @@ function setupWorkflowActions() {
     });
 }
 
+function updateChartMetadataBadge(deckId, chartMetadata) {
+    const badge = document.querySelector("[data-chart-metadata-badge]");
+    if (!badge) {
+        return;
+    }
+    if (!Array.isArray(chartMetadata) || chartMetadata.length === 0) {
+        badge.classList.add("is-hidden");
+        badge.removeAttribute("title");
+        return;
+    }
+    const count = chartMetadata.length;
+    badge.textContent = `Charts: DB (${count})`;
+    if (deckId) {
+        badge.title = `Chart metadata loaded from DB for ${deckId}`;
+    }
+    badge.classList.remove("is-hidden");
+}
+
 async function loadSlideCharts(deckId) {
     if (!deckId) {
         return [];
@@ -4358,14 +4420,17 @@ async function loadSlideData() {
     const data = await response.json();
     const resolvedDeckId = data && data.deck_id ? data.deck_id : hmiState.deckId;
     if (!resolvedDeckId) {
+        updateChartMetadataBadge(null, []);
         return data;
     }
     try {
         const chartMetadata = await loadSlideCharts(resolvedDeckId);
         hmiState.chartMetadata = chartMetadata;
+        updateChartMetadataBadge(resolvedDeckId, chartMetadata);
         return mergeChartMetadataIntoSlides(data, chartMetadata);
     } catch (error) {
         hmiState.chartMetadata = [];
+        updateChartMetadataBadge(resolvedDeckId, []);
         return data;
     }
 }
@@ -4379,6 +4444,56 @@ function updateCommon(slides, currentIndex) {
     if (nextSlide && nextSlide.title) {
         setText("[data-next-slide]", nextSlide.title);
     }
+}
+
+function normalizeDisplayTarget(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (["presenter", "presenter_only", "presenter-only"].includes(normalized)) {
+        return "presenter";
+    }
+    if (["projector", "audience", "audience_only", "projector_only", "projector-only"].includes(normalized)) {
+        return "projector";
+    }
+    if (["both", "all", "default"].includes(normalized)) {
+        return "both";
+    }
+    return "both";
+}
+
+function resolveDisplayTarget(item) {
+    if (!item || typeof item !== "object") {
+        return "both";
+    }
+    const displayValue = item.display || item.visibility || item.audience;
+    return normalizeDisplayTarget(displayValue);
+}
+
+function isPresenterOnlyItem(item) {
+    if (!item || typeof item !== "object") {
+        return false;
+    }
+    if (item.presenter_only === true) {
+        return true;
+    }
+    return resolveDisplayTarget(item) === "presenter";
+}
+
+function shouldShowPresenterItem(item, options = {}) {
+    const defaultPresenterOnly = options.defaultPresenterOnly === true;
+    if (!isProjectorView()) {
+        return true;
+    }
+    const target = resolveDisplayTarget(item);
+    if (defaultPresenterOnly && target === "both") {
+        return false;
+    }
+    if (target === "projector") {
+        return true;
+    }
+    if (target === "presenter") {
+        return false;
+    }
+    return !isPresenterOnlyItem(item);
 }
 
 function updateSlideContent(slide) {
@@ -4397,7 +4512,15 @@ function updateSlideContent(slide) {
     renderMedia(mediaContainer, slide.media);
 
     const chartContainer = document.querySelector("[data-slide-chart]");
-    renderChart(chartContainer, slide.chart);
+    if (chartContainer) {
+        disposeECharts(chartContainer);
+        clearElement(chartContainer);
+        if (slide.chart && shouldShowPresenterItem(slide.chart)) {
+            renderChart(chartContainer, slide.chart);
+        } else {
+            setHidden(chartContainer, true);
+        }
+    }
 
     const qaContainer = document.querySelector("[data-slide-qa]");
     renderQA(qaContainer, slide.qa_prompt, slide.qa_options);
@@ -4414,8 +4537,9 @@ function updateSlideContent(slide) {
     if (metricList) {
         clearElement(metricList);
         if (Array.isArray(slide.metrics) && slide.metrics.length) {
-            slide.metrics.forEach((metric) => addMetricCard(metricList, metric));
-            setHidden(metricList, false);
+            const visibleMetrics = slide.metrics.filter((metric) => shouldShowPresenterItem(metric, { defaultPresenterOnly: true }));
+            visibleMetrics.forEach((metric) => addMetricCard(metricList, metric));
+            setHidden(metricList, visibleMetrics.length === 0);
         } else {
             setHidden(metricList, true);
         }
@@ -4425,8 +4549,9 @@ function updateSlideContent(slide) {
     if (calloutList) {
         clearElement(calloutList);
         if (Array.isArray(slide.callouts) && slide.callouts.length) {
-            slide.callouts.forEach((callout) => addCallout(calloutList, callout));
-            setHidden(calloutList, false);
+            const visibleCallouts = slide.callouts.filter((callout) => shouldShowPresenterItem(callout, { defaultPresenterOnly: true }));
+            visibleCallouts.forEach((callout) => addCallout(calloutList, callout));
+            setHidden(calloutList, visibleCallouts.length === 0);
         } else {
             setHidden(calloutList, true);
         }
@@ -4441,7 +4566,7 @@ function updateSlideContent(slide) {
             : Array.isArray(slide.charts)
                 ? slide.charts
                 : (slide.chart ? [slide.chart] : []);
-        const charts = chartList.filter(Boolean).slice(0, 2);
+        const charts = chartList.filter((chart) => Boolean(chart) && shouldShowPresenterItem(chart, { defaultPresenterOnly: true })).slice(0, 2);
         const chartsEnabled = !hmiState.chartHidden;
         if (asideCharts) {
             clearElement(asideCharts);
