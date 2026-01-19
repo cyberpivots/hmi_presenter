@@ -2067,7 +2067,10 @@ function buildSlideWidgetPlan(slide) {
         || isNarrow
         || isTall;
     const allowSecondary = !isProjector && !isCramped && !forceStack;
-    const primaryVisual = resolvePrimaryVisual(slide, stats);
+    let primaryVisual = resolvePrimaryVisual(slide, stats);
+    if (layoutOrientation === "portrait" && stats.hasMedia && primaryVisual === "chart") {
+        primaryVisual = "media";
+    }
     const showChart = stats.hasChart
         && (primaryVisual === "both" || primaryVisual === "chart" || (allowSecondary && primaryVisual === "media"));
     const showMedia = stats.hasMedia
@@ -2142,16 +2145,19 @@ function fitSlidePreview() {
     } else if (layout === "landscape") {
         bodyRatio += 0.02;
         noteRatio += 0.02;
+    } else if (layout === "newspaper") {
+        bodyRatio += 0.08;
+        noteRatio += 0.06;
     }
     const bodyMax = clamp(
         110,
         Math.round(availableHeight * bodyRatio),
-        layout === "portrait" ? 360 : layout === "landscape" ? 320 : 280
+        layout === "portrait" ? 360 : layout === "landscape" ? 320 : layout === "newspaper" ? 360 : 280
     );
     const noteMax = clamp(
         90,
         Math.round(availableHeight * noteRatio),
-        layout === "portrait" ? 320 : layout === "landscape" ? 300 : 260
+        layout === "portrait" ? 320 : layout === "landscape" ? 300 : layout === "newspaper" ? 320 : 260
     );
     const lineClampMap = {
         media: { body: 3, note: 4 },
@@ -2160,6 +2166,9 @@ function fitSlidePreview() {
     };
     const clampSetting = { ...(lineClampMap[clampMode] || lineClampMap.balanced) };
     if (layout === "portrait") {
+        clampSetting.body += 2;
+        clampSetting.note += 2;
+    } else if (layout === "newspaper") {
         clampSetting.body += 2;
         clampSetting.note += 2;
     }
@@ -2210,7 +2219,7 @@ function updateSlidePreviewFrame() {
     if (!slidePreview || !stageBody) {
         return;
     }
-    if (layout !== "landscape" && layout !== "portrait" && layout !== "projector") {
+    if (layout !== "landscape" && layout !== "portrait" && layout !== "projector" && layout !== "newspaper") {
         slidePreview.style.removeProperty("--slide-frame-width");
         slidePreview.style.removeProperty("--slide-frame-height");
         return;
