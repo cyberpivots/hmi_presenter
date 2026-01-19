@@ -202,6 +202,30 @@
                 </div>
             </section>
 
+            <section class="card" id="chart_metadata">
+                <h2>Slide chart metadata</h2>
+                <p>Preview chart metadata stored in the database.</p>
+                <div class="control_row">
+                    <div class="field">
+                        <label class="field_label" for="chart_deck_id">Deck ID</label>
+                        <input class="text_input" id="chart_deck_id" type="text" placeholder="ai_pivot_data_stack" />
+                    </div>
+                    <button class="ghost_button" id="chart_refresh" type="button">Load charts</button>
+                </div>
+                <p class="meta_text" id="chart_status">Enter a deck id to load charts.</p>
+                <p class="error_text" id="chart_error" role="alert" aria-live="polite"></p>
+
+                <div class="preview_block is_hidden" id="chart_block">
+                    <div class="preview_title">Chart metadata</div>
+                    <div class="table_wrap">
+                        <table class="preview_table" id="chart_table">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <section class="card">
                 <h2>File format rules</h2>
                 <div class="rule_grid">

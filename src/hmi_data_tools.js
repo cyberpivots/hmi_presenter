@@ -6,6 +6,7 @@ const DEFAULT_THEME = "quality_irrigation";
 const SERVER_DATA_URL = "/api/data-sources";
 const FLOW_REPORT_URL = "/api/slide-flow-report";
 const FLOW_REPORT_CSV_URL = "/api/slide-flow-report.csv";
+const SLIDE_CHARTS_URL = "/api/slide-charts";
 
 const dataFileInput = document.getElementById("data_file_input");
 const dataClearButton = document.getElementById("data_clear");
@@ -47,6 +48,13 @@ const flowStatus = document.getElementById("flow_status");
 const flowError = document.getElementById("flow_error");
 const flowBlock = document.getElementById("flow_block");
 const flowTable = document.getElementById("flow_table");
+
+const chartDeckIdInput = document.getElementById("chart_deck_id");
+const chartRefresh = document.getElementById("chart_refresh");
+const chartStatus = document.getElementById("chart_status");
+const chartError = document.getElementById("chart_error");
+const chartBlock = document.getElementById("chart_block");
+const chartTable = document.getElementById("chart_table");
 
 let currentPdfUrl = null;
 let serverSources = [];
@@ -159,6 +167,15 @@ const resetFlowReport = () => {
     setText(flowStatus, "Loading flow scores.");
     setText(flowError, "");
     toggle(flowBlock, false);
+};
+
+const resetChartMetadata = () => {
+    if (chartTable) {
+        clearTable(chartTable);
+    }
+    setText(chartStatus, "Enter a deck id to load charts.");
+    setText(chartError, "");
+    toggle(chartBlock, false);
 };
 
 const resetPdfPreview = () => {
@@ -575,6 +592,83 @@ const renderFlowReportTable = (decks) => {
     return rowCount;
 };
 
+const renderChartMetadataTable = (charts) => {
+    if (!chartTable) {
+        return 0;
+    }
+    const head = chartTable.querySelector("thead");
+    const body = chartTable.querySelector("tbody");
+    if (!head || !body) {
+        return 0;
+    }
+    head.innerHTML = "";
+    body.innerHTML = "";
+
+    const headers = ["Slide", "Library", "Type", "Title", "Alt text"];
+    const headRow = document.createElement("tr");
+    headers.forEach((label) => {
+        const th = document.createElement("th");
+        th.textContent = label;
+        headRow.appendChild(th);
+    });
+    head.appendChild(headRow);
+
+    let rowCount = 0;
+    charts.forEach((chart) => {
+        const tr = document.createElement("tr");
+        const altText = chart.alt_text || "";
+        const cells = [
+            chart.slide_index ?? "--",
+            chart.chart_library || "--",
+            chart.chart_type || "--",
+            chart.chart_title || "--",
+            altText.length > 120 ? `${altText.slice(0, 120)}…` : altText,
+        ];
+        cells.forEach((value) => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+        });
+        body.appendChild(tr);
+        rowCount += 1;
+    });
+    return rowCount;
+};
+
+const loadChartMetadata = async () => {
+    resetChartMetadata();
+    const deckId = chartDeckIdInput?.value.trim();
+    if (!deckId) {
+        setText(chartStatus, "Enter a deck id to load charts.");
+        return;
+    }
+    setText(chartStatus, "Loading chart metadata...");
+    try {
+        const response = await fetch(
+            `${SLIDE_CHARTS_URL}?deck_id=${encodeURIComponent(deckId)}`,
+            { cache: "no-store" }
+        );
+        if (!response.ok) {
+            const errorText = await response.text();
+            setText(chartError, errorText || "Failed to load chart metadata.");
+            setText(chartStatus, "Chart metadata failed.");
+            return;
+        }
+        const payload = await response.json();
+        const charts = Array.isArray(payload.charts) ? payload.charts : [];
+        const rowCount = renderChartMetadataTable(charts);
+        if (!rowCount) {
+            setText(chartStatus, "No chart metadata found.");
+            return;
+        }
+        toggle(chartBlock, true);
+        setText(chartStatus, `Loaded ${rowCount} chart entries.`);
+    } catch (error) {
+        setText(chartError, "Failed to load chart metadata. Check the API server.");
+        setText(chartStatus, "Chart metadata failed.");
+    }
+};
+
 const buildFlowReportUrl = () => {
     const params = new URLSearchParams();
     const runId = flowRunIdInput?.value.trim();
@@ -770,6 +864,21 @@ if (flowDownloadCsv) {
     });
 }
 
+if (chartRefresh) {
+    chartRefresh.addEventListener("click", () => {
+        loadChartMetadata();
+    });
+}
+
+if (chartDeckIdInput) {
+    chartDeckIdInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            loadChartMetadata();
+        }
+    });
+}
+
 if (pdfPathInput) {
     pdfPathInput.addEventListener("input", buildPdfCommands);
 }
@@ -783,6 +892,7 @@ if (tabulaJarInput) {
 }
 
 resetDataPreview();
+resetChartMetadata();
 buildPdfCommands();
 applyTheme(getInitialTheme());
 setupMenuBar();

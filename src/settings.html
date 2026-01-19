@@ -23,6 +23,7 @@
                 <a class="settings-nav-link" href="#settings-start">Start state</a>
                 <a class="settings-nav-link" href="#settings-appearance">Appearance</a>
                 <a class="settings-nav-link" href="#settings-layout">Console layout</a>
+                <a class="settings-nav-link" href="#settings-viewport">Viewport telemetry</a>
                 <a class="settings-nav-link" href="#settings-panels">Console panels</a>
                 <a class="settings-nav-link" href="#settings-insights">Insights + media</a>
                 <a class="settings-nav-link" href="#settings-input">Input</a>
@@ -140,6 +141,23 @@
                         </select>
                     </div>
                 </div>
+            </section>
+
+            <section class="panel-card" id="settings-viewport">
+                <div class="settings-card-header">
+                    <img class="settings-card-icon" src="/assets/icons/console/layout_grid_256.png" alt="" aria-hidden="true">
+                    <div class="settings-card-title">
+                        <h2>Viewport telemetry</h2>
+                        <p class="panel-text panel-text-muted">Current browser size for layout calculations.</p>
+                    </div>
+                </div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="panel-text">Viewport size</label>
+                        <div class="panel-text panel-text-muted" data-viewport-status>--</div>
+                    </div>
+                </div>
+                <p class="settings-note">Resize the browser to refresh the telemetry values.</p>
             </section>
 
             <section class="panel-card" id="settings-panels">
@@ -349,6 +367,18 @@
             const carouselSelect = document.getElementById("settings_carousel");
             const agendaSelect = document.getElementById("settings_agenda");
             const notesSelect = document.getElementById("settings_notes");
+            const viewportStatus = document.querySelector("[data-viewport-status]");
+
+            function updateViewportStatus() {
+                if (!viewportStatus) {
+                    return;
+                }
+                const width = window.innerWidth || 0;
+                const height = window.innerHeight || 0;
+                viewportStatus.textContent = width && height ? `${width} x ${height} px` : "--";
+            }
+            window.addEventListener("resize", updateViewportStatus);
+            updateViewportStatus();
 
             function safeJsonParse(value) {
                 try {

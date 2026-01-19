@@ -3722,6 +3722,11 @@ body[data-hmi-layout="console"] .slide-preview-grid {
     gap: 12px;
 }
 
+.slide-preview[data-aside-placement="bottom"] .slide-preview-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, auto) minmax(0, auto);
+}
+
 .slide-preview-main {
     display: flex;
     flex-direction: column;
@@ -3751,6 +3756,10 @@ body[data-hmi-layout="console"] .slide-preview-aside {
 .slide-preview-aside-charts {
     display: grid;
     gap: 8px;
+}
+
+.slide-preview[data-aside-placement="bottom"] .slide-preview-aside-charts {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .slide-preview-aside-card {
@@ -4086,6 +4095,7 @@ body[data-hmi-view="control"] .slide-preview-note {
     border: 1px solid rgba(0, 45, 98, 0.08);
     background: rgba(255, 255, 255, 0.7);
     flex: 1 1 auto;
+    order: var(--slide-media-order, 3);
     min-height: clamp(160px, 30vh, 260px);
     align-items: stretch;
     min-width: 0;
@@ -4464,6 +4474,7 @@ body[data-hmi-layout="console"] .stage-footer .control-button {
     gap: 8px;
     flex: 1 1 auto;
     min-height: 0;
+    order: var(--slide-chart-order, 4);
 }
 
 .slide-chart-title {

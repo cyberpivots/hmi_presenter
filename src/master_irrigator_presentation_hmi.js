@@ -83,6 +83,9 @@ const hmiState = {
     reducedMotion: false,
     contentDensity: "standard",
     layoutMode: "newspaper",
+    viewportWidth: 0,
+    viewportHeight: 0,
+    viewportAspect: 0,
     insightsEnabled: true,
     mediaHidden: false,
     chartHidden: false,
@@ -99,6 +102,8 @@ const hmiState = {
     lastLiveCues: {},
     activeAgendaIndex: null,
     activeRailPanel: "next",
+    currentSlide: null,
+    slideLayoutKey: "",
     lastLiveState: {
         elapsedSeconds: 0,
         slideSeconds: 0,
@@ -574,6 +579,12 @@ function applyMediaVisibility(hidden, persist = true) {
         }
     }
     updateMediaToggle();
+    const currentSlide = hmiState.slides && Number.isFinite(hmiState.currentIndex)
+        ? hmiState.slides[hmiState.currentIndex]
+        : null;
+    if (currentSlide) {
+        updateSlideContent(currentSlide);
+    }
     if (persist) {
         try {
             localStorage.setItem(MEDIA_HIDDEN_STORAGE_KEY, nextValue ? "true" : "false");
@@ -761,6 +772,36 @@ function resolveContentDensity(value) {
         return getAutoContentDensity();
     }
     return normalized;
+}
+
+function getViewportMetrics() {
+    const width = window.innerWidth || 0;
+    const height = window.innerHeight || 0;
+    const aspect = width > 0 && height > 0 ? height / width : 0;
+    return { width, height, aspect };
+}
+
+function updateViewportTelemetry() {
+    const metrics = getViewportMetrics();
+    hmiState.viewportWidth = metrics.width;
+    hmiState.viewportHeight = metrics.height;
+    hmiState.viewportAspect = metrics.aspect;
+    if (document.body) {
+        document.body.style.setProperty("--mi-viewport-width", `${metrics.width}px`);
+        document.body.style.setProperty("--mi-viewport-height", `${metrics.height}px`);
+        if (metrics.aspect) {
+            document.body.style.setProperty("--mi-viewport-aspect", metrics.aspect.toFixed(3));
+        } else {
+            document.body.style.removeProperty("--mi-viewport-aspect");
+        }
+    }
+    const readout = document.querySelector(".status-item [data-viewport-status]");
+    if (readout) {
+        readout.textContent = metrics.width && metrics.height
+            ? `${metrics.width} x ${metrics.height} px`
+            : "--";
+    }
+    return metrics;
 }
 
 function applyLayoutMode(value, persist = true) {
@@ -1884,6 +1925,121 @@ function applySlideClampMode(slide) {
     document.body.dataset.slideClamp = getSlideClampMode(slide);
 }
 
+function getSlideWidgetStats(slide) {
+    const metricsCount = Array.isArray(slide?.metrics) ? slide.metrics.length : 0;
+    const calloutCount = Array.isArray(slide?.callouts) ? slide.callouts.length : 0;
+    const asideChartCount = Array.isArray(slide?.aside_charts) ? slide.aside_charts.length : 0;
+    const hasMedia = Boolean(slide?.media);
+    const hasChart = Boolean(slide?.chart);
+    const hasWidgets = metricsCount + calloutCount + asideChartCount > 0;
+    return {
+        metricsCount,
+        calloutCount,
+        asideChartCount,
+        hasMedia,
+        hasChart,
+        hasWidgets
+    };
+}
+
+function normalizePrimaryVisual(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (["media", "chart", "both", "auto"].includes(normalized)) {
+        return normalized;
+    }
+    return "auto";
+}
+
+function resolvePrimaryVisual(slide, stats) {
+    if (!slide || !stats) {
+        return "none";
+    }
+    const override = normalizePrimaryVisual(slide.primary_visual);
+    if (override === "media" || override === "chart") {
+        return override;
+    }
+    if (override === "both") {
+        return "both";
+    }
+    const slideType = String(slide.type || "").trim().toLowerCase();
+    if (stats.hasMedia && stats.hasChart) {
+        if (slideType === "dashboard") {
+            return "media";
+        }
+        if (slideType === "data_snapshot") {
+            return "chart";
+        }
+    }
+    if (stats.hasChart) {
+        return "chart";
+    }
+    if (stats.hasMedia) {
+        return "media";
+    }
+    return "none";
+}
+
+function buildSlideWidgetPlan(slide) {
+    const stats = getSlideWidgetStats(slide);
+    const isProjector = isProjectorView();
+    const isNarrow = document.body?.dataset?.hmiNarrow === "true";
+    const isCramped = document.body?.dataset?.hmiCramped === "true";
+    const isTall = document.body?.dataset?.hmiTall === "true";
+    const metrics = hmiState.viewportWidth || hmiState.viewportHeight
+        ? { width: hmiState.viewportWidth, height: hmiState.viewportHeight }
+        : getViewportMetrics();
+    const layoutMode = hmiState.layoutMode;
+    const layoutOrientation = getLayoutOrientation(layoutMode)
+        || (metrics.height >= metrics.width ? "portrait" : "landscape");
+    const forceStack = layoutMode === "landscape"
+        || layoutMode === "portrait"
+        || layoutOrientation === "portrait"
+        || isNarrow
+        || isTall;
+    const allowSecondary = !isProjector && !isCramped && !forceStack;
+    const primaryVisual = resolvePrimaryVisual(slide, stats);
+    const showChart = stats.hasChart
+        && (primaryVisual === "both" || primaryVisual === "chart" || (allowSecondary && primaryVisual === "media"));
+    const showMedia = stats.hasMedia
+        && (primaryVisual === "both" || primaryVisual === "media" || (allowSecondary && primaryVisual === "chart"));
+    const asidePlacement = stats.hasWidgets
+        ? (forceStack ? "bottom" : "right")
+        : "right";
+    const widgetDensity = (stats.metricsCount + stats.calloutCount + stats.asideChartCount) >= 4
+        ? "rich"
+        : "light";
+    const key = [
+        primaryVisual,
+        asidePlacement,
+        showChart ? "chart_on" : "chart_off",
+        showMedia ? "media_on" : "media_off",
+        widgetDensity
+    ].join("|");
+    return {
+        primaryVisual,
+        asidePlacement,
+        showChart,
+        showMedia,
+        widgetDensity,
+        key
+    };
+}
+
+function applySlideWidgetLayout(plan) {
+    const slidePreview = document.querySelector(".slide-preview");
+    if (!slidePreview || !plan) {
+        return;
+    }
+    slidePreview.dataset.asidePlacement = plan.asidePlacement;
+    slidePreview.dataset.visualMode = plan.primaryVisual;
+    slidePreview.dataset.widgetDensity = plan.widgetDensity;
+    const mediaOrder = plan.primaryVisual === "media" || plan.primaryVisual === "both" ? "3" : "5";
+    const chartOrder = plan.primaryVisual === "chart" ? "3" : (plan.primaryVisual === "both" ? "4" : "5");
+    slidePreview.style.setProperty("--slide-media-order", mediaOrder);
+    slidePreview.style.setProperty("--slide-chart-order", chartOrder);
+    hmiState.slideLayoutKey = plan.key;
+}
+
 function fitSlidePreview() {
     const slidePreview = document.querySelector(".slide-preview");
     if (!slidePreview) {
@@ -1973,8 +2129,7 @@ function adjustLayout() {
     if (!stage) {
         return;
     }
-    const width = window.innerWidth || 0;
-    const height = window.innerHeight || 0;
+    const { width, height } = updateViewportTelemetry();
     const isWide = width >= 1400;
     const isMedium = width >= 900 && width < 1400;
     const isNarrow = width > 0 && width < 1200;
@@ -1998,6 +2153,14 @@ function adjustLayout() {
         delete document.body.dataset.hmiTall;
     }
     applyConsoleScale();
+    if (hmiState.currentSlide) {
+        const plan = buildSlideWidgetPlan(hmiState.currentSlide);
+        if (plan.key !== hmiState.slideLayoutKey) {
+            updateSlideContent(hmiState.currentSlide);
+        } else {
+            applySlideWidgetLayout(plan);
+        }
+    }
     fitSlidePreview();
     renderSlideCarousel(hmiState.scopeSlides, hmiState.currentIndex);
 }
@@ -4497,6 +4660,10 @@ function shouldShowPresenterItem(item, options = {}) {
 }
 
 function updateSlideContent(slide) {
+    hmiState.currentSlide = slide;
+    const layoutPlan = buildSlideWidgetPlan(slide);
+    applySlideWidgetLayout(layoutPlan);
+
     setText("[data-slide-title]", slide.title);
     setText("[data-slide-subtitle]", slide.subtitle);
     updateSlideFocus(slide);
@@ -4509,13 +4676,21 @@ function updateSlideContent(slide) {
     renderList(bulletList, getSlideListItems(slide));
 
     const mediaContainer = document.querySelector("[data-slide-media]");
-    renderMedia(mediaContainer, slide.media);
+    if (mediaContainer) {
+        if (layoutPlan.showMedia && !hmiState.mediaHidden) {
+            renderMedia(mediaContainer, slide.media);
+        } else {
+            clearElement(mediaContainer);
+            setHidden(mediaContainer, true);
+        }
+    }
 
     const chartContainer = document.querySelector("[data-slide-chart]");
     if (chartContainer) {
         disposeECharts(chartContainer);
         clearElement(chartContainer);
-        if (slide.chart && shouldShowPresenterItem(slide.chart)) {
+        const canShowChart = layoutPlan.showChart && !hmiState.chartHidden;
+        if (slide.chart && canShowChart && shouldShowPresenterItem(slide.chart)) {
             renderChart(chartContainer, slide.chart);
         } else {
             setHidden(chartContainer, true);
@@ -4561,11 +4736,14 @@ function updateSlideContent(slide) {
     if (slideAside) {
         const asideTitle = slideAside.querySelector("[data-slide-aside-title]");
         const asideCharts = slideAside.querySelector("[data-slide-aside-charts]");
-        const chartList = Array.isArray(slide.aside_charts)
+        const hasAsideCharts = Array.isArray(slide.aside_charts) && slide.aside_charts.length > 0;
+        const hasExtraCharts = Array.isArray(slide.charts) && slide.charts.length > 0;
+        const allowFallbackChart = !layoutPlan.showChart;
+        const chartList = hasAsideCharts
             ? slide.aside_charts
-            : Array.isArray(slide.charts)
+            : hasExtraCharts
                 ? slide.charts
-                : (slide.chart ? [slide.chart] : []);
+                : (allowFallbackChart && slide.chart ? [slide.chart] : []);
         const charts = chartList.filter((chart) => Boolean(chart) && shouldShowPresenterItem(chart, { defaultPresenterOnly: true })).slice(0, 2);
         const chartsEnabled = !hmiState.chartHidden;
         if (asideCharts) {
