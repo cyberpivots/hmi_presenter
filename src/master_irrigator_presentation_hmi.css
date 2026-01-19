@@ -4253,6 +4253,10 @@ body[data-hmi-view="control"] .slide-preview-main {
     overflow: hidden;
 }
 
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-main {
+    overflow: visible;
+}
+
 body[data-hmi-view="control"] .slide-preview-media {
     min-height: clamp(140px, 24vh, 220px);
 }
@@ -4265,6 +4269,26 @@ body[data-hmi-view="control"] .slide-preview-note {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--slide-body-lines);
     overflow: hidden;
+}
+
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-body,
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-note {
+    max-height: none;
+    -webkit-line-clamp: unset;
+    display: block;
+    overflow: visible;
+}
+
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-inner {
+    overflow: visible;
+}
+
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-list {
+    line-height: 1.6;
+}
+
+body[data-hmi-layout="newspaper"][data-hmi-view="control"] .slide-preview-list li {
+    padding: 2px 0;
 }
 
 body[data-hmi-view="control"] .slide-preview-note {

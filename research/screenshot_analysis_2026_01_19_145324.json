@@ -1,0 +1,23 @@
+{
+  "image_path": "/mnt/g/clarksoft/projects/master_irrigator/assets/user_uploads/Screenshot 2026-01-19 145324.png",
+  "image_size": {
+    "width": 1296,
+    "height": 1593
+  },
+  "red_regions": [
+    {
+      "x_min": 36,
+      "x_max": 774,
+      "y_min": 560,
+      "y_max": 648,
+      "count": 3552
+    },
+    {
+      "x_min": 24,
+      "x_max": 778,
+      "y_min": 736,
+      "y_max": 828,
+      "count": 3551
+    }
+  ]
+}
