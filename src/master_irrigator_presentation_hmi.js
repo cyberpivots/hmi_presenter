@@ -1,4 +1,5 @@
 const SLIDE_ENDPOINT = "/api/slides";
+const SLIDE_CHARTS_ENDPOINT = "/api/slide-charts";
 const DECK_LIST_ENDPOINT = "/api/slide-decks";
 const PRESENTER_ACTION_ENDPOINT = "/api/presenter-actions";
 const PRESENTATION_RUN_ENDPOINT = "/api/presentation-runs";
@@ -85,6 +86,7 @@ const hmiState = {
     insightsEnabled: true,
     mediaHidden: false,
     chartHidden: false,
+    chartMetadata: [],
     gamepadEnabled: false,
     lastGamepadAction: 0,
     timerPaused: false,
@@ -4275,13 +4277,97 @@ function setupWorkflowActions() {
     });
 }
 
+async function loadSlideCharts(deckId) {
+    if (!deckId) {
+        return [];
+    }
+    const response = await fetch(
+        `${SLIDE_CHARTS_ENDPOINT}?deck_id=${encodeURIComponent(deckId)}`,
+        { cache: "no-store" }
+    );
+    if (!response.ok) {
+        return [];
+    }
+    const payload = await response.json();
+    return Array.isArray(payload.charts) ? payload.charts : [];
+}
+
+function buildPlotlyChartFromMetadata(item) {
+    if (!item) {
+        return null;
+    }
+    const library = (item.chart_library || "plotly").toLowerCase();
+    if (library !== "plotly") {
+        return null;
+    }
+    const dataSpec = item.data_spec || {};
+    const layoutSpec = item.layout_spec || {};
+    const configSpec = item.config_spec || {};
+    const data = Array.isArray(dataSpec)
+        ? dataSpec
+        : Array.isArray(dataSpec.data)
+            ? dataSpec.data
+            : [];
+    const layout = layoutSpec && layoutSpec.layout ? layoutSpec.layout : layoutSpec;
+    const config = configSpec && configSpec.config ? configSpec.config : configSpec;
+    return {
+        library: "plotly",
+        title: item.chart_title || "",
+        alt_text: item.alt_text || "",
+        plotly: {
+            data,
+            layout,
+            config
+        }
+    };
+}
+
+function mergeChartMetadataIntoSlides(data, chartMetadata) {
+    if (!data || !Array.isArray(data.slides) || !Array.isArray(chartMetadata)) {
+        return data;
+    }
+    const chartMap = new Map();
+    chartMetadata.forEach((item) => {
+        if (item && Number.isFinite(Number(item.slide_index))) {
+            chartMap.set(Number(item.slide_index), item);
+        }
+    });
+    if (!chartMap.size) {
+        return data;
+    }
+    const slides = data.slides.map((slide, index) => {
+        const item = chartMap.get(index + 1);
+        if (!item) {
+            return slide;
+        }
+        const chart = buildPlotlyChartFromMetadata(item);
+        if (!chart) {
+            return slide;
+        }
+        return { ...slide, chart };
+    });
+    return { ...data, slides };
+}
+
 async function loadSlideData() {
     const deckParam = hmiState.deckId ? `?deck=${encodeURIComponent(hmiState.deckId)}` : "";
     const response = await fetch(`${SLIDE_ENDPOINT}${deckParam}`, { cache: "no-store" });
     if (!response.ok) {
         throw new Error("Slide data request failed");
     }
-    return response.json();
+    const data = await response.json();
+    const resolvedDeckId = data && data.deck_id ? data.deck_id : hmiState.deckId;
+    if (!resolvedDeckId) {
+        return data;
+    }
+    try {
+        const chartMetadata = await loadSlideCharts(resolvedDeckId);
+        hmiState.chartMetadata = chartMetadata;
+        return mergeChartMetadataIntoSlides(data, chartMetadata);
+    } catch (error) {
+        hmiState.chartMetadata = [];
+        return data;
+    }
 }
 
 function updateCommon(slides, currentIndex) {
