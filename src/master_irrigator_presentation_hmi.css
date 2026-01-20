@@ -1131,26 +1131,38 @@ body::before {
     min-width: 0;
 }
 
-body[data-hmi-layout="console"] .page {
+body[data-hmi-layout="console"] .page,
+body[data-hmi-layout="newspaper"] .page,
+body[data-hmi-layout="landscape"] .page,
+body[data-hmi-layout="portrait"] .page {
     width: var(--mi-console-base-width, 100%);
     height: var(--mi-console-base-height, 100vh);
     overflow: hidden;
 }
 
 @supports (zoom: 1) {
-    body[data-hmi-layout="console"] {
+    body[data-hmi-layout="console"],
+    body[data-hmi-layout="newspaper"],
+    body[data-hmi-layout="landscape"],
+    body[data-hmi-layout="portrait"] {
         zoom: var(--mi-console-scale, 1);
     }
 }
 
 @supports not (zoom: 1) {
-    body[data-hmi-layout="console"] .page {
+    body[data-hmi-layout="console"] .page,
+    body[data-hmi-layout="newspaper"] .page,
+    body[data-hmi-layout="landscape"] .page,
+    body[data-hmi-layout="portrait"] .page {
         transform: scale(var(--mi-console-scale, 1));
         transform-origin: top left;
     }
 }
 
-body[data-hmi-layout="console"] {
+body[data-hmi-layout="console"],
+body[data-hmi-layout="newspaper"],
+body[data-hmi-layout="landscape"],
+body[data-hmi-layout="portrait"] {
     --mi-console-scale: 1;
     --mi-console-base-width: 1920px;
     --mi-console-base-height: 1080px;
@@ -1167,6 +1179,8 @@ body[data-hmi-layout="console"] {
     --mi-carousel-number: var(--mi-console-control-muted);
     --mi-carousel-title: var(--mi-console-control-text);
     --mi-carousel-label: var(--mi-console-control-muted);
+    height: 100vh;
+    overflow: hidden;
 }
 
 body[data-hmi-layout="landscape"] {

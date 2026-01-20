@@ -1699,8 +1699,7 @@ function isConsoleLayout() {
 }
 
 function isConsoleScaleLayout() {
-    const layout = document.body.dataset.hmiLayout;
-    return layout === "console";
+    return isConsoleLayout();
 }
 
 function isProjectorView() {
@@ -2192,7 +2191,7 @@ function updateMainGridHeight() {
     if (!document.body) {
         return;
     }
-    if (document.body.dataset.hmiLayout === "console") {
+    if (isConsoleScaleLayout()) {
         document.body.style.removeProperty("--mi-main-grid-height");
         return;
     }
