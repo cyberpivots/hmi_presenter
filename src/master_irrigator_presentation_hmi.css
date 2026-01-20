@@ -1131,26 +1131,20 @@ body::before {
     min-width: 0;
 }
 
-body[data-hmi-layout="console"] .page,
-body[data-hmi-layout="landscape"] .page,
-body[data-hmi-layout="portrait"] .page {
+body[data-hmi-layout="console"] .page {
     width: var(--mi-console-base-width, 100%);
     height: var(--mi-console-base-height, 100vh);
     overflow: hidden;
 }
 
 @supports (zoom: 1) {
-    body[data-hmi-layout="console"],
-    body[data-hmi-layout="landscape"],
-    body[data-hmi-layout="portrait"] {
+    body[data-hmi-layout="console"] {
         zoom: var(--mi-console-scale, 1);
     }
 }
 
 @supports not (zoom: 1) {
-    body[data-hmi-layout="console"] .page,
-    body[data-hmi-layout="landscape"] .page,
-    body[data-hmi-layout="portrait"] .page {
+    body[data-hmi-layout="console"] .page {
         transform: scale(var(--mi-console-scale, 1));
         transform-origin: top left;
     }
@@ -1176,15 +1170,9 @@ body[data-hmi-layout="console"] {
 }
 
 body[data-hmi-layout="landscape"] {
-    --mi-console-scale: 1;
-    --mi-console-base-width: 1920px;
-    --mi-console-base-height: 1080px;
 }
 
 body[data-hmi-layout="portrait"] {
-    --mi-console-scale: 1;
-    --mi-console-base-width: 1080px;
-    --mi-console-base-height: 1920px;
 }
 
 body[data-hmi-layout="newspaper"] {

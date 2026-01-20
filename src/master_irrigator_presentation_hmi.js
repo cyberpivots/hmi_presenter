@@ -1700,7 +1700,7 @@ function isConsoleLayout() {
 
 function isConsoleScaleLayout() {
     const layout = document.body.dataset.hmiLayout;
-    return layout === "console" || layout === "landscape" || layout === "portrait";
+    return layout === "console";
 }
 
 function isProjectorView() {
