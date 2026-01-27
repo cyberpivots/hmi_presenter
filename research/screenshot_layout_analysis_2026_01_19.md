@@ -12,8 +12,8 @@ What does the annotated screenshot reveal about slide container sizing, media wi
 ## Sources
 - `/mnt/g/clarksoft/projects/master_irrigator/assets/user_uploads/Screenshot 2026-01-19 122614.png`
 - `/mnt/g/clarksoft/projects/hmi_presenter/research/screenshot_analysis_2026_01_19.json`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js`
 
 ## Gaps
 - None. Analysis is based on local assets and code.

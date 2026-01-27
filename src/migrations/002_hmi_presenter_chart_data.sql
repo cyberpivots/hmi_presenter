@@ -1,5 +1,6 @@
 -- Chart data mirror tables for HMI presenter (shared DB schema).
 CREATE SCHEMA IF NOT EXISTS hmi_presenter;
+SET search_path TO hmi_presenter, public;
 
 CREATE TABLE IF NOT EXISTS hmi_presenter.chart_ingest_runs (
     id bigserial PRIMARY KEY,

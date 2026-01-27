@@ -15,8 +15,8 @@ Why does the slide preview height not respond to increases in container/window h
 - Added a non-console rule to apply `min-height: var(--mi-main-grid-height, calc(100vh - 200px))` to `.main-grid`.
 
 ## Sources
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css` (main-grid min-height override, slide preview aspect rules). Retrieved 2026-01-19.
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js` (`fitSlidePreview`, `adjustLayout`, new `updateMainGridHeight`). Retrieved 2026-01-19.
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css` (main-grid min-height override, slide preview aspect rules). Retrieved 2026-01-19.
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js` (`fitSlidePreview`, `adjustLayout`, new `updateMainGridHeight`). Retrieved 2026-01-19.
 
 ## Gaps
 - Need a visual validation pass in a tall viewport (e.g., 1920x1200 or taller) to confirm that the slide preview container height grows and the scaled slide content remains centered without clipping.

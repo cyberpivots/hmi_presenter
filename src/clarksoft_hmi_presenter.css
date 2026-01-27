@@ -1,0 +1,429 @@
+@import url("/assets/vendor/css/qi_fonts.css?v=20260118");
+
+:root {
+    color-scheme: light;
+    --cs-font-body: "Source Sans 3", "Segoe UI", sans-serif;
+    --cs-font-display: "Oswald", "Source Sans 3", sans-serif;
+    --cs-font-mono: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+    --cs-ink: #0b1b2d;
+    --cs-ink-soft: #42566a;
+    --cs-ink-muted: #5f7387;
+    --cs-accent: #0093d0;
+    --cs-accent-2: #3f6189;
+    --cs-border: rgba(0, 45, 98, 0.18);
+    --cs-surface: #ffffff;
+    --cs-surface-strong: #f7fafc;
+    --cs-shadow: 0 18px 36px rgba(2, 21, 46, 0.12);
+    --cs-radius-lg: 22px;
+    --cs-radius-md: 14px;
+    --cs-radius-sm: 10px;
+    --cs-shell-gradient: radial-gradient(circle at 15% 15%, rgba(0, 147, 208, 0.16), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgba(0, 45, 98, 0.12), transparent 50%),
+        linear-gradient(160deg, #f7fafc 0%, #eef4f8 55%, #e9f2f8 100%);
+    --cs-header-gradient: linear-gradient(120deg, rgba(0, 147, 208, 0.18), rgba(0, 45, 98, 0.12));
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--cs-font-body);
+    background: var(--cs-shell-gradient);
+    color: var(--cs-ink);
+}
+
+.hmi-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hmi-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 32px;
+    background: var(--cs-header-gradient);
+    border-bottom: 1px solid var(--cs-border);
+}
+
+.hmi-title {
+    margin: 0;
+    font-size: 26px;
+    font-family: var(--cs-font-display);
+    letter-spacing: 0.02em;
+}
+
+.hmi-subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--cs-ink-soft);
+}
+
+.presenter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.control-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cs-ink-muted);
+}
+
+.control-row {
+    display: flex;
+    gap: 8px;
+}
+
+.control-input,
+.control-button {
+    border-radius: var(--cs-radius-sm);
+    border: 1px solid var(--cs-border);
+    background: var(--cs-surface);
+    color: var(--cs-ink);
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.control-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.control-button.primary {
+    background: var(--cs-accent);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.hmi-body {
+    display: grid;
+    grid-template-columns: 240px 1fr 300px;
+    gap: 20px;
+    padding: 24px 32px 32px;
+}
+
+.panel {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--cs-radius-md);
+    padding: 16px;
+    box-shadow: var(--cs-shadow);
+}
+
+.panel-title {
+    margin: 0 0 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cs-ink-muted);
+}
+
+.slide-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.slide-item {
+    border: 1px solid var(--cs-border);
+    background: var(--cs-surface-strong);
+    border-radius: var(--cs-radius-sm);
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--cs-ink-soft);
+    font-size: 13px;
+}
+
+.slide-item.is-active {
+    border-color: var(--cs-accent);
+    color: var(--cs-ink);
+    background: rgba(0, 147, 208, 0.08);
+}
+
+.stage {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stage-frame {
+    background: #ffffff;
+    border-radius: var(--cs-radius-lg);
+    padding: 24px;
+    min-height: 420px;
+    border: 1px solid rgba(11, 27, 45, 0.08);
+}
+
+.stage-title {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-family: var(--cs-font-display);
+}
+
+.stage-body {
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--cs-ink-soft);
+}
+
+.stage-media {
+    display: none;
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(11, 27, 45, 0.08);
+    object-fit: contain;
+    max-height: 320px;
+}
+
+.stage-chart-wrap {
+    min-height: 260px;
+}
+
+.stage-chart {
+    width: 100%;
+    height: 260px;
+}
+
+.stage-status {
+    font-size: 12px;
+    color: var(--cs-ink-muted);
+}
+
+.raw-json {
+    background: var(--cs-surface-strong);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--cs-ink-soft);
+    font-size: 12px;
+    max-height: 240px;
+    overflow: auto;
+    font-family: var(--cs-font-mono);
+}
+
+.hmi-projector .presenter-controls,
+.hmi-projector .panel,
+.hmi-projector .raw-json,
+.hmi-projector .stage-status {
+    display: none;
+}
+
+.hmi-projector .hmi-body {
+    grid-template-columns: 1fr;
+    padding: 32px;
+}
+
+.hmi-projector .stage-frame {
+    min-height: calc(100vh - 160px);
+}
+
+/* Settings + deck editor shared layout */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--cs-border);
+    background: var(--cs-header-gradient);
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.header-right {
+    align-items: flex-end;
+}
+
+.header-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.header-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--cs-ink-soft);
+}
+
+.help-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: var(--cs-radius-sm);
+    border: 1px solid transparent;
+    background: var(--cs-accent);
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.page {
+    padding: 24px 32px 40px;
+}
+
+.settings-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-card {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--cs-radius-md);
+    padding: 18px;
+    box-shadow: var(--cs-shadow);
+}
+
+.panel-text {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--cs-ink);
+    display: block;
+}
+
+.panel-text-muted {
+    color: var(--cs-ink-muted);
+}
+
+.settings-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--cs-radius-sm);
+    border: 1px solid var(--cs-border);
+    color: var(--cs-ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.settings-nav-link:hover {
+    border-color: var(--cs-accent);
+    color: var(--cs-ink);
+}
+
+.settings-nav-badge {
+    width: 18px;
+    height: 18px;
+}
+
+.settings-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--cs-ink-muted);
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.settings-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.settings-card-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.deck-editor-input {
+    width: 100%;
+    border-radius: var(--cs-radius-sm);
+    border: 1px solid var(--cs-border);
+    background: var(--cs-surface-strong);
+    color: var(--cs-ink);
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: var(--cs-font-body);
+}
+
+.deck-editor-input:focus {
+    outline: 2px solid rgba(0, 147, 208, 0.25);
+    outline-offset: 1px;
+}
+
+.deck-editor-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: var(--cs-radius-sm);
+    border: 1px solid var(--cs-border);
+    background: var(--cs-surface);
+    color: var(--cs-ink);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.deck-editor-button.primary {
+    border-color: transparent;
+    background: var(--cs-accent);
+    color: #ffffff;
+}
+
+.panel-text .deck-editor-input {
+    margin-top: 6px;
+}
+
+@media (max-width: 1200px) {
+    .hmi-body {
+        grid-template-columns: 1fr;
+    }
+    .panel {
+        order: 2;
+    }
+    .stage {
+        order: 1;
+    }
+    .settings-shell {
+        grid-template-columns: 1fr;
+    }
+}

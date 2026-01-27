@@ -16,7 +16,7 @@ How should the presenter HMI rebalance portrait rails, landscape bottom zones, a
 - Verify script failure earlier was due to using port 52101; re-run with port 52104 succeeds and confirms header/main-grid visible.
 
 ## Files updated
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
 
 ## Sources
 - `/mnt/g/clarksoft/research/master_irrigator/hmi_layout_review_2026_01_19c/hmi_layout_portrait_1200x1920_2026_01_19c.png`

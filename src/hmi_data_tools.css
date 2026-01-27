@@ -464,6 +464,10 @@ body::before {
     flex: 1 1 240px;
 }
 
+.field_full {
+    flex: 1 1 100%;
+}
+
 .field_label {
     font-size: 12px;
     text-transform: uppercase;
@@ -479,6 +483,13 @@ body::before {
     border: 1px solid var(--line);
     font-size: 14px;
     font-family: inherit;
+}
+
+.text_area {
+    min-height: 140px;
+    line-height: 1.4;
+    font-family: var(--mi-font-mono);
+    resize: vertical;
 }
 
 .meta_text {

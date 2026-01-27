@@ -15,7 +15,7 @@ Remove balloon-style bullets and expand portrait slide container to use availabl
 - Console slide-preview: 1098×606 (ratio 1.8116) at 1366×768.
 
 ## Files updated
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
 
 ## Sources
 - `/mnt/g/clarksoft/research/master_irrigator/hmi_layout_review_2026_01_19i/hmi_layout_landscape_1920x1080_2026_01_19i.png`

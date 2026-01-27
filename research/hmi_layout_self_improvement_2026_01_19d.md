@@ -10,8 +10,8 @@ Address landscape slide-preview height collapse and add a compact rail mode with
 - Portrait slide-preview remains aligned with 9:16 (747×1328, ratio 0.5625).
 
 ## Files updated
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js`
 
 ## Sources
 - `/mnt/g/clarksoft/research/master_irrigator/hmi_layout_review_2026_01_19d/hmi_layout_landscape_1920x1080_2026_01_19d.png`

@@ -29,7 +29,7 @@ Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
 - When selecting UI elements, use a class + data attribute so you never target <body> by accident.
 
 ## ClarkSoft HMI Presenter theme notes
-- Use the Quality Irrigation brand guide at `/mnt/g/clarksoft/projects/master_irrigator/assets/style_guides/quality_irrigation_brand_guidelines_2026_01_06.md`.
+- Use the Quality Irrigation brand guide at `/mnt/g/clarksoft/assets/style_guides/quality_irrigation_brand_guidelines_2026_01_06.md`.
 - Keep gold accents minimal and avoid red in Quality Irrigation layouts.
 - Capture Playwright screenshots when requested and store them under `/mnt/g/clarksoft/research/master_irrigator/`.
 - Use "ClarkSoft" as the presenter name in UI titles and headers.
@@ -48,8 +48,8 @@ Workspace rules: `/mnt/g/clarksoft/AGENTS.md`.
 - hmi_developer/
 
 ## Key files (dev)
-- `src/master_irrigator_presentation_hmi.html`, `.css`, `.js`: presenter console.
-- `src/master_irrigator_projector_hmi.html`: projector view.
+- `src/clarksoft_hmi_presenter.html`, `.css`, `.js`: presenter console.
+- `src/clarksoft_projector_hmi.html`: projector view.
 - `src/hmi_data_tools.html`, `.css`, `.js`: local JSON/CSV/PDF tools.
 - `src/irrigation_eyes_hmi.html`, `.css`, `.js`: imagery analysis HMI mockup.
 - `src/quality_irrigation_theme_preview.html`, `.css`, `_print.css`: theme preview.

@@ -1,5 +1,6 @@
 -- Prediction-level outputs for HMI presenter ML tracking.
 CREATE SCHEMA IF NOT EXISTS hmi_presenter;
+SET search_path TO hmi_presenter, public;
 
 CREATE TABLE IF NOT EXISTS hmi_presenter.ml_prediction_batches (
     id bigserial PRIMARY KEY,

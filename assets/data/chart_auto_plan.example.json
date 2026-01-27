@@ -1,0 +1,42 @@
+{
+  "deck_id": "clarksoft_presenter_demo",
+  "options": {
+    "state_limit": 6,
+    "ghcn_days": 30,
+    "modis_points": 12,
+    "ghcn_station": "USW00023062",
+    "modis_site_id": "district_01"
+  },
+  "charts": [
+    {
+      "id": "quickstats_state_totals",
+      "slide_index": 4,
+      "chart_title": "Irrigated acres by state",
+      "alt_text": "Bar chart comparing irrigated acres by state."
+    },
+    {
+      "id": "ghcn_precip_last_days",
+      "slide_index": 5,
+      "chart_title": "Daily precipitation",
+      "alt_text": "Line chart showing daily precipitation in millimeters."
+    },
+    {
+      "id": "ghcn_temp_dual_axis",
+      "slide_index": 6,
+      "chart_title": "Daily temperature",
+      "alt_text": "Dual-axis line chart showing daily maximum and minimum temperatures."
+    },
+    {
+      "id": "modis_ndvi_trend",
+      "slide_index": 7,
+      "chart_title": "NDVI trend",
+      "alt_text": "Area chart showing NDVI trend over time."
+    },
+    {
+      "id": "ghcn_temp_precip_scatter",
+      "slide_index": 8,
+      "chart_title": "Temp vs precip",
+      "alt_text": "Scatter chart comparing daily maximum temperature and precipitation."
+    }
+  ]
+}

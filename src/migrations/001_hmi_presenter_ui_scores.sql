@@ -1,6 +1,8 @@
 -- HMI Presenter UI scoring and review log.
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS pgml;
+CREATE SCHEMA IF NOT EXISTS hmi_presenter;
+SET search_path TO hmi_presenter, public;
 
 CREATE TABLE IF NOT EXISTS hmi_presenter_ui_scores (
     id bigserial PRIMARY KEY,

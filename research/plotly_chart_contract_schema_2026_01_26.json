@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clarksoft:hmi_presenter:plotly_chart_contract:2026-01-26",
+  "title": "HMI Presenter Plotly Chart Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "library",
+    "plotly"
+  ],
+  "properties": {
+    "library": {
+      "const": "plotly"
+    },
+    "title": {
+      "type": "string"
+    },
+    "alt_text": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "height": {
+      "type": "number"
+    },
+    "plotly": {
+      "$ref": "#/$defs/plotly_root"
+    }
+  },
+  "$defs": {
+    "plotly_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/plotly_trace"
+          },
+          "minItems": 1
+        },
+        "layout": {
+          "$ref": "#/$defs/plotly_layout"
+        },
+        "config": {
+          "$ref": "#/$defs/plotly_config"
+        }
+      }
+    },
+    "plotly_trace": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "type",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "scatter",
+            "bar"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "lines",
+            "markers",
+            "lines+markers"
+          ]
+        },
+        "x": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "y": {
+          "type": "array",
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "yaxis": {
+          "type": "string",
+          "enum": [
+            "y",
+            "y2"
+          ]
+        },
+        "fill": {
+          "type": "string",
+          "enum": [
+            "tozeroy"
+          ]
+        },
+        "line": {
+          "$ref": "#/$defs/plotly_line_style"
+        },
+        "marker": {
+          "$ref": "#/$defs/plotly_marker_style"
+        }
+      }
+    },
+    "plotly_line_style": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "width": {
+          "type": "number"
+        },
+        "dash": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "dash",
+            "dot",
+            "dashdot"
+          ]
+        }
+      }
+    },
+    "plotly_marker_style": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "color": {
+          "type": "string"
+        }
+      }
+    },
+    "plotly_layout": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "height": {
+          "type": "number"
+        },
+        "barmode": {
+          "type": "string",
+          "enum": [
+            "stack",
+            "group"
+          ]
+        },
+        "margin": {
+          "$ref": "#/$defs/plotly_margin"
+        },
+        "xaxis": {
+          "$ref": "#/$defs/plotly_axis"
+        },
+        "yaxis": {
+          "$ref": "#/$defs/plotly_axis"
+        },
+        "yaxis2": {
+          "$ref": "#/$defs/plotly_axis"
+        }
+      }
+    },
+    "plotly_axis": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "required": [
+                "text"
+              ],
+              "properties": {
+                "text": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "tickvals": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "range": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "ticksuffix": {
+          "type": "string"
+        }
+      }
+    },
+    "plotly_margin": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "t": {
+          "type": "number"
+        },
+        "r": {
+          "type": "number"
+        },
+        "b": {
+          "type": "number"
+        },
+        "l": {
+          "type": "number"
+        }
+      }
+    },
+    "plotly_config": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "responsive": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

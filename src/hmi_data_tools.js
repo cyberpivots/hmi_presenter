@@ -55,6 +55,18 @@ const chartStatus = document.getElementById("chart_status");
 const chartError = document.getElementById("chart_error");
 const chartBlock = document.getElementById("chart_block");
 const chartTable = document.getElementById("chart_table");
+const chartSlideIndexInput = document.getElementById("chart_slide_index");
+const chartLibrarySelect = document.getElementById("chart_library");
+const chartTypeInput = document.getElementById("chart_type");
+const chartTitleInput = document.getElementById("chart_title");
+const chartAltTextInput = document.getElementById("chart_alt_text");
+const chartDataSpecInput = document.getElementById("chart_data_spec");
+const chartLayoutSpecInput = document.getElementById("chart_layout_spec");
+const chartConfigSpecInput = document.getElementById("chart_config_spec");
+const chartSubmitButton = document.getElementById("chart_submit");
+const chartSubmitClear = document.getElementById("chart_submit_clear");
+const chartSubmitStatus = document.getElementById("chart_submit_status");
+const chartSubmitError = document.getElementById("chart_submit_error");
 
 let currentPdfUrl = null;
 let serverSources = [];
@@ -178,6 +190,68 @@ const resetChartMetadata = () => {
     toggle(chartBlock, false);
 };
 
+const resetChartSubmission = () => {
+    setText(chartSubmitStatus, "Submit a chart to update the database.");
+    setText(chartSubmitError, "");
+};
+
+const clearChartSubmissionForm = () => {
+    if (chartSlideIndexInput) {
+        chartSlideIndexInput.value = "";
+    }
+    if (chartLibrarySelect) {
+        chartLibrarySelect.value = "echarts";
+    }
+    if (chartTypeInput) {
+        chartTypeInput.value = "";
+    }
+    if (chartTitleInput) {
+        chartTitleInput.value = "";
+    }
+    if (chartAltTextInput) {
+        chartAltTextInput.value = "";
+    }
+    if (chartDataSpecInput) {
+        chartDataSpecInput.value = "";
+    }
+    if (chartLayoutSpecInput) {
+        chartLayoutSpecInput.value = "";
+    }
+    if (chartConfigSpecInput) {
+        chartConfigSpecInput.value = "";
+    }
+    resetChartSubmission();
+};
+
+const parseJsonInput = (value, label) => {
+    if (!value || !value.trim()) {
+        return null;
+    }
+    try {
+        return JSON.parse(value);
+    } catch (error) {
+        throw new Error(`${label} must be valid JSON.`);
+    }
+};
+
+const readResponseError = async (response) => {
+    const text = await response.text();
+    if (!text) {
+        return "";
+    }
+    try {
+        const payload = JSON.parse(text);
+        if (payload && payload.detail) {
+            return typeof payload.detail === "string"
+                ? payload.detail
+                : JSON.stringify(payload.detail);
+        }
+    } catch (error) {
+        return text;
+    }
+    return text;
+};
+
 const resetPdfPreview = () => {
     if (currentPdfUrl) {
         URL.revokeObjectURL(currentPdfUrl);
@@ -240,7 +314,7 @@ const runMenuAction = (action) => {
             resetPdfPreview();
             break;
         case "file-open-hmi":
-            window.open("master_irrigator_presentation_hmi.html", "_blank", "noopener");
+            window.open("clarksoft_hmi_presenter.html", "_blank", "noopener");
             break;
         case "edit-clear-data":
             resetDataPreview();
@@ -283,7 +357,7 @@ const runMenuAction = (action) => {
             break;
         }
         case "help-hmi":
-            window.open("master_irrigator_presentation_hmi.html", "_blank", "noopener");
+            window.open("clarksoft_hmi_presenter.html", "_blank", "noopener");
             break;
         default:
             break;
@@ -669,6 +743,91 @@ const loadChartMetadata = async () => {
     }
 };
 
+const submitChartMetadata = async () => {
+    resetChartSubmission();
+    const deckId = chartDeckIdInput?.value.trim();
+    if (!deckId) {
+        setText(chartSubmitError, "Deck ID is required.");
+        return;
+    }
+    const slideIndex = Number.parseInt(chartSlideIndexInput?.value || "", 10);
+    if (!Number.isFinite(slideIndex) || slideIndex <= 0) {
+        setText(chartSubmitError, "Slide index must be a positive whole number.");
+        return;
+    }
+    const chartLibrary = (chartLibrarySelect?.value || "echarts").trim().toLowerCase();
+    const altText = chartAltTextInput?.value.trim();
+    if (!altText) {
+        setText(chartSubmitError, "Alt text is required.");
+        return;
+    }
+    let dataSpec = null;
+    let layoutSpec = null;
+    let configSpec = null;
+    try {
+        dataSpec = parseJsonInput(chartDataSpecInput?.value || "", "Data spec");
+        layoutSpec = parseJsonInput(chartLayoutSpecInput?.value || "", "Layout spec");
+        configSpec = parseJsonInput(chartConfigSpecInput?.value || "", "Config spec");
+    } catch (error) {
+        setText(chartSubmitError, error.message);
+        return;
+    }
+    if (chartLibrary === "echarts") {
+        if (!dataSpec || typeof dataSpec !== "object" || Array.isArray(dataSpec)) {
+            setText(chartSubmitError, "ECharts data spec must be a JSON object.");
+            return;
+        }
+    }
+
+    const payload = {
+        deck_id: deckId,
+        slide_index: slideIndex,
+        alt_text: altText,
+        chart_library: chartLibrary,
+    };
+    const chartType = chartTypeInput?.value.trim();
+    if (chartType) {
+        payload.chart_type = chartType;
+    }
+    const chartTitle = chartTitleInput?.value.trim();
+    if (chartTitle) {
+        payload.chart_title = chartTitle;
+    }
+    if (dataSpec !== null) {
+        payload.data_spec = dataSpec;
+    }
+    if (layoutSpec !== null) {
+        payload.layout_spec = layoutSpec;
+    }
+    if (configSpec !== null) {
+        payload.config_spec = configSpec;
+    }
+
+    setText(chartSubmitStatus, "Submitting chart metadata...");
+    try {
+        const response = await fetch(SLIDE_CHARTS_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            const errorText = await readResponseError(response);
+            setText(chartSubmitError, errorText || "Failed to submit chart metadata.");
+            setText(chartSubmitStatus, "Chart submission failed.");
+            return;
+        }
+        setText(chartSubmitStatus, "Chart metadata saved.");
+        if (chartDeckIdInput?.value.trim() === deckId) {
+            loadChartMetadata();
+        }
+    } catch (error) {
+        setText(chartSubmitError, "Failed to submit chart metadata. Check the API server.");
+        setText(chartSubmitStatus, "Chart submission failed.");
+    }
+};
+
 const buildFlowReportUrl = () => {
     const params = new URLSearchParams();
     const runId = flowRunIdInput?.value.trim();
@@ -879,6 +1038,18 @@ if (chartDeckIdInput) {
     });
 }
 
+if (chartSubmitButton) {
+    chartSubmitButton.addEventListener("click", () => {
+        submitChartMetadata();
+    });
+}
+
+if (chartSubmitClear) {
+    chartSubmitClear.addEventListener("click", () => {
+        clearChartSubmissionForm();
+    });
+}
+
 if (pdfPathInput) {
     pdfPathInput.addEventListener("input", buildPdfCommands);
 }
@@ -893,6 +1064,7 @@ if (tabulaJarInput) {
 
 resetDataPreview();
 resetChartMetadata();
+resetChartSubmission();
 buildPdfCommands();
 applyTheme(getInitialTheme());
 setupMenuBar();

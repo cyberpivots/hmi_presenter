@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ClarkSoft HMI Projector</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="clarksoft_hmi_presenter.css">
+</head>
+<body class="hmi-shell hmi-projector">
+    <div class="hmi-shell">
+        <header class="hmi-header">
+            <div>
+                <h1 class="hmi-title">ClarkSoft HMI Projector</h1>
+                <p class="hmi-subtitle">Audience view. Presenter controls are hidden.</p>
+            </div>
+        </header>
+        <main class="hmi-body">
+            <section class="stage" aria-label="Slide stage">
+                <div class="stage-frame">
+                    <h2 class="stage-title js-hmi" data-role="stage-title">No slide loaded</h2>
+                    <p class="stage-body js-hmi" data-role="stage-body"></p>
+                    <img class="stage-media js-hmi" data-role="stage-media" alt="">
+                    <div class="stage-chart-wrap js-hmi" data-role="stage-chart"></div>
+                </div>
+                <div class="stage-status js-hmi" data-role="slide-status"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/assets/vendor/js/echarts.min.js"></script>
+    <script src="clarksoft_hmi_presenter.js"></script>
+</body>
+</html>

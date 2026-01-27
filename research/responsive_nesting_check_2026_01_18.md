@@ -1,7 +1,7 @@
 # Responsive Nesting Check (Control View)
 
 Date: 2026-01-18
-Scope: master_irrigator_presentation_hmi.html (control view) and annotated feedback screenshot.
+Scope: clarksoft_hmi_presenter.html (control view) and annotated feedback screenshot.
 
 ## Question
 What changes are required to satisfy the annotated layout requests and ensure nested containers do not overflow across common resolutions/zoom levels?
@@ -28,9 +28,9 @@ What changes are required to satisfy the annotated layout requests and ensure ne
 - Layout checklist targets: /mnt/g/clarksoft/projects/hmi_presenter/research/layout_checklist_control_view_2026_01_18.md
 - Playwright screenshot: /mnt/g/clarksoft/research/master_irrigator/hmi_presenter_control_1920x1080_clamp_check_2026_01_18.png
 - CSS/JS/HTML files: 
-  - /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css
-  - /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.html
-  - /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js
+  - /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css
+  - /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.html
+  - /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js
   - /mnt/g/clarksoft/projects/hmi_presenter/src/hmi_data_tools.css
 
 ## Gaps

@@ -14,7 +14,7 @@ try:
 except ImportError as exc:
     raise SystemExit("psycopg is required. Install in the venv before running.") from exc
 
-DEFAULT_AUDIT_DIR = Path("/mnt/g/clarksoft/projects/master_irrigator/assets/fixtures/outputs")
+DEFAULT_AUDIT_DIR = Path("/mnt/g/clarksoft/projects/hmi_presenter/assets/fixtures/outputs")
 
 
 def _get_env(name: str) -> str:

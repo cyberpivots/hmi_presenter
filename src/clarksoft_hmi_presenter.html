@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ClarkSoft HMI Presenter</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="clarksoft_hmi_presenter.css">
+</head>
+<body class="hmi-shell hmi-presenter">
+    <div class="hmi-shell">
+        <header class="hmi-header">
+            <div>
+                <h1 class="hmi-title">ClarkSoft HMI Presenter</h1>
+                <p class="hmi-subtitle">Development-only presenter console for ClarkSoft.</p>
+            </div>
+            <div class="presenter-controls">
+                <div class="control-group">
+                    <label class="control-label" for="deck_input">Deck ID</label>
+                    <input class="control-input js-hmi" data-role="deck-input" id="deck_input" type="text" placeholder="clarksoft_presenter_demo">
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Deck actions</span>
+                    <button class="control-button primary js-hmi" data-role="load-deck" id="load_deck" type="button">Load deck</button>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Slide</span>
+                    <div class="control-row">
+                        <button class="control-button js-hmi" data-role="prev-slide" id="prev_slide" type="button">Prev</button>
+                        <button class="control-button js-hmi" data-role="next-slide" id="next_slide" type="button">Next</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Projector</span>
+                    <a class="control-button js-hmi" data-role="open-projector" href="clarksoft_projector_hmi.html" target="_blank" rel="noopener">Open</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="hmi-body">
+            <section class="panel" aria-label="Slide list">
+                <h2 class="panel-title">Slides</h2>
+                <div class="slide-list js-hmi" data-role="slide-list"></div>
+            </section>
+
+            <section class="stage" aria-label="Slide stage">
+                <div class="stage-frame">
+                    <h2 class="stage-title js-hmi" data-role="stage-title">No slide loaded</h2>
+                    <p class="stage-body js-hmi" data-role="stage-body"></p>
+                    <img class="stage-media js-hmi" data-role="stage-media" alt="">
+                    <div class="stage-chart-wrap js-hmi" data-role="stage-chart"></div>
+                </div>
+                <div class="stage-status js-hmi" data-role="slide-status"></div>
+            </section>
+
+            <section class="panel" aria-label="Slide details">
+                <h2 class="panel-title">Slide JSON</h2>
+                <pre class="raw-json js-hmi" data-role="slide-raw"></pre>
+            </section>
+        </main>
+    </div>
+
+    <script src="/assets/vendor/js/echarts.min.js"></script>
+    <script src="clarksoft_hmi_presenter.js"></script>
+</body>
+</html>

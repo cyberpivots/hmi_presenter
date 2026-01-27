@@ -1,0 +1,11 @@
+{
+  "default_deck_id": "clarksoft_presenter_demo",
+  "decks": [
+    {
+      "id": "clarksoft_presenter_demo",
+      "title": "ClarkSoft Presenter Demo",
+      "description": "Lightweight demo deck for the simplified ClarkSoft HMI presenter.",
+      "file": "clarksoft_slide_deck.json"
+    }
+  ]
+}

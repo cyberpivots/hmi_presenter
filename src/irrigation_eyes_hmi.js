@@ -82,7 +82,7 @@ const runMenuAction = (action) => {
       window.open("hmi_data_tools.html", "_blank", "noopener");
       break;
     case "file-open-hmi":
-      window.open("master_irrigator_presentation_hmi.html", "_blank", "noopener");
+      window.open("clarksoft_hmi_presenter.html", "_blank", "noopener");
       break;
     case "edit-reset-view":
       resetView();

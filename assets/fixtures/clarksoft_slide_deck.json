@@ -1,0 +1,44 @@
+{
+  "deck_id": "clarksoft_presenter_demo",
+  "deck_title": "ClarkSoft Presenter Demo",
+  "slides": [
+    {
+      "title": "ClarkSoft HMI Presenter",
+      "body": "Developer demo deck for the simplified presenter flow.",
+      "media": "/assets/media/ai_pivot_data_stack_overview_v2.png",
+      "alt_text": "Irrigation data stack overview illustration."
+    },
+    {
+      "title": "Presenter workflow",
+      "body": "Load a deck id, navigate slides, and keep the audience view clean.",
+      "media": "/assets/media/ai_pivot_control_panel_v2.png",
+      "alt_text": "Control panel illustration for presentation workflows."
+    },
+    {
+      "title": "Data + charts",
+      "body": "Charts pull from the hmi_presenter schema and render via ECharts.",
+      "media": "/assets/media/ai_pivot_nass_quick_stats_layer_v2.png",
+      "alt_text": "Quick stats layer preview graphic."
+    },
+    {
+      "title": "Irrigated acres by state",
+      "body": "Automated bar chart example for irrigated acreage summary."
+    },
+    {
+      "title": "Daily precipitation",
+      "body": "Automated line chart example from GHCN precipitation summaries."
+    },
+    {
+      "title": "Daily temperature",
+      "body": "Dual-axis line chart example for temperature ranges."
+    },
+    {
+      "title": "NDVI trend",
+      "body": "Area chart example highlighting vegetation index trends."
+    },
+    {
+      "title": "Temp vs precip scatter",
+      "body": "Scatter chart example correlating heat and precipitation."
+    }
+  ]
+}

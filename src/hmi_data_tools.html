@@ -17,13 +17,12 @@
                 <div>
                     <p class="brand_title">HMI Data Tools</p>
                     <p class="brand_subtitle">Quality Irrigation | ClarkSoft HMI Presenter</p>
-                    <p class="brand_subtitle">Program deck: Colorado Master Irrigator - Republican River Basin</p>
                     <p class="brand_subtitle">Local JSON, CSV, and PDF tools</p>
                 </div>
             </div>
             <div class="topbar-actions">
                 <a class="ghost_button" href="settings.html">Settings</a>
-                <a class="ghost_button" href="master_irrigator_presentation_hmi.html">Presentation</a>
+                <a class="ghost_button" href="clarksoft_hmi_presenter.html">Presentation</a>
                 <a class="ghost_button" href="#local_server_help">Local server help</a>
             </div>
         </header>
@@ -73,20 +72,20 @@
                 <ul class="branding_list">
                     <li><strong>Design:</strong> ClarkSoft Agentic Development Teams.</li>
                     <li><strong>Licensed owner:</strong> Quality Irrigation.</li>
-                    <li><strong>Program deck:</strong> Colorado Master Irrigator - Republican River Basin.</li>
                     <li><strong>Program status:</strong> Benefactor only; not affiliated with ClarkSoft.</li>
                     <li><strong>Sponsor + presenter:</strong> Quality Irrigation.</li>
                     <li><strong>Ownership:</strong> ClarkSoft owns all IP and developed products from this workspace.</li>
-                    <li><strong>Purpose:</strong> Support high-quality presentations for rural grower communities in the Republican River Basin.</li>
+                    <li><strong>Purpose:</strong> Support high-quality presentations for rural grower communities.</li>
                 </ul>
             </section>
             <section class="card" id="local_server_help">
                 <h2>Local server help</h2>
                 <p>Use the same local server steps as the presentation HMI.</p>
                 <ol class="step_list">
-                    <li>Open WSL and go to: /mnt/g/ClarkSoft/projects/master_irrigator</li>
-                    <li>Run: bash /mnt/g/ClarkSoft/projects/master_irrigator/scripts/start_hmi_dev.sh</li>
-                    <li>Open: http://localhost:52101/hmi/hmi_data_tools.html</li>
+                    <li>Open WSL and start the FastAPI server that serves the ClarkSoft HMI endpoints.</li>
+                    <li>Confirm the server exposes /api/slides, /api/slide-charts, and /api/data-sources.</li>
+                    <li>Open: http://localhost:&lt;api_port&gt;/hmi/hmi_data_tools.html</li>
+                    <li>Use the API port configured in /mnt/g/ClarkSoft/.env.</li>
                     <li>Keep the WSL window open while you work.</li>
                 </ol>
             </section>
@@ -223,6 +222,62 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="preview_block" id="chart_submit_block">
+                    <div class="preview_title">Submit chart metadata</div>
+                    <p class="meta_text">ECharts options live in data_spec. Plotly data uses data_spec + layout_spec + config_spec.</p>
+                    <div class="control_row">
+                        <div class="field">
+                            <label class="field_label" for="chart_slide_index">Slide index</label>
+                            <input class="text_input" id="chart_slide_index" type="number" min="1" placeholder="1" />
+                        </div>
+                        <div class="field">
+                            <label class="field_label" for="chart_library">Chart library</label>
+                            <select class="text_input" id="chart_library">
+                                <option value="echarts" selected>ECharts (default)</option>
+                                <option value="plotly">Plotly</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field_label" for="chart_type">Chart type</label>
+                            <input class="text_input" id="chart_type" type="text" placeholder="line" />
+                        </div>
+                    </div>
+                    <div class="control_row">
+                        <div class="field">
+                            <label class="field_label" for="chart_title">Chart title</label>
+                            <input class="text_input" id="chart_title" type="text" placeholder="Irrigated acres by region" />
+                        </div>
+                        <div class="field field_full">
+                            <label class="field_label" for="chart_alt_text">Alt text</label>
+                            <input class="text_input" id="chart_alt_text" type="text" placeholder="Bar chart comparing irrigated acres across CO, KS, and NE." />
+                        </div>
+                    </div>
+                    <div class="control_row">
+                        <div class="field field_full">
+                            <label class="field_label" for="chart_data_spec">Data spec (JSON)</label>
+                            <textarea class="text_input text_area" id="chart_data_spec" rows="10" placeholder='{"xAxis":{"type":"category","data":["CO","KS","NE"]},"yAxis":{"type":"value"},"series":[{"type":"bar","data":[180,140,210]}],"dataZoom":[{"type":"inside"},{"type":"slider"}]}'></textarea>
+                        </div>
+                    </div>
+                    <div class="control_row">
+                        <div class="field field_full">
+                            <label class="field_label" for="chart_layout_spec">Layout spec (JSON, optional)</label>
+                            <textarea class="text_input text_area" id="chart_layout_spec" rows="6" placeholder='{"height":320}'></textarea>
+                        </div>
+                    </div>
+                    <div class="control_row">
+                        <div class="field field_full">
+                            <label class="field_label" for="chart_config_spec">Config spec (JSON, optional)</label>
+                            <textarea class="text_input text_area" id="chart_config_spec" rows="6" placeholder='{}'></textarea>
+                        </div>
+                    </div>
+                    <div class="control_row">
+                        <button class="ghost_button" id="chart_submit" type="button">Upsert chart</button>
+                        <button class="ghost_button" id="chart_submit_clear" type="button">Clear form</button>
+                    </div>
+                    <p class="meta_text" id="chart_submit_status">Submit a chart to update the database.</p>
+                    <p class="error_text" id="chart_submit_error" role="alert" aria-live="polite"></p>
                 </div>
             </section>
 

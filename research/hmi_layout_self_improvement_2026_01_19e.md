@@ -9,7 +9,7 @@ Further increase landscape slide-preview height by tightening compact rail heigh
 - Portrait slide-preview remains aligned with 9:16 (751×1335, ratio 0.5625).
 
 ## Files updated
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
 
 ## Sources
 - `/mnt/g/clarksoft/research/master_irrigator/hmi_layout_review_2026_01_19e/hmi_layout_landscape_1920x1080_2026_01_19e.png`

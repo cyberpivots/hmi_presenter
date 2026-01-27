@@ -1,29 +1,26 @@
 # Recreate Presenter Shell (HMI Presenter)
 
 ## Purpose
-Document how to recreate a presenter UI similar to the Master Irrigator presenter
+Document how to recreate a presenter UI similar to the current ClarkSoft presenter
 inside the **hmi_presenter** workspace. This keeps all HMI UI work in
 `/mnt/g/clarksoft/projects/hmi_presenter`.
 
 ## Verified source files (base to copy)
-- UI HTML: `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.html`
-- UI CSS: `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- UI JS: `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js`
+- UI HTML: `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.html`
+- UI CSS: `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- UI JS: `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js`
 - Data tools (optional):
   - `/mnt/g/clarksoft/projects/hmi_presenter/src/hmi_data_tools.html`
   - `/mnt/g/clarksoft/projects/hmi_presenter/src/hmi_data_tools.css`
   - `/mnt/g/clarksoft/projects/hmi_presenter/src/hmi_data_tools.js`
 - Assets (logo/media): `/mnt/g/clarksoft/projects/hmi_presenter/assets/`
 
-## Verified API endpoints (served by master_irrigator)
-These are defined in `/mnt/g/clarksoft/projects/master_irrigator/src/app.py`.
+## Expected API endpoints (confirm in the API repo)
+These are defined in `/mnt/g/clarksoft/projects/<hmi_api_repo>/src/app.py`.
 - `GET /api/slides`
-- `GET /api/slide-decks`
-- `POST /api/presenter-actions`
-- `POST /api/presentation-runs`
-- `POST /api/presentation-versions`
-- `GET /api/presentation-versions`
-- `GET /api/data-sources/{source_id}/preview`
+- `GET /api/slide-charts`
+- `GET /api/slide-decks` (only if you add a deck selector)
+- `POST /api/slide-charts` (optional, for data tools upserts)
 
 ## Copy/paste checklist (WSL)
 Use this checklist to avoid missing steps.
@@ -38,11 +35,11 @@ Checklist:
 
 Copy/paste commands:
 ```sh
-cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.html \
+cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.html \
   /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.html
-cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css \
+cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css \
   /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.css
-cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js \
+cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js \
   /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.js
 ```
 
@@ -51,11 +48,11 @@ cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi
    - Copy the three base files and rename them for your new presenter page.
    - Example (rename to `my_presenter_*`):
      ```sh
-     cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.html \
+     cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.html \
        /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.html
-     cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css \
+     cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css \
        /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.css
-     cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js \
+     cp /mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js \
        /mnt/g/clarksoft/projects/hmi_presenter/src/my_presenter.js
      ```
    - Success looks like the new files exist in `src/`.
@@ -94,9 +91,9 @@ cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi
      ```
 
 6) **Run the HMI server (WSL).**
-   - Start from the master_irrigator repo:
+   - Start from the HMI API repo:
      ```sh
-     bash /mnt/g/ClarkSoft/projects/master_irrigator/scripts/start_hmi_dev.sh
+     bash /mnt/g/ClarkSoft/projects/clarksoft_hmi_presenter/scripts/start_hmi_dev.sh
      ```
    - Success looks like the terminal prints HMI URLs.
 
@@ -107,6 +104,6 @@ cp /mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi
 
 ## Notes
 - All HMI UI development stays in **hmi_presenter**.
-- The API and slide data stay in **master_irrigator**.
+- The API and slide data stay in **clarksoft_hmi_presenter**.
 - If you need a new deck, update the deck catalog JSON under
-  `/mnt/g/clarksoft/projects/master_irrigator/assets/fixtures/`.
+  `/mnt/g/clarksoft/projects/<hmi_api_repo>/assets/fixtures/`.

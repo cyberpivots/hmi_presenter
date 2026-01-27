@@ -14,8 +14,8 @@ Ensure landscape and portrait console layouts keep a consistent console size usi
 - Console slide-preview: 1045×575 (ratio 1.8158) at 1366×768.
 
 ## Files updated
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js`
 
 ## Sources
 - `/mnt/g/clarksoft/research/master_irrigator/hmi_layout_review_2026_01_19f/hmi_layout_landscape_1920x1080_2026_01_19f.png`

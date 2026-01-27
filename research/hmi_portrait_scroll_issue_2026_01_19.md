@@ -21,8 +21,8 @@ Why does portrait layout require scrolling and fail to use available vertical sp
 - Keep 16:9 slide frame sizing via `updateSlidePreviewFrame` and fit-to-container logic.
 
 ## Sources
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.js`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.js`
 - `/mnt/g/clarksoft/projects/hmi_presenter/assets/user_uploads/Screenshot 2026-01-19 170116.png`
 - `/mnt/g/clarksoft/projects/master_irrigator/assets/fixtures/ai_center_pivot_presentation_01_data_stack.json`
 

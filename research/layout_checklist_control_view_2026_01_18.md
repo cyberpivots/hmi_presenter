@@ -1,7 +1,7 @@
 # Control View Layout Checklist (Measurable Targets)
 
 Date: 2026-01-18
-Scope: 1920×1080 control view for master_irrigator_presentation_hmi.html
+Scope: 1920×1080 control view for clarksoft_hmi_presenter.html
 
 ## Measurement method (repeatable)
 - Capture DOM sizes for `.header`, `.menu-bar`, `.carousel-row`, `.agenda-row`, `.stage`, `.slide-preview`, `.stage-rail`.

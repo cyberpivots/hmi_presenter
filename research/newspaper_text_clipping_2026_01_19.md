@@ -22,9 +22,9 @@ Why are slide body/list/note lines clipped in the newspaper control view, and wh
 - Bump CSS cache version to force reload.
 
 ## Sources
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.css`
-- `/mnt/g/clarksoft/projects/hmi_presenter/src/master_irrigator_presentation_hmi.html`
-- `http://localhost:52104/hmi/master_irrigator_presentation_hmi.html?view=control&layout=newspaper&deck=ai_pivot_data_stack&slide=2`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.css`
+- `/mnt/g/clarksoft/projects/hmi_presenter/src/clarksoft_hmi_presenter.html`
+- `http://localhost:52104/hmi/clarksoft_hmi_presenter.html?view=control&layout=newspaper&deck=ai_pivot_data_stack&slide=2`
 - `/mnt/g/clarksoft/projects/master_irrigator/assets/user_uploads/Screenshot 2026-01-19 145324.png`
 
 ## Gaps
